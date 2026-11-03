@@ -19,3 +19,7 @@ simulator:
   # the most common wm811k map size from results audit_map_sizes csv
   wm811k_rows: 32
   wm811k_cols: 29
+
+rf:
+  # leaf sizes tried on the validation set  bigger leaves smooth the forest
+  leaf_sizes: [1, 3, 10]

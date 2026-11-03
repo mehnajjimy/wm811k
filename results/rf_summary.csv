@@ -1,0 +1,9 @@
+fact,value
+best_min_samples_leaf,3.0
+test_maps,25939.0
+macro_f1_9class,0.8668583873200356
+macro_f1_9class_lo,0.8461846261220624
+macro_f1_9class_hi,0.8796071916550523
+macro_f1_8class,0.8958170689503276
+accuracy_9class_not_headline,0.9728979528894715
+accuracy_if_always_none,0.8522687844558386

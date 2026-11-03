@@ -219,3 +219,25 @@ Every choice in the project, with the options considered, the recommendation, wh
   - Ezzat et al.'s citing statements, read on ar5iv, now appear in the Center, Donut and Edge-Ring rows.
   - Mehnaj's spin-coat edge-bead (L1) and ALD uniformity (L2) work is tied to the Edge-Ring, Center and Donut rows (see d09).
 - **Cloud decisions d24–d35:** approved by Mehnaj (2026-11-03).
+
+### d37 Random-forest features
+- **Options:** raw pixels; the Wu et al. 2015 features (density regions, Radon, geometry); our own explainable features.
+- **Recommended / decided:** our own set of 24 features that a yield engineer would read off a bin map (`src/wm811k/features.py`):
+  - fail fraction
+  - fail density in 5 rings of normalised radius
+  - sorted fail densities of 8 outer-edge sectors, so the features don't depend on rotation
+  - count, size, position, elongation and fill of the biggest fail cluster
+  - the share of fails that have 3 or more failing neighbours
+- **Why:** radius is measured as a fraction of the wafer radius, so the same physical ring gives the same number on any map size (d17 deals with size for yield; this deals with it for features). The features are inspired by Wu et al.'s idea of density and geometry features, but they are not a reproduction of them, since that paper's method details have not been checked against its full text (RESEARCH.md). Tests on simulated wafers check that each feature moves the way its physics says (`tests/test_features.py`).
+
+### d38 Random-forest setup
+- **Choices:** 500 trees with `class_weight="balanced_subsample"`, so the forest does not learn to call everything "none". `min_samples_leaf` was picked on validation only: 1 → 0.837, 3 → 0.853, 10 → 0.826 macro-F1 (results/rf_val_tuning.csv). The final model is refit on train + validation, and the test set was used once.
+- **Decided:** as above.
+
+### d39 Random-forest result (test set, lot split, 25,939 labelled maps)
+- **9-class macro-F1:** 0.867, with a lot-bootstrap 95% interval of 0.846–0.880 (results/rf_summary.csv, results/rf_test_bootstrap_ci.csv). Whole lots are resampled, not single wafers.
+- **8-class macro-F1 (defects only, side view per d05):** 0.896.
+- **Per-class recall:** Edge-Ring 0.96, Center 0.92, Random 0.90, Edge-Loc 0.86, Donut 0.85, Loc 0.67, Scratch 0.61. Near-full is 1.00, but on only 23 maps (results/rf_test_per_class.csv).
+- **Accuracy (not a headline, per d04):** 97.3%, against 85.2% for a model that always says "none". This is the example of why accuracy misleads here.
+- **Process reading:** the main failure is defects passed as "none". 27% of Scratch, 20% of Loc and 11% of Edge-Loc test wafers are missed that way (figures/rf_confusion.png). In a fab a missed excursion costs more than a mislabelled one, so the abstain and threshold work (item G) should target this, and the CNN should be judged on it.
+- **Top features:** biggest-cluster radius, fill and share, neighbour clustering, and the middle-ring density (results/rf_feature_importance.csv).
