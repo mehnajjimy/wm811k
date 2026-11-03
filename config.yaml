@@ -9,3 +9,13 @@ split:
   n_folds: 20
   val_folds: 3
   test_folds: 3
+
+simulator:
+  # seeds for the example figure  kept next to the project seed so the figure can be rebuilt exactly
+  figure_seeds: [811, 812, 813]
+  # the grid the default fault settings were tuned on
+  rows: 40
+  cols: 40
+  # the most common wm811k map size from results audit_map_sizes csv
+  wm811k_rows: 32
+  wm811k_cols: 29
