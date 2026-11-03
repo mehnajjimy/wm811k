@@ -1,0 +1,25 @@
+fact,value
+maps_total,811457
+maps_labeled,172950
+lots,46293
+wafers_per_lot_median,24.0
+wafers_per_lot_max,25
+maps_with_odd_lot_name,0
+wafer_index_min,1
+wafer_index_max,25
+train_lots,5809
+test_lots,4953
+shared_lots,0
+test_maps_in_shared_lots,0
+test_maps,118595
+distinct_map_sizes,632
+duplicate_groups,32630
+duplicate_extra_copies,114858
+duplicate_groups_spanning_lots,32392
+duplicate_groups_with_conflicting_labels,14
+defect_maps_with_exact_copy,187
+defect_copy_groups,93
+defect_copy_groups_spanning_lots,93
+defect_copy_groups_across_builtin_split,92
+pixel_values,0 1 2
+maps_with_no_tested_dies,0
