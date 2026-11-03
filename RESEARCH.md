@@ -9,9 +9,9 @@ Verification legend: **[V]** means the bibliographic record or paper page was ch
 ### Key papers
 | Paper | What it did | Status |
 |---|---|---|
-| Wu, Jang & Chen, "Wafer Map Failure Pattern Recognition and Similarity Ranking for Large-Scale Data Sets", *IEEE TSM* 28(1):1–12, 2015, doi:10.1109/TSM.2014.2364237 | Released the dataset (811,457 maps). Proposed rotation/scale-invariant features (density, Radon, geometry) + SVM, plus similarity ranking | [V] record |
-| Nakazawa & Kulkarni (Intel), "Wafer Map Defect Pattern Classification and Image Retrieval Using CNN", *IEEE TSM* 31(2):309–314, 2018, doi:10.1109/TSM.2018.2795466 | CNN trained on **synthetic** maps and tested on real ones. Image retrieval from an 18k library | [V] record |
-| Saqlain, Jargalsaikhan & Lee, "A Voting Ensemble Classifier for Wafer Map Defect Patterns Identification…", *IEEE TSM* 32(2):171–182, 2019 | 66 handcrafted features + LR/RF/GBM/ANN soft voting. Reported 86.7% accuracy (per an author page, not checked in the paper) | [V] record, [U] numbers |
+| Wu, Jang & Chen, "Wafer Map Failure Pattern Recognition and Similarity Ranking for Large-Scale Data Sets", *IEEE TSM* 28(1):1–12, 2015, doi:10.1109/TSM.2014.2364237 | Released the dataset (811,457 maps). Proposed rotation/scale-invariant features (density, Radon, geometry) + SVM, plus similarity ranking. Method details are from memory and still need checking against the paper | [V] Crossref record (title, authors, venue, pages, Feb 2015 print), [U] method details |
+| Nakazawa & Kulkarni (Intel), "Wafer Map Defect Pattern Classification and Image Retrieval Using CNN", *IEEE TSM* 31(2):309–314, 2018, doi:10.1109/TSM.2018.2795466 | CNN trained on **synthetic** maps and tested on real ones. Image retrieval from an 18k library, with a reported 3.7% retrieval error on 1,191 real wafers. These details come from a *Nature Electronics* research highlight about the paper (M. Lee, "Deep learning spots the defect", Nat. Electron. 1:153, 2018, doi:10.1038/s41928-018-0050-z), not from the paper itself | [V] Crossref record of the paper, [U] method details and numbers (the earlier link was to the highlight, not the paper) |
+| Saqlain, Jargalsaikhan & Lee, "A Voting Ensemble Classifier for Wafer Map Defect Patterns Identification…", *IEEE TSM* 32(2):171–182, 2019, doi:10.1109/TSM.2019.2904306 | 66 handcrafted features + LR/RF/GBM/ANN soft voting. Reported 86.7% accuracy (per an author page, not checked in the paper) | [V] Crossref record, [U] numbers |
 | Kahng & Kim, "Self-Supervised Representation Learning for Wafer Bin Map Defect Pattern Classification", *IEEE TSM* 34(1):74–86, 2021. Code: github.com/hgkahng/WaPIRL | Contrastive pretraining on unlabeled maps; helps most when labels are scarce | [V] record |
 | Li et al., semi-supervised labeling + clustering for new patterns, *IEEE TSM* 35(2), 2022 | Pseudo-labels the unlabeled maps and clusters the leftovers to find new defect types | [V] snippet, authors [U] |
 | Kwak, Lee & Kim, SWaCo, 2023; Baek, Hwang & Kim, CowSSL, 2024 | Self-supervised / open-world semi-supervised with out-of-distribution handling | [V] titles |
@@ -49,7 +49,7 @@ I **can't give you a reliable typical macro-F1 under a lot split**. Most papers 
 |---|---|---|---|---|
 | A | **Yield loss per pattern + Pareto**: die yield per map; mean, median and lot-level distribution per class; "dies lost per 1,000 wafers" by pattern | This is how yield engineers prioritize: fix the biggest Pareto bar first | Low | Yield definition, why the median beats the mean for skewed loss, normalizing by die count, why loss ≠ cause (Near-full is high loss but rare) |
 | B | **Lot-level / excursion view**: pattern co-occurrence within lots, run-length across `waferIndex` | "Is it one wafer or the whole lot?" splits tool excursions from random events; this is the first thing a yield engineer asks | Low | Lot vs wafer variation, why clustering within a lot points to a tool or chamber |
-| C | **Sourced root-cause table** (pattern → candidate process modules → first fab step to check → signal to confirm) | Turns a classifier into a triage tool | Medium: few peer-reviewed pattern→cause sources, so frame entries as *hypotheses* | Physics of each mechanism (radial deposition/etch non-uniformity, CMP edge roll-off, litho focus, handling scratches) — your ChemE/nano strength |
+| C | **Sourced root-cause table** (pattern → candidate process modules → first fab step to check → signal to confirm) | Turns a classifier into a triage tool | Medium: few peer-reviewed pattern→cause sources, so frame entries as *hypotheses* | Physics of each mechanism (radial deposition/etch non-uniformity, CMP edge roll-off, litho focus, handling scratches). Your own spin-coat edge-bead and ALD uniformity work backs the radial rows |
 | D | **RF baseline vs small CNN under a lot split**, macro-F1 + per-class recall + confusion matrix | Core credibility | Low | Grouped split, class weights, why Radon features work, CNN receptive field |
 | E | **VLM zero-shot benchmark, differentiated from Cao & Tao**: same lot-split test set as your CNN, **all 9 classes including "none"**, macro-F1, an open-weight VLM run locally plus Luna 6 via ChatGPT credits, measured latency and token counts priced at published API rates per 1k wafers, raw vs rule-prompted | Answers "can we skip labeling?" and makes the cost/accuracy tradeoff explicit | Medium: prompt sensitivity, local VLM quality | Stratified subsampling, why "none" matters for the false-alarm rate, cost per wafer vs a fab's wafer volume |
 | F | **Grounded triage assistant + hallucination eval**: an LLM gets the predicted class, confidence, yield and lot stats, and may cite **only** rows of the table from C. It drafts an 8D D2–D4 first response | Shows controlled AI use: closed-world grounding plus measurement | Medium | Grounding; automatic hallucination check (any cause not in the table = hallucination); agreement with the table (correctness); why D2–D4 only |
@@ -76,7 +76,9 @@ No time budget. Scope is set by value and by what each step depends on, not by a
 
 Why E + F rather than I: E and F are measurable and novel enough (lot split, 9 classes, cost, hallucination rate). Pseudo-labeling is the most-trodden path.
 
-**Root-cause sources to check for C:** Hwang & Kuo 2007; Kim, Lee & Kim 2018; Cunningham & MacKinnon 1998; Neo et al. 2017 (all via Ezzat et al.) [U]. I'll also add standard textbooks (e.g. Quirk & Serda, *Semiconductor Manufacturing Technology*) [U, need a page reference]. Each table row cites ≥1 checked source or is marked "engineering hypothesis".
+**Root-cause sources to check for C:** Hwang & Kuo 2007; Kim, Lee & Kim 2018; Cunningham & MacKinnon 1998; Neo et al. 2017 (all via Ezzat et al.) [U]. I'll also add standard textbooks (e.g. Quirk & Serda, *Semiconductor Manufacturing Technology*) [U, need a page reference]. Each table row cites ≥1 checked source, Mehnaj's own lab work, or is marked "engineering hypothesis".
+
+**Mehnaj's hands-on work as evidence (see d09):** spin-coating edge beads and ALD thickness-uniformity work. The edge bead is a thicker rim of film left at the wafer edge when surface tension holds liquid there during spin-off. That is the same radial, edge-located thickness non-uniformity proposed as one cause of Edge-Ring. ALD uniformity work covers centre-to-edge thickness gradients from precursor dosing, purge or temperature non-uniformity, which map to Center, Donut and Edge-Ring hypotheses. Each row this applies to should cite the specific run or slide. No measured values are quoted until the slides are in the repo.
 
 ## 4. Draft resume bullets + pitch (placeholders only)
 - Built a yield-analysis pipeline on 811K production wafer maps (WM-811K). Quantified die-yield loss by defect signature; the top [X] patterns account for [X]% of lost dies, and [X]% of lots show multi-wafer excursion clustering.
@@ -87,9 +89,9 @@ Why E + F rather than I: E and F are measurable and novel enough (lot split, 9 c
 
 
 ## Sources checked
-- Wu et al. 2015 record: https://bvbvf1.bib-bvb.de/vufind/PrimoRecord/cdi_ieee_primary_6932449
-- Nakazawa & Kulkarni 2018: https://www.nature.com/articles/s41928-018-0050-z
-- Saqlain et al. 2019: https://www.aminer.org/pub/5ccad26eced107d4c6745457
+- Wu et al. 2015 (Crossref): https://doi.org/10.1109/TSM.2014.2364237
+- Nakazawa & Kulkarni 2018 (Crossref): https://doi.org/10.1109/TSM.2018.2795466. The *Nature Electronics* highlight about it, which is not the paper: https://doi.org/10.1038/s41928-018-0050-z
+- Saqlain et al. 2019 (Crossref): https://doi.org/10.1109/TSM.2019.2904306
 - Kahng & Kim 2021: https://pure.korea.ac.kr/en/publications/self-supervised-representation-learning-for-wafer-bin-map-defect-/
 - Cao & Tao 2026: https://arxiv.org/html/2610.35080
 - SemiFA 2026: https://arxiv.org/abs/2604.13236

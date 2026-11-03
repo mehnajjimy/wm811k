@@ -55,8 +55,11 @@ Every choice in the project, with the options considered, the recommendation, wh
 ### d09 Root-cause table sourcing
 - **Options:** cite only peer-reviewed sources; mix sources with labelled engineering hypotheses.
 - **Recommended:** every row cites a verified source or is labelled "engineering hypothesis".
-- **Why:** peer-reviewed links from pattern to cause are thin. Mehnaj's background is coursework, not hands-on fab work, so rows rest on literature and textbook physics.
-- **Decided:** as recommended.
+- **Why:** peer-reviewed links from pattern to cause are thin, so the table needs other evidence. Mehnaj has hands-on uniformity work that supplies it.
+- **Decided:** as recommended. **Corrected 2026-11-03:** an earlier version said the table rested on coursework only, which was wrong. Rows also draw on Mehnaj's own lab work:
+  - **Spin-coat edge beads.** A thicker film rim at the wafer edge, which is the same radial edge non-uniformity behind the Edge-Ring hypothesis.
+  - **ALD thickness uniformity.** Centre-to-edge gradients, which bear on the Center, Donut and Edge-Ring hypotheses.
+- Rows cite the specific run or slide. No measured values are quoted until the slides are in the repo. This is the angle an ML-only portfolio can't offer: the radial patterns are tied to film physics Mehnaj has measured.
 
 ### d10 Repository and license
 - **Options:** private; public under MIT.
@@ -115,3 +118,23 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Finding:** Scratch wafers have a median yield of 90.8%, slightly above clean wafers, so their extra loss is negative (results/yield_by_class.csv).
 - **Implication:** scratches rank last by die loss, but they matter for other reasons: they point to handling or CMP damage and can be a reliability risk that wafer-sort yield does not see. The root-cause table should say so, rather than reading the low loss as "unimportant".
 - **Decided:** keep the negative value and explain it.
+
+### d20 Lot-level analysis pool
+- **Options:** all labelled wafers; only lots with enough labelled wafers.
+- **Recommended / decided:** lots with at least 10 labelled wafers: 7,025 lots and 165,591 wafers (results/lots_facts.csv).
+- **Why:** a lot with two labelled wafers cannot show whether a pattern hits the whole lot.
+
+### d21 Does a pattern pile up inside lots
+- **Method:** for each class, the average number of other same-pattern wafers in the same lot. This is compared with 200 shuffles of labels across all wafers, which keep lot sizes and class frequencies but break any link between lot and pattern.
+- **Result:** every defect class clusters inside lots far above chance, with p ≤ 0.005 for all classes (the smallest p-value 200 shuffles can give). Ratios are Donut 127×, Random 111×, Center 30×, Edge-Ring 17×, Near-full 11×, Loc 5.5×, Edge-Loc 5.0× and Scratch 4.8× (results/lots_clustering.csv, figures/lots_clustering.png).
+- **Process reading:** patterns that come in lots point to something every wafer in the lot shared (a chamber, a recipe, a time window), not to one-off wafer events. That decides whether an engineer pulls tool history or a single wafer's handling log.
+- **Caveat:** labels may have been assigned lot by lot, which could inflate clustering. That can't be ruled out from the data alone.
+
+### d22 Do patterns run in neighbouring slots
+- **Method:** the chance that the next slot holds the same pattern. This is compared with 200 shuffles inside each lot, which keep each lot's pattern mix and scramble only the order.
+- **Result:** most patterns show little ordering beyond their lot mix: Center 1.06×, Random 1.08× and Edge-Ring 1.00×. Loc is the exception at 1.28× (p = 0.005). Near-full shows 3.2× (p = 0.015) but rests on very few pairs. Donut, Edge-Loc and Scratch are not different from chance (results/lots_slot_order.csv).
+- **Process reading:** the lot is the unit, not the slot. Edge-Ring in particular tends to fill whole lots. That fits a lot-level process condition better than a tool drifting wafer by wafer.
+
+### d23 Excursion lots
+- **Definition:** a lot where one defect pattern covers at least half of its labelled wafers.
+- **Result:** 502 of the 7,025 pooled lots (7.1%) are excursion lots, and 361 of them are Edge-Ring. Center accounts for 76 (results/lots_excursions_by_class.csv).
