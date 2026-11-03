@@ -25,13 +25,13 @@ Verification legend: **[V]** means the bibliographic record or paper page was ch
 I **can't give you a reliable typical macro-F1 under a lot split**. Most papers report accuracy on random wafer-level splits, often after dropping "none" or subsampling. One 2025 Springer paper (EURASIP JIVP, doi:10.1186/s13640-025-00666-3) reports about 93 macro-F1, but on an unclear split. Supervised CNNs routinely claim 96–98% accuracy. That gap is itself a finding: **a lot-split, 9-class, macro-F1 benchmark is rare**, so your numbers will look lower and be more honest. Say exactly that in the interview.
 
 ### Common pitfalls (each one becomes a DECISIONS.md entry)
-1. Random wafer split leaks lot signatures. Fix: group the split by `lotName`. A secondary source says about 0.3% of maps lack a valid lot ID [U, check on load].
-2. The built-in `trianTestLabel` split (typo is in the data) may not be lot-disjoint. Audit it.
+1. Random wafer split leaks lot signatures. Fix: group the split by `lotName`. **Audit:** all 811,457 maps have a well-formed lot name (46,293 lots, at most 25 wafers each), so no special handling is needed. A secondary source's 0.3% missing-lot figure does not hold for this file.
+2. The built-in `trianTestLabel` split (typo is in the data) may not be lot-disjoint. **Audit:** it is lot-disjoint (0 shared lots), but it is lopsided: 54,355 training vs 118,595 test maps. 92 exact-copy groups of defect maps also straddle it (see 7).
 3. Headline accuracy is dominated by "none". Also, "none" is often silently dropped, which inflates scores.
-4. Near-full has only about 149 maps, so per-class recall on it has huge variance. Report confidence intervals or the raw counts.
+4. Near-full has only 149 maps (confirmed by the audit), so per-class recall on it has huge variance. Report confidence intervals or the raw counts.
 5. Map sizes vary widely (die size). Resizing changes the meaning of "Edge" and "Loc", so the resize method is a decision.
 6. Labels are noisy: Loc vs Edge-Loc and Center vs Donut are ambiguous (Cao & Tao note this too).
-7. Duplicate or near-duplicate maps may cross splits. Hash them to check (not established in the literature, my own check).
+7. Duplicate or near-duplicate maps may cross splits. Hash them to check (not established in the literature, my own check). **Audit:** about 115k extra copies exist, but almost all are clean maps with zero or one fail that match by chance. The real issue is 187 defect-labeled maps in 93 exact-copy groups, every one spanning different lots, so a pure lot split would not keep them apart. 14 copy groups carry conflicting labels, which is direct evidence of label noise (6).
 8. Augmenting before the split leaks augmented copies into test.
 
 ### Overdone (skip)

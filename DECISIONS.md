@@ -73,3 +73,17 @@ Every choice in the project, with the options considered, the recommendation, wh
 ### d12 Code style
 - **Options:** minimal comments; decision-tagged comments; teaching-heavy notes.
 - **Recommended / decided:** teaching-heavy notes in Mehnaj's voice (lowercase, no punctuation), in a package with thin notebooks and light tooling. See STYLE.md.
+
+### d13 Exact-copy defect maps across lots
+- **Finding:** 187 defect-labeled maps form 93 groups of pixel-identical copies. Every group spans more than one lot, and 92 groups straddle the dataset's built-in train/test split (results/audit_facts.csv). Clean maps also repeat a lot, but those are maps with zero or one fail that match by chance, not copies.
+- **Options:** keep everything and accept the leak; drop all but one copy; keep all copies but force lots linked by a shared defect map into the same split group.
+- **Recommended:** merge linked lots into one split group.
+- **Why:** this closes the leak without throwing data away, and it's easy to explain: "if two lots share an identical defect map, they are treated as one unit."
+- **Decided:** pending Mehnaj.
+
+### d14 Use the built-in split or our own
+- **Finding:** the built-in `trianTestLabel` split is lot-disjoint, but it puts 31% of labeled maps in training and 69% in test, and it is broken by the d13 copies.
+- **Options:** use it as is; build our own lot-grouped, class-stratified split (for example 70/15/15 train/validation/test).
+- **Recommended:** our own split, with d13 applied and a fixed seed.
+- **Why:** rare classes need more training maps than a 31% share gives, a validation set is needed for thresholds (abstain, item G), and the copy leak has to be closed either way.
+- **Decided:** pending Mehnaj.
