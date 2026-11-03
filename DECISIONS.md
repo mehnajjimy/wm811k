@@ -79,11 +79,17 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Options:** keep everything and accept the leak; drop all but one copy; keep all copies but force lots linked by a shared defect map into the same split group.
 - **Recommended:** merge linked lots into one split group.
 - **Why:** this closes the leak without throwing data away, and it's easy to explain: "if two lots share an identical defect map, they are treated as one unit."
-- **Decided:** pending Mehnaj.
+- **Decided:** approved as recommended (2026-11-03).
 
 ### d14 Use the built-in split or our own
 - **Finding:** the built-in `trianTestLabel` split is lot-disjoint, but it puts 31% of labeled maps in training and 69% in test, and it is broken by the d13 copies.
 - **Options:** use it as is; build our own lot-grouped, class-stratified split (for example 70/15/15 train/validation/test).
 - **Recommended:** our own split, with d13 applied and a fixed seed.
 - **Why:** rare classes need more training maps than a 31% share gives, a validation set is needed for thresholds (abstain, item G), and the copy leak has to be closed either way.
-- **Decided:** pending Mehnaj.
+- **Decided:** approved as recommended (2026-11-03).
+
+### d15 Split result (implements d13 and d14)
+- **What was built:** `src/wm811k/split.py` uses 20 stratified group folds (3 test, 3 validation, 14 train) with seed 811 from `config.yaml`. Groups are lots, merged where they share an identical defect map, which produced 61 merged groups.
+- **Checks:** every class keeps the same share in train, validation and test to within 0.0001 (results/split_class_counts.csv). Zero copy groups cross the split. No lot appears in two splits (tests/test_split.py).
+- **Unlabeled maps:** unlabeled maps follow their lot's split. Lots with no labelled map at all (566,611 maps) form an `unlabeled_only` pool, so pseudo-labelling can never pull in test lots.
+- **Stored as:** `results/split_lots.csv`, one row per lot.

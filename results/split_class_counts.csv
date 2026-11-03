@@ -1,0 +1,10 @@
+label,test,train,val
+Center,645,3005,644
+Donut,84,388,83
+Edge-Loc,779,3630,780
+Edge-Ring,1452,6776,1452
+Loc,540,2513,540
+Near-full,23,104,22
+Random,130,606,130
+Scratch,179,834,180
+none,22107,103216,22108
