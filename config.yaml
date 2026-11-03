@@ -1,0 +1,11 @@
+# one seed for everything so any run can be repeated exactly
+seed: 811
+
+data:
+  pickle: LSWMD.pkl
+
+split:
+  # 20 folds with 3 for validation and 3 for test gives about 70 15 15
+  n_folds: 20
+  val_folds: 3
+  test_folds: 3
