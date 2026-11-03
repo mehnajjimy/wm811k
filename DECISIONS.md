@@ -93,3 +93,25 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Checks:** every class keeps the same share in train, validation and test to within 0.0001 (results/split_class_counts.csv). Zero copy groups cross the split. No lot appears in two splits (tests/test_split.py).
 - **Unlabeled maps:** unlabeled maps follow their lot's split. Lots with no labelled map at all (566,611 maps) form an `unlabeled_only` pool, so pseudo-labelling can never pull in test lots.
 - **Stored as:** `results/split_lots.csv`, one row per lot.
+
+### d16 Yield loss measure
+- **Options:** raw yield per class; mean yield gap; extra dies lost compared with a clean-wafer baseline, per wafer and per 1,000 wafers.
+- **Recommended:** extra dies lost against the median yield of "none" wafers, reported per 1,000 labelled wafers as the Pareto number.
+- **Why:** clean wafers still lose dies to random defects, so only the loss above that baseline belongs to the pattern. "Per 1,000 wafers" combines how often a pattern appears with how bad it is, which is how a yield engineer ranks what to fix first. The median is used because a few very bad clean wafers would drag a mean.
+- **Decided:** implemented in `src/wm811k/yield_stats.py`. Results are in results/yield_by_class.csv and figures/yield_pareto.png.
+
+### d17 Baseline per product
+- **Options:** one global clean baseline; a baseline per product.
+- **Recommended:** per product, using map grid size as the product marker. Sizes with fewer than 30 clean wafers fall back to the global clean median of 90.2%.
+- **Why:** different products run at different normal yields. Comparing every wafer to one global median would blame a product's normal loss on the pattern. Switching moved Center's share of extra loss from 18.5% to 13.5% and lifted Edge-Loc above Random.
+- **Decided:** implemented. The grid size is an assumption, since the data has no product ID.
+
+### d18 Finding: the labelled subset is not a random sample
+- **Finding:** labelled wafers have a median yield of 89.4%, against 94.8% for unlabelled wafers (results/yield_labeled_vs_unlabeled.csv).
+- **Implication:** the labelled set leans toward worse wafers, so "per 1,000 labelled wafers" is not "per 1,000 wafers the fab ran". The README says this plainly rather than scaling numbers up to fab volume.
+- **Decided:** report as a caveat. If pseudo-labelling (item I) happens, it can test how far the Pareto moves on the full population.
+
+### d19 Finding: Scratch costs fewer dies than a clean wafer
+- **Finding:** Scratch wafers have a median yield of 90.8%, slightly above clean wafers, so their extra loss is negative (results/yield_by_class.csv).
+- **Implication:** scratches rank last by die loss, but they matter for other reasons: they point to handling or CMP damage and can be a reliability risk that wafer-sort yield does not see. The root-cause table should say so, rather than reading the low loss as "unimportant".
+- **Decided:** keep the negative value and explain it.
