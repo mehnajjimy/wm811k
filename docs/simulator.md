@@ -14,7 +14,7 @@ python scripts/make_simulator_figure.py
 
 The seeds (811 to 813) and grid sizes come from the `simulator` section of `config.yaml`. The top three rows use the 40 by 40 grid the default fault settings were tuned on. The bottom row uses 32 by 29 dies, the most common WM-811K map size in `results/audit_map_sizes.csv`.
 
-Code comments tagged `d16` and up point to the matching entries in `DECISIONS.md`.
+Code comments tagged `d24` and up point to the matching entries in `DECISIONS.md`.
 
 ## Shared model
 

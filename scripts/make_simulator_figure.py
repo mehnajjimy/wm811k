@@ -32,7 +32,7 @@ ORDER = [
     "none",
 ]
 
-# d26 no die blends into the page so the wafer outline comes from the pass dies
+# d34 no die blends into the page so the wafer outline comes from the pass dies
 # pass is a quiet neutral so the eye goes to the fails
 # fail is the one strong color in the figure
 SURFACE = "#fcfcfb"

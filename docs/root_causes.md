@@ -27,7 +27,7 @@ Pattern names are the dataset's exact label strings, as in `wm811k.data.CLASSES`
 
 Notes:
 
-- "Test" is not in the requested module list, but Near-full and some edge patterns can come from the tester or the probe card instead of the process. A real fab rules this out first, because a retest costs much less than a process investigation. This is recorded as an addition in `DECISIONS.md` (d25).
+- "Test" is not in the requested module list, but Near-full and some edge patterns can come from the tester or the probe card instead of the process. A real fab rules this out first, because a retest costs much less than a process investigation. This is recorded as an addition in `DECISIONS.md` (d33).
 - The boundary between `none` and `Random` is a defect-density threshold, not a different mechanism. The simulator treats them that way too.
 
 ## Verified sources

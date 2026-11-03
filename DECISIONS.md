@@ -94,73 +94,73 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Unlabeled maps:** unlabeled maps follow their lot's split. Lots with no labelled map at all (566,611 maps) form an `unlabeled_only` pool, so pseudo-labelling can never pull in test lots.
 - **Stored as:** `results/split_lots.csv`, one row per lot.
 
-### d16 Simulator: fail probability per die, then one draw per die from a separate stream
+### d24 Simulator: fail probability per die, then one draw per die from a separate stream
 - **Options:** (a) place fail dies directly from a shape, such as "pick N dies in a ring"; (b) compute a fail probability for every die from the physics, then draw pass or fail. For randomness: one random stream for everything, or a layout stream (where a fault sits) plus a die stream (one uniform number per die).
 - **Recommended:** (b), with two streams split from one seed.
 - **Why:** The probability map can be inspected and gives expected yield without sampling. Independent causes combine correctly as `1 - Π(1 - p)`. With separate streams, fault strength never changes the die draws, so a stronger fault can only add fails. "Stronger fault means lower yield" is then tested die by die, not only on average.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d17 Simulator: radial and edge faults as a process window
+### d25 Simulator: radial and edge faults as a process window
 - **Options:** (a) set fail probability directly as a function of radius; (b) model a local deviation from target in percent (film thickness or etch depth), add die-to-die scatter, and fail dies outside a ± spec limit.
 - **Recommended:** (b).
 - **Why:** This is how parametric yield loss works in a fab: the tool drifts, and dies that drift out of the window fail. The knobs are ones a process engineer recognises (peak deviation, spec limit, scatter), and pattern boundaries come out soft for a physical reason.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d18 Simulator: Edge-Ring and Edge-Loc share one roll-off mechanism
+### d26 Simulator: Edge-Ring and Edge-Loc share one roll-off mechanism
 - **Options:** (a) separate, unrelated generators; (b) one exponential edge roll-off, made one-sided by a local edge arc (clamp, inlet, local edge bead) and/or off-center wafer placement.
 - **Recommended:** (b), with the local arc on by default and placement offset as an optional second knob.
 - **Why:** The useful engineering question is what breaks the symmetry. An earlier version used placement offset alone. It only made a thin one-die crescent unless the offset was several mm, and typical placement accuracy was not checked, so the local arc was added.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d19 Simulator: Loc as a gaussian particle cloud with a kill ratio
+### d27 Simulator: Loc as a gaussian particle cloud with a kill ratio
 - **Options:** (a) scatter individual particle points; (b) compute the expected number of killer particles per die from a gaussian density, and apply Poisson.
 - **Recommended:** (b).
-- **Why:** (b) is exact for a Poisson cloud, needs no per-particle randomness (which keeps d16 intact), and uses kill ratio, which yield engineers measure with defect-to-bin overlays. It matches the "local defects as a bivariate normal" framing in Hwang and Kuo (2007) at abstract level.
+- **Why:** (b) is exact for a Poisson cloud, needs no per-particle randomness (which keeps d24 intact), and uses kill ratio, which yield engineers measure with defect-to-bin overlays. It matches the "local defects as a bivariate normal" framing in Hwang and Kuo (2007) at abstract level.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d20 Simulator: optional negative binomial spread for Random
+### d28 Simulator: optional negative binomial spread for Random
 - **Options:** (a) plain Poisson only; (b) also allow a gamma-distributed wafer-level defect density (`cluster_alpha`).
 - **Recommended:** (b), off by default.
 - **Why:** Poisson and negative binomial yield models are standard in yield engineering and a likely interview topic. The stated limitation is that this spreads density between wafers, not within one wafer.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d21 Simulator: grid with rectangular dies, corner test and edge exclusion
+### d29 Simulator: grid with rectangular dies, corner test and edge exclusion
 - **Options:** square grid only, or `rows` by `cols`. A die exists if its center is on the wafer, or only if all four corners fit inside the wafer minus an edge exclusion.
 - **Recommended:** `rows` by `cols` with the corner test and a 3 mm default exclusion.
 - **Why:** WM-811K has 632 distinct map sizes (results/audit_facts.csv), and the most common one is 32 by 29 (results/audit_map_sizes.csv), so a synthetic-to-real test needs non-square grids. Partial edge dies are not product, and edge exclusion is a real fab parameter. It also explains why the edge generators need a large peak deviation: on the 40 by 40 grid, the outermost dies sit about 9 mm in from the edge.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d22 Simulator: return the probability map and fully resolved parameters
+### d30 Simulator: return the probability map and fully resolved parameters
 - **Options:** return only the map; or return the map, the fail probability map, and every parameter, including values drawn from the seed (cluster center, scratch start, edge angle).
 - **Recommended:** the second.
 - **Why:** Any map can be rebuilt from its params alone, and a test checks this. Expected yield comes straight from the probability map.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d23 Simulator: `combine` for mixed-type wafers
+### d31 Simulator: `combine` for mixed-type wafers
 - **Options:** one fault per map only; or a helper that unions faults on one wafer.
 - **Recommended:** the helper.
 - **Why:** Mixed-type patterns are a known real problem (Kyeong and Kim 2018; Kim, Lee and Kim 2018), and a union of fails is the simplest honest model. Interactions between faults are not modelled, and the docs say so.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d24 Simulator labels match the dataset labels
+### d32 Simulator labels match the dataset labels
 - **Options:** lowercase names such as `edge-loc`; or the dataset's exact strings from `wm811k.data.CLASSES`.
 - **Recommended:** the exact dataset strings, with a test that checks they match.
 - **Why:** The synthetic-to-real test (F′) and the root-cause table both need to join on the real labels without a mapping step.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d25 Root-cause table: "test" as a possible module
+### d33 Root-cause table: "test" as a possible module
 - **Options:** keep only deposition, etch, CMP, litho and handling; or also flag the tester and probe card where relevant.
 - **Recommended:** flag test on the Near-full row and in the notes.
 - **Why:** Ruling out a test artifact with a retest is usually the cheapest first step, and a yield engineer would expect it.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d26 Simulator figure: colours and seeds
+### d34 Simulator figure: colours and seeds
 - **Options:** colour per class; or pass and fail colours only.
 - **Recommended:** no die matches the page, pass is a quiet gray, and fail is the only strong colour (blue). Seeds 811 to 813 and grid sizes are in `config.yaml`.
 - **Why:** In a wafer map the class is the shape, not a colour, so pass versus fail is what needs encoding. The pair was checked with a colour-vision-deficiency palette validator. Blue avoids suggesting a status alarm. The per-class colour rule in STYLE.md still applies to bar charts and other cross-class figures; this figure has no per-class marks.
 - **Decided:** pending, for Mehnaj to approve.
 
-### d27 Root-cause sources: how citations were verified in the cloud session
+### d35 Root-cause sources: how citations were verified in the cloud session
 - **Finding:** the cloud session's network policy blocked doi.org, Crossref, IEEE Xplore, arXiv, OpenAlex and Semantic Scholar.
 - **Options:** stop and wait for network access; or verify through web search of repository and catalogue records, marking each citation as "record verified" (DOI not resolved directly) and reading abstracts only.
 - **Recommended:** the second, with every table row labelled "engineering hypothesis" unless a source supports its general point at abstract level.

@@ -25,7 +25,7 @@ FAIL = 2
 # a wafer is a disc cut into a grid of rows and columns of dies
 # rows and cols can differ because real dies are often not square
 # wm811k maps come in hundreds of sizes so the grid has to match any of them
-# d21 a die only exists if all four corners sit inside the usable disc
+# d29 a die only exists if all four corners sit inside the usable disc
 # the usable disc is the wafer minus an edge exclusion ring where no product is printed
 # real fabs set the exclusion in mm so the grid takes it in mm too
 
@@ -90,7 +90,7 @@ DEFAULT_GRID = WaferGrid()
 
 
 # the result object
-# d22 every generator returns the map and the exact parameters that made it
+# d30 every generator returns the map and the exact parameters that made it
 # random choices like where a scratch starts are written back into params
 # so any map can be rebuilt later from its params alone
 
@@ -117,7 +117,7 @@ class SimulatedWafer:
 
 
 # shared helpers
-# d16 randomness is split into two streams from one seed
+# d24 randomness is split into two streams from one seed
 # the layout stream decides where a fault sits like a cluster center or scratch heading
 # the die stream holds one uniform number per die and a die fails if its number is below its fail probability
 # because the die numbers do not depend on fault strength a stronger fault can only add fails never remove them
@@ -207,7 +207,7 @@ def _check_nonnegative(**values: float) -> None:
 # radial film or etch non uniformity
 # deposition etch and cmp all have a removal or growth rate that varies with radius
 # here the film thickness or etched depth is written as a percent deviation from target
-# d17 a die fails when its local deviation leaves the spec window
+# d25 a die fails when its local deviation leaves the spec window
 # center donut and edge ring are the same physics with the bad zone at a different radius
 
 
@@ -290,7 +290,7 @@ def donut_fault(
 # two things can confine it here
 # a local hardware feature like a clamp finger or gas inlet or a local edge bead problem gives an arc
 # an off center wafer pushes one side deeper into the edge zone and pulls the other side out
-# d18 so edge ring and edge loc share one mechanism and differ in symmetry
+# d26 so edge ring and edge loc share one mechanism and differ in symmetry
 
 
 def _edge_deviation(
@@ -497,7 +497,7 @@ def scratch_fault(
 # a flake off a chamber wall or a burst of particles lands as a cloud not as single points
 # the cloud is a 2d gaussian of particle density around one spot
 # only some particles kill a die because a particle has to land on a critical feature
-# d19 kill_ratio is that fraction which yield engineers measure by overlaying inspection maps on bin maps
+# d27 kill_ratio is that fraction which yield engineers measure by overlaying inspection maps on bin maps
 # each die gets the expected number of killer particles inside its square and poisson turns that into a fail chance
 
 
@@ -548,7 +548,7 @@ def loc_fault(
 # random background defects
 # killer defects that land with no spatial preference follow a poisson process
 # die yield is then exp of minus die area times defect density which is the classic poisson yield model
-# d20 real fabs see defect density change from wafer to wafer so an optional gamma spread is added
+# d28 real fabs see defect density change from wafer to wafer so an optional gamma spread is added
 # averaging poisson over a gamma spread gives the negative binomial yield model with cluster parameter alpha
 # a small alpha means density swings a lot between wafers and a large alpha goes back to plain poisson
 
@@ -623,8 +623,8 @@ def near_full_fault(
 
 
 # lookup and mixing
-# d24 keys are the exact wm811k label strings so synthetic and real maps share one label set
-# d23 combine stacks faults on one wafer because real wafers often carry more than one at once
+# d32 keys are the exact wm811k label strings so synthetic and real maps share one label set
+# d31 combine stacks faults on one wafer because real wafers often carry more than one at once
 
 
 GENERATORS: dict[str, Callable[..., SimulatedWafer]] = {
