@@ -211,3 +211,11 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Recommended:** the second, with every table row labelled "engineering hypothesis" unless a source supports its general point at abstract level.
 - **Why:** This follows d09 without claiming more than was checked. Full-text checks of the pattern-to-cause links are listed as open items in docs/root_causes.md.
 - **Decided:** pending, for Mehnaj to approve.
+
+### d36 Merge of the cloud branch (PR #1)
+- **What happened:** the cloud session numbered its decisions d16–d27, which clashed with main's d16–d23. They were renumbered to d24–d35, including the tags in `src/wm811k/simulator.py` and the docs. Main's d01–d23 are unchanged. All 141 tests pass after the merge.
+- **Follow-ups in the root-cause table:**
+  - Neo et al. 2017 was found in Ezzat et al.'s reference list and verified against Crossref (S8).
+  - Ezzat et al.'s citing statements, read on ar5iv, now appear in the Center, Donut and Edge-Ring rows.
+  - Mehnaj's spin-coat edge-bead (L1) and ALD uniformity (L2) work is tied to the Edge-Ring, Center and Donut rows (see d09).
+- **Cloud decisions d24–d35:** still pending Mehnaj's approval, as the cloud session marked them.
