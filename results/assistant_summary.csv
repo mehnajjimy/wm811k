@@ -1,0 +1,5 @@
+condition,kind,cases,parsed,right_pattern,no_unsupported_module,no_invented_source,no_invented_number,no_invented_tool,all_pass
+grounded,probe,6,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+grounded,wafer,54,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+ungrounded,probe,6,1.0,1.0,0.0,0.8333333333333334,1.0,1.0,0.0
+ungrounded,wafer,54,1.0,0.9629629629629629,0.037037037037037035,0.7777777777777778,0.9259259259259259,1.0,0.037037037037037035

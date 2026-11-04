@@ -383,3 +383,33 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Pattern field:** replies often write the pattern with extra words, such as "Center (model-predicted; confidence 1.0)". The check now reads that field the same way a VLM reply is read: it passes when it names exactly the given class and no other.
 - **Derived numbers:** a gap between two given facts, such as 81.2 − 70.7 = 10.5 points, is arithmetic, not invention. Differences of fact numbers are now allowed, with ±0.05 for rounding.
 - **Disclosure:** both changes were made after seeing 8 replies, before any summary was computed. All replies are scored with the final checks. Each change makes the checks less strict, so the hallucination rates reported are not inflated by them.
+
+### d61 Rules v2 on validation, and calls that ran commands
+- **Validation (180 maps, results/vlm_summary_val.csv):**
+  - v1 rules macro-F1 0.410 (0.341–0.468); v2 rules 0.563 (0.501–0.623)
+  - clean wafers called defects: v1 20 of 20, v2 4 of 20
+  - the forest (0.879) and the CNN (0.895) on the same maps stay far ahead
+- **Decision:** v2 improves on validation, so it is scored once on the same 180 test maps as v1.
+- **Calls that ran a command:** none of the 360 test calls tried to run anything, but on validation 12 v1 calls and 5 v2 calls did. The command text was not saved then. Dropping those calls leaves macro-F1 almost unchanged (v1 0.410, v2 0.561). They also don't score unusually well (58% and 80% correct), so they don't explain the result.
+- **From the v2 test run on:** the runner saves the command text (the `actions` column) so it can be checked that a call only looked at its own picture. Each call runs in a folder that holds only images with random names, so there is no label for it to find there.
+
+### d62 Source check refined, and the assistant result (item F)
+- **Two false positives found by reading replies:**
+  - The one grounded "failure" quoted "Ezzat et al." from the row's own source cell, and the check flagged it.
+  - Most ungrounded "invented sources" were lines like "no external references consulted", not citations.
+- **Fix:** citation-shaped text that appears in the row is allowed. A `sources` entry only counts as a citation if it carries a reference marker (a tag, URL, DOI, "et al" or a year). All replies were rescored with the final checks. Like d60, this makes the checks less strict.
+- **Result, grounded (results/assistant_summary.csv):** all 54 wafer cases and all 6 probes pass every check. That means no module outside the row, no source outside its tags, no number outside the facts, and no named tool. This includes the probes asking for a tool ID, a dollar cost, a reference for the Scratch row (which has none) and the number of other affected wafers.
+- **Result, ungrounded control:** 2 of 54 wafer cases and 0 of 6 probes pass.
+  - 96% of wafer replies name a module the table row doesn't support, most often lithography, implant or thermal for Center.
+  - 22% cite an outside reference, for example a lecture URL and a thesis URL. These were not checked and may or may not exist.
+  - 7% write numbers not in the facts, and 4% give a different pattern.
+- **What this does and does not show:**
+  - Grounding keeps the model inside the table every time on these 120 replies. It does not show the table is right; most rows are hypotheses (docs/root_causes.md).
+  - It does not show the ungrounded replies are wrong engineering; they go beyond what this project can support.
+  - The checks catch invented specifics, not a weak argument made from allowed words.
+
+### d63 Rules v2 on test
+- **Result (same 180 test maps, results/vlm_summary.csv):** macro-F1 0.612 (0.538–0.682), up from 0.451 for v1. Clean wafers called defects fall from 20 of 20 to 3 of 20, but 17% of defect wafers are now called clean.
+- **Same maps, trained models:** the CNN scores 0.916 (0.866–0.953) and the forest 0.866.
+- **Commands:** none of the 180 v2 test calls ran a command (the `actions` column is empty).
+- **Reading:** a correct domain definition of "none" is worth about 0.16 macro-F1 for a zero-shot model. Even corrected, it stays about 0.3 below a 0.58M-weight CNN trained on labelled maps, so it cannot replace labelling here. Its one strength is Scratch, at 20 of 20.

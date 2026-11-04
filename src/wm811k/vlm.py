@@ -136,7 +136,7 @@ def _codex(args: list[str], prompt: str, model: str, cwd: Path, timeout: int) ->
         input=prompt, capture_output=True, text=True, timeout=timeout, check=False,
     )  # fmt: skip
     seconds = time.time() - t0
-    text, usage, ran_something = "", {}, False
+    text, usage, ran_something, actions = "", {}, False, []
     for line in proc.stdout.splitlines():
         try:
             ev = json.loads(line)
@@ -147,13 +147,17 @@ def _codex(args: list[str], prompt: str, model: str, cwd: Path, timeout: int) ->
             text = item.get("text", "")
         elif item.get("type") not in (None, "agent_message", "reasoning"):
             # anything else such as a shell command means the model went looking around
+            # what it ran is kept so a person can check it only looked at its own picture
             ran_something = True
+            if ev.get("type") == "item.completed":
+                actions.append(str(item.get("command", item.get("type")))[:300])
         if ev.get("type") == "turn.completed":
             usage = ev.get("usage", {})
     return {
         "reply": text,
         "seconds": seconds,
         "ran_something": ran_something,
+        "actions": " || ".join(actions),
         "returncode": proc.returncode,
         **{k: usage.get(k, 0) for k in
            ("input_tokens", "cached_input_tokens", "output_tokens", "reasoning_output_tokens")},

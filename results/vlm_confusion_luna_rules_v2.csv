@@ -1,0 +1,10 @@
+true,Center,Donut,Edge-Loc,Edge-Ring,Loc,Near-full,Random,Scratch,none
+Center,16,0,0,1,0,0,0,0,3
+Donut,4,7,2,0,3,0,1,1,2
+Edge-Loc,0,0,6,3,0,0,2,1,8
+Edge-Ring,0,0,0,10,0,0,1,0,9
+Loc,2,0,6,0,4,0,3,3,2
+Near-full,0,0,0,1,0,18,0,0,1
+Random,0,0,2,0,1,0,15,0,2
+Scratch,0,0,0,0,0,0,0,20,0
+none,0,0,1,1,0,0,0,1,17

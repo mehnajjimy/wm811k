@@ -59,7 +59,10 @@ def collect(
         for n, f in enumerate(as_completed(futures), 1):
             i, p, r = f.result()
             row = pd.DataFrame([{"prompt": p, "model": cfg["model"], **r}], index=[i])
-            row.to_csv(raw_path, mode="a", header=not raw_path.exists())
+            # the whole file is rewritten so a column added later such as actions
+            # lines up with the older rows instead of shifting them
+            done = pd.concat([done, row])
+            done.to_csv(raw_path)
             if n % 20 == 0:
                 print(f"{n}/{len(todo)}", flush=True)
     return pd.read_csv(raw_path, index_col=0)

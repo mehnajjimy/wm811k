@@ -77,3 +77,13 @@ def test_pattern_with_extra_words_and_simple_gaps_still_pass():
     assert out["right_pattern"] and out["no_invented_number"]
     # naming two classes is not an answer
     assert not check(_reply(pattern="Center or Donut"), facts, TABLE["Center"])["right_pattern"]
+
+
+def test_no_reference_statements_are_not_citations_but_urls_are():
+    ok = _reply(sources=["no external references used", "[S5]"])
+    assert check(ok, FACTS, TABLE["Center"])["no_invented_source"]
+    bad = _reply(sources=["https://example.org/wafer-paper"])
+    assert not check(bad, FACTS, TABLE["Center"])["no_invented_source"]
+    # the row itself says ezzat et al so quoting that is fine
+    quoted = _reply(d4_hypothesis="Ezzat et al. [E] link center patterns to stains")
+    assert check(quoted, FACTS, TABLE["Center"])["no_invented_source"]

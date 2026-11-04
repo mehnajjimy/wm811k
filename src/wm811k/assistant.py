@@ -110,6 +110,18 @@ def parse_reply(text: str) -> dict | None:
     return out if isinstance(out, dict) else None
 
 
+URL = re.compile(r"https?://|www\.", flags=re.IGNORECASE)
+
+
+def _is_tag(entry: str) -> bool:
+    return bool(re.fullmatch(r"\[?(S\d+|E|L\d+)\]?", entry.strip()))
+
+
+def _is_reference(entry: str) -> bool:
+    """true when a sources entry points at a document  a tag  url  doi  et al or a year"""
+    return _is_tag(entry) or bool(URL.search(entry) or CITATION.search(entry))
+
+
 def _free_text(reply: dict) -> str:
     keys = ("first_check", "confirm_with", "d2_problem", "d3_containment", "d4_hypothesis")
     return " ".join(str(reply.get(k, "")) for k in keys)
@@ -151,10 +163,15 @@ def check(reply: dict | None, facts: dict, row: dict) -> dict:
     ]  # fmt: skip
 
     # sources must be tags from the row  anything else is a made up citation
+    # d62 an entry counts as a citation only when it carries a reference marker
+    # a line like no external references used is not a citation of anything
     cited = [str(s) for s in reply.get("sources", []) or []]
-    tags = {t.strip("[]") for t in cited}
-    bad_sources = sorted(tags - set(row["source_tags"]))
-    bad_citation_text = CITATION.findall(text)
+    refs = [c for c in cited if _is_reference(c)]
+    tags = {c.strip().strip("[]") for c in refs if re.fullmatch(r"\[?(S\d+|E|L\d+)\]?", c.strip())}
+    bad_sources = sorted(tags - set(row["source_tags"])) + [c for c in refs if not _is_tag(c)]
+    # citation shaped text the row itself holds such as ezzat et al is allowed
+    in_row = {m.lower() for m in CITATION.findall(row_text)}
+    bad_citation_text = [m for m in CITATION.findall(text) if m.lower() not in in_row]
 
     allowed = _allowed_numbers(facts, row)
     # d2 d3 d4 and 8d are step names not quantities

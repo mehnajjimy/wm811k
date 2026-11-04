@@ -7,7 +7,8 @@ The question a fab asks of a bin map isn't "what does this look like?" It's "how
 - It ranks defect patterns by the yield they destroy.
 - It classifies them the way a fab would deploy a classifier: split by lot, scored on rare patterns, with a review gate for the costly errors.
 - It ties each pattern to a sourced root-cause table.
-- It tests whether a vision-language model, an LLM assistant and a physics simulator can stand in for labelled data.
+- It tests whether a vision-language model and a physics simulator can stand in for labelled data.
+- It adds an LLM triage assistant whose claims are checked by code.
 
 Every number below comes from a file in `results/`. Every choice behind it, with the options that were turned down, is in [DECISIONS.md](DECISIONS.md).
 
@@ -59,15 +60,40 @@ Grad-CAM heat maps were measured on up to 300 correct test wafers per class. For
 
 GPT-6 Luna, zero-shot, on 180 test wafers (20 per class) that the forest and CNN were also scored on:
 
-| Same 180 wafers | Macro-F1 (95% CI) | Clean wafers called defects | Cost per 1,000 wafers |
-|---|---|---|---|
-| Luna, label names only | 0.452 (0.385–0.508) | 20 of 20 | $0.60 |
-| Luna, one rule per label | 0.451 (0.389–0.501) | 20 of 20 | $0.42 |
-| Random forest | 0.866 (0.810–0.917) | 0 of 20 | — |
+| Same 180 wafers | Macro-F1 (95% CI) | Clean wafers called defects | Defect wafers called clean | Cost per 1,000 wafers |
+|---|---|---|---|---|
+| Luna, label names only | 0.452 (0.385–0.508) | 20 of 20 | 0% | $0.60 |
+| Luna, one rule per label (v1) | 0.451 (0.389–0.501) | 20 of 20 | 0.6% | $0.42 |
+| Luna, corrected rules (v2) | 0.612 (0.538–0.682) | 3 of 20 | 17% | $0.47 |
+| Random forest | 0.866 (0.810–0.917) | 0 of 20 | 7% | — |
+| Small CNN | 0.916 (0.866–0.953) | 0 of 20 | 2.5% | — |
 
-Luna reads the normal scattered background fails on a clean wafer as a Random pattern, and Random is also where most of the weaker patterns it misses end up. Its strong point is Scratch (17 of 20 with label names only, against 11 of 20 for the forest).
+The v1 rule prompt defined "none" as "only a few fails". On training lots, a clean wafer has a median of 9.9% failing dies, and Luna read that normal background as a Random pattern. The v2 prompt says scattered fails are normal and defines Random as dense, from the training-lot fail shares.
 
-Costs are at OpenAI's published gpt-6-luna prices. They are an upper bound, because the codex harness used for the calls adds about 15k input tokens to every call (`results/vlm_summary.csv`, d46–d48). The rule prompt itself had a flaw: it defined "none" as "only a few fails". A corrected prompt is reported separately below rather than replacing these numbers (d53, d55).
+On a separate validation sample, v2 raised macro-F1 from 0.410 to 0.563, and only then was it scored once on test. v2 was prompted by looking at test results, so it is reported next to v1, not in place of it (d53, d55, d61).
+
+Even corrected, Luna stays far behind a small trained model. Its strong point is Scratch: 20 of 20 with v2, against 11 of 20 for the forest and 15 of 20 for the CNN.
+
+Costs are at OpenAI's published gpt-6-luna prices. They are an upper bound, because the codex harness used for the calls adds about 15k input tokens to every call (`results/vlm_summary.csv`, d46–d48).
+
+### A triage assistant that can't make things up
+
+Luna drafts an 8D D2–D4 first response for a flagged wafer from the CNN's prediction, the die yield, the product's clean-wafer yield and the lot context. It is told to use only the matching row of the root-cause table. Code checks every reply, with no LLM judge, for:
+
+- process modules the row doesn't support
+- sources outside the row's tags
+- numbers not in the facts
+- named tools
+- the wrong pattern
+
+| 54 test wafers + 6 trick questions | All checks pass | Module beyond the table | Outside reference cited | Number not in the facts |
+|---|---|---|---|---|
+| With the table row | 60 of 60 | 0% | 0% | 0% |
+| Without the table (control) | 2 of 60 | 96% | 22% | 7% |
+
+The trick questions ask for a tool ID, a dollar cost, a journal reference for a row that has none, and how many other wafers are affected. With the table, five of the six listed the requested item as unknown. The sixth, asked whether implant caused an Edge-Ring, never named implant and listed the causal step as unknown. Without the table, the replies regularly add lithography, implant or thermal causes for a Center wafer, and some cite lecture or thesis URLs that weren't checked.
+
+This shows that grounding keeps the model inside what the project can support. It doesn't show the table is right; most rows are hypotheses. The checks catch invented specifics, not a weak argument made from allowed words (`results/assistant_summary.csv`, d49–d50, d60, d62).
 
 ### Training on simulated wafers only
 
