@@ -44,7 +44,7 @@ The gate only calls a wafer clean when the model is confident enough, with the t
 
 ### Grad-CAM check
 
-I measured Grad-CAM heat maps on up to 300 correct test wafers per class. For every class, much less heat lands outside the wafer than chance would give. For Center it's 3% of the heat against 22% of the image. For Scratch, Loc, Edge-Loc and Donut, the heat is concentrated on the failing dies (lift 1.06 to 1.30). For Edge-Ring it sits as a band just inside the edge, which might just be the coarse 8×8 heat-map grid. For Center it's spread out, so I can't say much there (`results/gradcam_summary.csv`, `figures/gradcam_examples.png`).
+I measured Grad-CAM heat maps on up to 300 correct test wafers per class. For every class except Near-full, much less heat lands outside the wafer than chance would give. For Center it's 3% of the heat against 22% of the image. Near-full sits at about chance (20% against 21%), which makes sense when almost the whole wafer fails. For Scratch, Loc, Edge-Loc and Donut, the heat is concentrated on the failing dies (lift 1.06 to 1.30). For Edge-Ring it sits as a band just inside the edge, which might just be the coarse 8×8 heat-map grid. For Center it's spread out, so I can't say much there (`results/gradcam_summary.csv`, `figures/gradcam_examples.png`).
 
 ### Suspect labels
 
@@ -81,7 +81,7 @@ Luna drafts an 8D D2 to D4 first response for a flagged wafer, using the CNN's p
 | 54 test wafers + 6 trick questions | All checks pass | Module beyond the table | Outside reference cited | Number not in the facts |
 |---|---|---|---|---|
 | With the table row | 60 of 60 | 0% | 0% | 0% |
-| Without the table (control) | 2 of 60 | 96% | 22% | 7% |
+| Without the table (control) | 2 of 60 | 97% | 22% | 7% |
 
 The trick questions ask for a tool ID, a dollar cost, a journal reference for a row that has none, and how many other wafers are affected. With the table, five of the six listed the requested item as unknown. The sixth asked whether implant caused an Edge-Ring. It never named implant and listed the causal step as unknown. Without the table, replies often add lithography, implant or thermal causes for a Center wafer, and some cite lecture or thesis URLs I haven't checked.
 
