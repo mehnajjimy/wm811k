@@ -3,7 +3,7 @@ name = "wm811k"
 version = "0.1.0"
 description = "yield pattern analysis of the wm811k wafer map dataset"
 requires-python = ">=3.12"
-dependencies = ["numpy", "pandas", "matplotlib", "scikit-learn", "pyyaml"]
+dependencies = ["numpy", "pandas", "matplotlib", "scikit-learn", "scipy", "pyyaml", "torch"]
 
 [project.optional-dependencies]
 dev = ["pytest", "ruff"]
