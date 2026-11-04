@@ -2,6 +2,10 @@
 
 When a fab engineer looks at a wafer bin map, the real question is how many dies it's costing and which tool to check first. What the pattern is called comes second. I used the WM-811K dataset (811,457 production wafer maps, Wu, Jang & Chen, IEEE TSM 2015) to work through that question the way a process or yield engineer would.
 
+![Extra dies lost per 1,000 labelled wafers for each defect pattern](figures/yield_pareto.png)
+
+Edge-Ring and Edge-Loc cost the most dies, 47% of the excess loss between them. Each bar compares a pattern with clean wafers of the same product.
+
 What I did:
 
 - ranked defect patterns by how much yield they actually destroy
@@ -94,6 +98,13 @@ I built a process-fault simulator ([docs/simulator.md](docs/simulator.md)) that 
 ## Root causes
 
 [docs/root_causes.md](docs/root_causes.md) maps each pattern to its likely process modules and physical mechanism, the first fab step to check, and the signal that would confirm the cause. Each row cites a verified source or is marked as an engineering hypothesis. The Edge-Ring, Center and Donut rows draw on my own hands-on spin-coat edge-bead and ALD uniformity work.
+
+## Limits
+
+- The data has no product ID, so I use map grid size as a stand-in for product.
+- The labelled wafers lean toward worse ones (median yield 89.4% against 94.8% for unlabelled), so "per 1,000 labelled wafers" isn't a rate for the whole fab.
+- Labels may have been assigned lot by lot, which could inflate the lot clustering. The data can't rule that out.
+- There are no tool, chamber or recipe fields, so the root-cause table stays a set of hypotheses until someone checks it against real process history.
 
 ## Run it
 
