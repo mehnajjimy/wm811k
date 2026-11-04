@@ -1,0 +1,8 @@
+fact,value
+synthetic_maps,27000.0
+test_maps,25939.0
+macro_f1_9class,0.4535593617699807
+macro_f1_9class_lo,0.42243206428324365
+macro_f1_9class_hi,0.47314589059694606
+defects_called_none,0.003914405010438413
+clean_called_defect,0.5115121907088253

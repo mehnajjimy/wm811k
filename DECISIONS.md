@@ -285,3 +285,65 @@ Every choice in the project, with the options considered, the recommendation, wh
 ### d48 VLM cost
 - **Price:** standard-tier gpt-6-luna prices from OpenAI's pricing page (developers.openai.com/api/docs/pricing, checked 2026-11-03): $0.10 per million input tokens, $0.01 cached input, $0.50 output. Reasoning tokens are billed as output.
 - **Caveat:** calls go through `codex exec`, whose own system prompt is most of the roughly 15k input tokens per call. The reported cost per 1,000 maps is therefore the cost as run, an upper bound on what a direct API call with only the prompt and image would cost. Through ChatGPT credits the project pays nothing extra (d01).
+
+### d49 Triage assistant cases (item F)
+- **Classifier feeding the assistant:** whichever of the forest and the CNN has the higher validation macro-F1. Test scores are not used for that choice.
+- **Cases:** 6 test wafers per predicted pattern (54 wafers), each with these facts:
+  - predicted pattern and model confidence
+  - die yield and the clean-wafer median yield for the same product (d17)
+  - slot in the lot
+  - how many wafers in the lot share the predicted pattern
+- **Conditions:** each case is sent twice:
+  - **grounded:** with the table row for the predicted pattern
+  - **ungrounded:** without the table, as a control
+- **Scoring:** both conditions are checked against the same row of `docs/root_causes.md`. The ungrounded control is measured on how far it strays from what the table supports. It is not judged as wrong engineering, since the table itself is mostly hypotheses.
+
+### d50 Hallucination checks
+- **Options:** an LLM judge; a person reading every reply; or checks written in code.
+- **Recommended / decided:** checks in code (`src/wm811k/assistant.py`), so the rate is repeatable and nobody's judgment is involved. A reply fails if it:
+  - names a process module that appears nowhere in the table row
+  - cites a source tag that isn't in the row's source cell, or writes citation-shaped text (et al., a year, a DOI)
+  - writes a number that isn't in the facts or the row
+  - names a specific tool or chamber (none are given)
+  - gives a different pattern from the one it was handed
+- **Probes:** six extra questions tempt the model to go past what it was given:
+  - a tool ID
+  - a journal reference for a row that has none
+  - whether the implant step caused an Edge-Ring
+  - a dollar cost
+  - how many other wafers are affected
+  - who should own the problem
+- **Known limits:**
+  - The checks catch invented specifics, not a wrong argument built from allowed words.
+  - The module word list is fixed, so a module named in other words can slip through.
+  - The table is parsed from the markdown file directly, so the doc and the check can't drift apart.
+
+### d51 Synthetic training set (item F′)
+- **Grid sizes:** drawn from the real map sizes in lots outside validation and test, in proportion to how often each size appears. Grids under 10 dies on a side are skipped.
+- **Background:** each wafer's background fail share is drawn from 1% to 15%. That spans the yield quartiles of the unlabelled maps (0.862 and 0.986, `results/yield_labeled_vs_unlabeled.csv`), so no label is used. The simulator default (about 1% of dies) is far cleaner than real wafers, whose clean median yield is about 0.90.
+- **Fault settings:** strengths and sizes are drawn from 0.6 to 1.6 times the simulator defaults. Other settings:
+  - donut ring radius 50–110 mm
+  - edge-loc arc 15–70°
+  - loc particle counts 50–400
+  - scratches 60–250 mm long, a third of them straight
+  - Random at 20–60% fails
+  - Near-full kill probability 0.75–0.98
+- **Why:** the ranges come from physics and label-free facts, and none of them was tuned on labelled real wafers. That keeps the claim "trained without a single real label" true. The cost is that the ranges are guesses, and the sim-to-real gap is the result being measured.
+- **Size:** 3,000 maps per class (27,000 in total).
+
+### d52 Synthetic-only forest
+- Same features and forest settings as the real baseline. The leaf size is fixed at 3, the value picked on real validation in d38, so nothing is tuned on test. The model is scored on the full real test set (25,939 maps) next to the forest trained on real labels.
+
+### d53 VLM result and a flaw in the rules prompt
+- **Result (180 balanced test maps, results/vlm_summary.csv):** Luna macro-F1 0.452 with the raw prompt (95% CI 0.385–0.508) and 0.451 with the rules prompt (0.389–0.501). The forest scores 0.866 on the same maps. Cost as run through codex: $0.60 and $0.42 per 1,000 maps. No invalid replies, and no call tried to run a command.
+- **Main error:** Luna called 17 of the 20 clean wafers Random with the raw prompt, and all 20 with the rules prompt. Random is also where most missed Center, Edge-Loc, Edge-Ring and Loc wafers go. Scratch is its strong point: 17 of 20, against 11 of 20 for the forest.
+- **Flaw found:** the rules prompt defined "none" as "only a few isolated fails". On training lots, the median clean wafer has 9.9% of dies failing (10th to 90th percentile 4.2% to 18.1%). Random wafers have a median of 47.5% (10th percentile 33.1%). In WM-811K, "none" means scattered background fails with no shape, not few fails.
+- **Next step (not run yet):** a v2 rules prompt that defines none and Random by the training-lot fail shares above. It gets checked on a validation sample first, then scored once on the same test sample. The v1 numbers above stay as reported.
+
+### d54 Synthetic-only result (item F′)
+- **Result:** the forest trained on 27,000 simulated maps, with no real labels, scores 0.454 macro-F1 on the full real test set (95% CI 0.422–0.473). The forest trained on real labels scores 0.867.
+- **Defects transfer partly:**
+  - Random 0.97, Edge-Ring 0.88, Donut 0.76 and Scratch 0.73 recall. The Scratch figure beats the real-trained 0.61.
+  - Only 0.4% of defect wafers are passed as clean.
+- **Clean wafers don't transfer:** 51% of real clean wafers are called defects, mostly Scratch (4,611) and Edge-Ring (3,941). Center is often called Random (270 of 645).
+- **Reading:** real clean wafers carry weak edge and line structure that the simulator's independent background fails don't have. This matches the "die fails are independent" limit in docs/simulator.md. The next simulator step is spatially correlated background and edge-weighted die variation.

@@ -306,3 +306,21 @@ def test_unknown_pattern_is_rejected() -> None:
 def test_bad_physical_inputs_are_rejected(pattern: str, bad: dict) -> None:
     with pytest.raises(ValueError):
         generate(pattern, seed=0, **bad)
+
+
+def test_synthetic_set_covers_every_class_and_respects_the_background_band():
+    import pandas as pd
+
+    from wm811k.data import CLASSES
+    from wm811k.synthetic import make_set
+
+    sizes = pd.DataFrame({"rows": [32, 49], "cols": [29, 39], "maps": [3, 1]})
+    cfg = {"background_fail_share": [0.01, 0.15], "random_fail_share": [0.2, 0.6]}
+    s = make_set(15, sizes, cfg, seed=0)
+    assert sorted(s["label"].unique()) == sorted(CLASSES)
+    fail = s["wafer_map"].map(lambda m: (m == 2).sum() / (m > 0).sum())
+    by = fail.groupby(s["label"]).median()
+    # clean wafers stay inside the background band and random sits above it
+    assert 0.01 <= by["none"] <= 0.15
+    assert by["Random"] > by["none"]
+    assert by["Near-full"] > 0.7

@@ -67,3 +67,14 @@ assistant:
   # d49 test wafers per predicted pattern sent to the assistant
   per_class: 6
   workers: 4
+
+synthetic:
+  # d51 simulated maps per class for the synthetic only training set
+  per_class: 3000
+  # grids smaller than this on either side are skipped because the wafer is only a few dies
+  min_side: 10
+  # share of dies failing from background on clean and patterned wafers
+  # 0.01 to 0.15 spans the yield quartiles of the unlabeled maps  1 minus 0.986 and 1 minus 0.862
+  background_fail_share: [0.01, 0.15]
+  # random wafers sit well above that background
+  random_fail_share: [0.2, 0.6]
