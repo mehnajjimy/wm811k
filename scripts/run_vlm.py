@@ -3,6 +3,7 @@ run from the repo root  python scripts/run_vlm.py
 calls are saved one row at a time so a stopped run picks up where it left off
 the forest and the cnn are scored on the exact same sampled maps"""
 
+import argparse
 import uuid
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
@@ -17,7 +18,6 @@ from wm811k.data import CLASSES, load
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "results"
 IMG = ROOT / "cache" / "vlm_images"
-RAW = OUT / "vlm_raw.csv"
 
 
 def sample(test: pd.DataFrame, per_class: int, seed: int) -> pd.DataFrame:
@@ -36,16 +36,18 @@ def sample(test: pd.DataFrame, per_class: int, seed: int) -> pd.DataFrame:
     return out
 
 
-def collect(chosen: pd.DataFrame, maps: pd.Series, cfg: dict) -> pd.DataFrame:
+def collect(
+    chosen: pd.DataFrame, maps: pd.Series, cfg: dict, prompts: list[str], raw_path: Path
+) -> pd.DataFrame:
     IMG.mkdir(parents=True, exist_ok=True)
     for idx, row in chosen.iterrows():
         path = IMG / f"{row['image']}.png"
         if not path.exists():
             vlm.render(maps[idx], path)
 
-    done = pd.read_csv(RAW, index_col=0) if RAW.exists() else pd.DataFrame()
+    done = pd.read_csv(raw_path, index_col=0) if raw_path.exists() else pd.DataFrame()
     have = set(zip(done.index, done["prompt"], strict=True)) if len(done) else set()
-    todo = [(i, p) for p in cfg["prompts"] for i in chosen.index if (i, p) not in have]
+    todo = [(i, p) for p in prompts for i in chosen.index if (i, p) not in have]
     print(f"{len(have)} calls saved  {len(todo)} to go", flush=True)
 
     def one(i, p):
@@ -57,23 +59,29 @@ def collect(chosen: pd.DataFrame, maps: pd.Series, cfg: dict) -> pd.DataFrame:
         for n, f in enumerate(as_completed(futures), 1):
             i, p, r = f.result()
             row = pd.DataFrame([{"prompt": p, "model": cfg["model"], **r}], index=[i])
-            row.to_csv(RAW, mode="a", header=not RAW.exists())
+            row.to_csv(raw_path, mode="a", header=not raw_path.exists())
             if n % 20 == 0:
                 print(f"{n}/{len(todo)}", flush=True)
-    return pd.read_csv(RAW, index_col=0)
+    return pd.read_csv(raw_path, index_col=0)
 
 
-def score(chosen: pd.DataFrame, raw: pd.DataFrame, cfg: dict, seed: int) -> None:
+def score(chosen: pd.DataFrame, raw: pd.DataFrame, cfg: dict, seed: int, split: str) -> None:
     y, lots = chosen["label"], chosen["lot"]
+    tag = "" if split == "test" else f"_{split}"
     preds = {}
-    for p in cfg["prompts"]:
+    for p in raw["prompt"].unique():
         r = raw[raw["prompt"] == p]
         preds[f"luna_{p}"] = r["pred"].reindex(chosen.index)
     # the other models are scored on the same sampled maps
     for m in ("rf", "cnn"):
-        path = OUT / f"{m}_test_predictions.csv"
+        path = OUT / f"{m}_{split}_predictions.csv"
         if path.exists():
-            preds[m] = pd.read_csv(path, index_col=0)["pred"].reindex(chosen.index)
+            t = pd.read_csv(path, index_col=0)
+            if "pred" not in t:
+                # validation files hold only probabilities so take the most likely class
+                cols = [f"p_{c}" for c in CLASSES]
+                t["pred"] = np.asarray(CLASSES)[t[cols].to_numpy().argmax(1)]
+            preds[m] = t["pred"].reindex(chosen.index)
 
     price = cfg["price_per_million_usd"]
     rows, recall = [], {}
@@ -104,28 +112,39 @@ def score(chosen: pd.DataFrame, raw: pd.DataFrame, cfg: dict, seed: int) -> None
             }
         rows.append(row)
     summary = pd.DataFrame(rows).set_index("model")
-    summary.to_csv(OUT / "vlm_summary.csv")
-    pd.DataFrame(recall).to_csv(OUT / "vlm_recall_by_class.csv")
+    summary.to_csv(OUT / f"vlm_summary{tag}.csv")
+    pd.DataFrame(recall).to_csv(OUT / f"vlm_recall_by_class{tag}.csv")
     for name, pred in preds.items():
         evaluate.confusion(y, pred.fillna("invalid"), CLASSES).to_csv(
-            OUT / f"vlm_confusion_{name}.csv"
+            OUT / f"vlm_confusion{tag}_{name}.csv"
         )
     print(summary.round(3).T.to_string())
     print(pd.DataFrame(recall).round(2).to_string())
 
 
 def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--split", default="test", choices=["val", "test"])
+    ap.add_argument("--prompts", nargs="+", default=None)
+    args = ap.parse_args()
     full = yaml.safe_load((ROOT / "config.yaml").read_text())
     cfg, seed = full["vlm"], full["seed"]
+    prompts = args.prompts or cfg["prompts"]
     df = load(ROOT / full["data"]["pickle"])
     lots = pd.read_csv(OUT / "split_lots.csv", index_col="lot")
     df["split_ours"] = df["lot"].map(lots["split"])
-    test = df[(df["split_ours"] == "test") & df["label"].notna()]
+    part = df[(df["split_ours"] == args.split) & df["label"].notna()]
 
-    chosen = sample(test, cfg["per_class"], seed)
-    chosen.to_csv(OUT / "vlm_sample.csv")
-    raw = collect(chosen, df["wafer_map"], cfg)
-    score(chosen, raw, cfg, seed)
+    # d55 validation gets its own sample and raw file so a new prompt can be
+    # checked there before it ever sees the test sample
+    tag = "" if args.split == "test" else f"_{args.split}"
+    chosen = sample(part, cfg["per_class"], seed)
+    # the split goes in front of the file name so a validation picture can never
+    # reuse a test picture that happened to draw the same random name
+    chosen["image"] = args.split + "_" + chosen["image"]
+    chosen.to_csv(OUT / f"vlm_sample{tag}.csv")
+    raw = collect(chosen, df["wafer_map"], cfg, prompts, OUT / f"vlm_raw{tag}.csv")
+    score(chosen, raw, cfg, seed, args.split)
 
 
 if __name__ == "__main__":

@@ -59,7 +59,30 @@ RULES = (
     "9. none: only a few isolated fails or none at all.\n" + _FORMAT
 )
 
-PROMPTS = {"raw": RAW, "rules": RULES}
+# d55 rules v2 fixes the none and random rules in v1 which said none means
+# only a few fails  on training lots a clean wafer has a median of about 10
+# percent failing dies and random wafers start around a third so the rules now
+# say that scattered fails alone are normal
+RULES_V2 = (
+    _INTRO
+    + "Classify the spatial pattern of the failing dies using these rules, checked in order. "
+    "Pick the first rule that matches. Scattered single failing dies are normal on every "
+    "wafer, and a healthy wafer often has up to about one die in six failing, so look for a "
+    "shape, not just for fails.\n"
+    "1. Near-full: most of the wafer, about three quarters of the dies or more, has failed.\n"
+    "2. Scratch: some fails line up into a thin line or arc, one or two dies wide.\n"
+    "3. Donut: the fails form a ring around the middle of the wafer with mostly passing dies "
+    "at the very center.\n"
+    "4. Center: the fails form one solid patch at the middle of the wafer.\n"
+    "5. Edge-Ring: the fails run around most of the outer edge of the wafer.\n"
+    "6. Edge-Loc: the fails form a patch on one part of the outer edge only.\n"
+    "7. Loc: the fails form one solid patch away from the center and away from the edge.\n"
+    "8. Random: fails are spread over the whole wafer with no shape and are dense, roughly a "
+    "third of the dies or more.\n"
+    "9. none: no shape at all, only scattered fails at the normal background level.\n" + _FORMAT
+)
+
+PROMPTS = {"raw": RAW, "rules": RULES, "rules_v2": RULES_V2}
 
 
 def render(wafer_map: np.ndarray, path: Path, pixels: int = 320) -> None:

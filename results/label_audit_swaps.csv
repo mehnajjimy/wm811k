@@ -1,0 +1,11 @@
+label,both_say,maps
+Loc,none,8
+Center,none,4
+Scratch,none,3
+Edge-Loc,none,2
+none,Edge-Loc,2
+Center,Loc,1
+Edge-Ring,Edge-Loc,1
+Random,Center,1
+Random,Near-full,1
+none,Loc,1

@@ -347,3 +347,34 @@ Every choice in the project, with the options considered, the recommendation, wh
   - Only 0.4% of defect wafers are passed as clean.
 - **Clean wafers don't transfer:** 51% of real clean wafers are called defects, mostly Scratch (4,611) and Edge-Ring (3,941). Center is often called Random (270 of 645).
 - **Reading:** real clean wafers carry weak edge and line structure that the simulator's independent background fails don't have. This matches the "die fails are independent" limit in docs/simulator.md. The next simulator step is spatially correlated background and edge-weighted die variation.
+
+### d55 Luna rules prompt v2
+- **Change:** the v2 prompt fixes the "none" and "Random" rules found wrong in d53. It says scattered fails are normal, gives a healthy wafer up to about one die in six failing (the training-lot 90th percentile for "none" is 18.1%), and defines Random as dense, roughly a third of dies or more (the training-lot 10th percentile is 33.1%). Near-full becomes about three quarters or more (10th percentile 77.0%).
+- **Order of checks:** v1 and v2 are first compared on a separate validation sample (20 per class, own image names, `results/vlm_*_val.csv`). Only then is v2 scored once on the same 180 test maps.
+- **Disclosure:** the need for v2 was found by looking at test results, so v2 is not a clean held-out prompt. It is reported as a second iteration next to v1, never in place of it.
+
+### d56 CNN result (test set, lot split, 25,939 labelled maps)
+- **Choice on validation:** square-root weights scored 0.868 validation macro-F1 at epoch 17; balanced weights scored 0.823 at epoch 13 (results/cnn_val_tuning.csv). Square-root was kept.
+- **9-class macro-F1:** 0.877, lot-bootstrap 95% interval 0.855–0.893 (results/cnn_summary.csv). Three seeds give 0.877, 0.879 and 0.884 (results/cnn_seed_spread.csv).
+- **Against the forest on the same maps (paired lot bootstrap, results/cnn_minus_rf.csv):**
+  - macro-F1 +0.010 (−0.008 to +0.029). The interval includes zero, so the overall gap is not clear.
+  - clear per-class gains: Loc recall +0.18, Scratch +0.12, Center +0.04, Edge-Ring +0.03
+  - clear loss: none recall −0.006, so the CNN flags slightly more clean wafers
+- **Defects passed as clean (results/missed_as_none_rf_vs_cnn.csv):** Scratch 27% → 11%, Loc 20% → 8%, Edge-Loc 11% → 7%, Center 7% → 3%.
+- **Caveat:** the CNN trained on the training lots only, while the forest also used validation (d42).
+
+### d57 Review gate with both models (item G)
+- **Forest:** the gate at p(none) ≥ 0.57, picked on validation, cuts defects passed as clean on test from 8.4% to 5.1%, for 19.0 clean wafers flagged per 1,000 (up from 9.1).
+- **CNN:** as it is, it already misses only 3.7% of defects, under the 5% target. So the validation-picked threshold (0.31) loosens its clean call. On test it then misses 4.8% and flags 10.3 clean wafers per 1,000 (down from 15.5).
+- **Reading:** at about the same 5% miss rate, the CNN sends roughly half as many clean wafers to review as the forest (10.3 vs 19.0 per 1,000). That is the number that matters on a fab floor, more than the macro-F1 gap.
+
+### d58 Grad-CAM result (item J)
+- **Off the wafer:** for every class the median heat outside the wafer is well below the off-wafer share of the image (for example Center 3% of heat vs 22% of area). The CNN is not reading the map border.
+- **On the fails (dense-fail lift, cells mostly failing):** Scratch 1.30, Loc 1.23, Edge-Loc 1.08 and Donut 1.06 are above 1. Center 0.94, Random 0.88, Near-full 0.81 and Edge-Ring 0.68 are below 1.
+- **Reading:** for local patterns the CNN looks at the failing dies. For Edge-Ring the heat is a band just inside the edge. That fits the 8×8 Grad-CAM grid being too coarse to sit on a one-die ring, but it is not proven. For Center the heat is diffuse, and that result is inconclusive.
+- **Metric change, disclosed:** the first lift counted any cell with any fail as failing. On a wafer with a 10% background that covers 19–40% of the wafer and dilutes the pattern, so a dense version (more than half failing) was added after the first run. Both are kept in results/gradcam_summary.csv.
+
+### d59 Label audit (item H)
+- **Candidates:** 227 test wafers where both models give the same wrong class. 24 of them have both models at probability 0.8 or more (results/label_audit_candidates.csv, figures/label_audit/).
+- **Most common swap:** labelled defect, both models say none (Loc 8, Center 4, Scratch 3, Edge-Loc 2).
+- **First pass by Claude, not a verdict:** 18 labels look unsupported (mostly maps that show only background fails), 2 look right (a real scratch line both models missed) and 4 are unclear. The `verdict` column is left for Mehnaj. No score is recomputed with changed labels until those verdicts exist.

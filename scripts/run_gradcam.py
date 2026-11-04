@@ -36,10 +36,17 @@ def measures(cam: np.ndarray, img: np.ndarray) -> dict:
     # a uniform heat map would put on the failing cells exactly the share of
     # the wafer they cover so a lift above 1 means the model looks at the fails
     area = failing[on_wafer].mean()
+    # d45 the first version counts any cell with any fail  on a wafer with a
+    # 10 percent background that is a big part of the wafer so it dilutes the
+    # pattern  the dense version only counts cells that are mostly failing
+    dense = fail > 0.5
+    dense_area = dense[on_wafer].mean()
     return {
         "off_wafer_mass": float(cam[~on_wafer].sum()),
         "off_wafer_area": float((~on_wafer).mean()),
+        "failing_area": float(area),
         "fail_lift": float(cam[failing].sum() / area) if area > 0 else np.nan,
+        "dense_fail_lift": float(cam[dense].sum() / dense_area) if dense_area > 0 else np.nan,
     }
 
 
@@ -79,6 +86,9 @@ def main() -> None:
         off_wafer_area_median=("off_wafer_area", "median"),
         fail_lift_median=("fail_lift", "median"),
         share_with_lift_above_1=("fail_lift", lambda s: float((s > 1).mean())),
+        failing_area_median=("failing_area", "median"),
+        dense_fail_lift_median=("dense_fail_lift", "median"),
+        share_with_dense_lift_above_1=("dense_fail_lift", lambda s: float((s > 1).mean())),
     )
     summary.to_csv(OUT / "gradcam_summary.csv")
     print(summary.round(3).to_string())

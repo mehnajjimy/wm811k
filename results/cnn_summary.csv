@@ -1,0 +1,15 @@
+fact,value
+device,mps
+weights,sqrt
+test_maps,25939
+macro_f1_9class,0.8767495880707605
+macro_f1_9class_lo,0.8550675443417529
+macro_f1_9class_hi,0.8933176621060239
+macro_f1_on_defect_maps,0.903282696971171
+rf_macro_f1_on_defect_maps,0.8707033763275848
+seed_macro_f1_min,0.8767495880707605
+seed_macro_f1_max,0.8842865147645037
+cnn_minus_rf_macro_f1,0.009891200750724916
+cnn_minus_rf_lo,-0.007720425041453001
+cnn_minus_rf_hi,0.029125099140744196
+accuracy_9class_not_headline,0.9744785843710243
