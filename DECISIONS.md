@@ -378,3 +378,8 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Candidates:** 227 test wafers where both models give the same wrong class. 24 of them have both models at probability 0.8 or more (results/label_audit_candidates.csv, figures/label_audit/).
 - **Most common swap:** labelled defect, both models say none (Loc 8, Center 4, Scratch 3, Edge-Loc 2).
 - **First pass by Claude, not a verdict:** 18 labels look unsupported (mostly maps that show only background fails), 2 look right (a real scratch line both models missed) and 4 are unclear. The `verdict` column is left for Mehnaj. No score is recomputed with changed labels until those verdicts exist.
+
+### d60 Two fixes to the hallucination checks, made after reading the first replies
+- **Pattern field:** replies often write the pattern with extra words, such as "Center (model-predicted; confidence 1.0)". The check now reads that field the same way a VLM reply is read: it passes when it names exactly the given class and no other.
+- **Derived numbers:** a gap between two given facts, such as 81.2 − 70.7 = 10.5 points, is arithmetic, not invention. Differences of fact numbers are now allowed, with ±0.05 for rounding.
+- **Disclosure:** both changes were made after seeing 8 replies, before any summary was computed. All replies are scored with the final checks. Each change makes the checks less strict, so the hallucination rates reported are not inflated by them.

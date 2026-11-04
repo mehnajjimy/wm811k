@@ -8,6 +8,8 @@ import json
 import re
 from pathlib import Path
 
+from wm811k.vlm import parse
+
 TABLE_HEADER = "| Pattern | Likely process modules |"
 
 # process words checked in the free text  a word that is not anywhere in the
@@ -118,7 +120,16 @@ def _allowed_numbers(facts: dict, row: dict) -> set[float]:
     nums = {float(n) for n in NUMBER.findall(text)}
     # a share given as 0.94 may be written as 94 percent and the other way round
     nums |= {round(n * 100, 1) for n in nums if n < 1} | {round(n / 100, 3) for n in nums}
+    # d60 the gap between two given facts is arithmetic not invention so
+    # differences of fact numbers are allowed too  like 81.2 minus 70.7
+    given = [float(n) for n in NUMBER.findall(" ".join(str(v) for v in facts.values()))]
+    nums |= {round(abs(a - b), 1) for a in given for b in given}
     return nums
+
+
+def _is_allowed(n: float, allowed: set[float]) -> bool:
+    # rounding to one decimal on either side can move a number by 0.05
+    return any(abs(n - a) <= 0.051 for a in allowed)
 
 
 def check(reply: dict | None, facts: dict, row: dict) -> dict:
@@ -148,12 +159,14 @@ def check(reply: dict | None, facts: dict, row: dict) -> dict:
     allowed = _allowed_numbers(facts, row)
     # d2 d3 d4 and 8d are step names not quantities
     clean = re.sub(r"\b(?:8D|D[1-8])\b", " ", text)
-    bad_numbers = [n for n in NUMBER.findall(clean) if float(n) not in allowed]
+    bad_numbers = [n for n in NUMBER.findall(clean) if not _is_allowed(float(n), allowed)]
     tools = [m.group(0) for r in (TOOL_ID, TOOL_NAME) for m in r.finditer(text)]
 
     return {
         "parsed": True,
-        "right_pattern": str(reply.get("pattern", "")).strip() == facts["predicted_pattern"],
+        # d60 a pattern field like center model predicted still names one class
+        # so it is read the same way as a vlm reply  exactly one class name
+        "right_pattern": parse(str(reply.get("pattern", ""))) == facts["predicted_pattern"],
         "no_unsupported_module": not bad_listed and not bad_words,
         "no_invented_source": not bad_sources and not bad_citation_text,
         "no_invented_number": not bad_numbers,

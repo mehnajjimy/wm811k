@@ -66,3 +66,14 @@ def test_module_outside_the_row_is_caught():
 def test_ungrounded_prompt_never_shows_the_table():
     assert "TABLE ROW" not in prompt(FACTS, None)
     assert TABLE["Center"]["first_check"] in prompt(FACTS, TABLE["Center"])
+
+
+def test_pattern_with_extra_words_and_simple_gaps_still_pass():
+    facts = FACTS | {"clean_wafer_median_yield_percent_same_product": 81.2}
+    ok = _reply(
+        pattern="Center (model-predicted)", d2_problem="yield 71.3 is 9.9 points below 81.2"
+    )
+    out = check(ok, facts, TABLE["Center"])
+    assert out["right_pattern"] and out["no_invented_number"]
+    # naming two classes is not an answer
+    assert not check(_reply(pattern="Center or Donut"), facts, TABLE["Center"])["right_pattern"]
