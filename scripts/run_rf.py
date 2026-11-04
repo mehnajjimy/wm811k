@@ -3,7 +3,6 @@ run from the repo root  python scripts/run_rf.py"""
 
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import pandas as pd
 import yaml
 from sklearn.ensemble import RandomForestClassifier
@@ -53,29 +52,6 @@ def fit(x: pd.DataFrame, y: pd.Series, leaf: int, seed: int) -> RandomForestClas
     return model.fit(x, y)
 
 
-def confusion_figure(conf: pd.DataFrame, title: str, path: Path) -> None:
-    """confusion matrix shown as the share of each true class so rare classes
-    are as readable as none"""
-    share = conf.div(conf.sum(axis=1), axis=0)
-    fig, ax = plt.subplots(figsize=(7.2, 6.2))
-    ax.imshow(share.to_numpy(), cmap="Blues", vmin=0, vmax=1)
-    ax.set_xticks(range(len(conf)), conf.columns, rotation=40, ha="right")
-    ax.set_yticks(range(len(conf)), conf.index)
-    for i in range(len(conf)):
-        for j in range(len(conf)):
-            v = share.iat[i, j]
-            if v >= 0.01:
-                color = viz.SURFACE if v > 0.55 else viz.TEXT
-                ax.text(j, i, f"{v:.0%}", ha="center", va="center", fontsize=8, color=color)
-    ax.set_xlabel("predicted pattern")
-    ax.set_ylabel("true pattern")
-    ax.set_title(title)
-    ax.grid(False)
-    fig.tight_layout()
-    fig.savefig(path, dpi=160)
-    plt.close(fig)
-
-
 def main() -> None:
     cfg = yaml.safe_load((ROOT / "config.yaml").read_text())
     seed = cfg["seed"]
@@ -86,14 +62,23 @@ def main() -> None:
     train, val, test = (df["split_ours"] == s for s in ("train", "val", "test"))
 
     # pick the leaf size on validation only  the test set is touched once at the end
-    val_scores = {}
+    val_scores, val_proba = {}, {}
     for leaf in cfg["rf"]["leaf_sizes"]:
         m = fit(x[train], y[train], leaf, seed)
+        val_proba[leaf] = pd.DataFrame(
+            m.predict_proba(x[val]), index=y[val].index, columns=[f"p_{c}" for c in m.classes_]
+        )
         val_scores[leaf] = evaluate.macro_f1(y[val], pd.Series(m.predict(x[val])), CLASSES)
     best_leaf = max(val_scores, key=val_scores.get)
     pd.Series(val_scores, name="val_macro_f1").rename_axis("min_samples_leaf").to_csv(
         OUT / "rf_val_tuning.csv"
     )
+    # validation scores from the train only model are kept because thresholds
+    # for item g have to be picked on maps the model never trained on
+    vp = val_proba[best_leaf]
+    vp.insert(0, "label", y[val])
+    vp.insert(0, "lot", df.loc[val, "lot"])
+    vp.to_csv(OUT / "rf_val_predictions.csv")
 
     # final model on train plus validation then one look at test
     fit_mask = train | val
@@ -107,7 +92,9 @@ def main() -> None:
     ci.to_csv(OUT / "rf_test_bootstrap_ci.csv")
     conf = evaluate.confusion(y[test], pred, CLASSES)
     conf.to_csv(OUT / "rf_test_confusion.csv")
-    confusion_figure(conf, "random forest  share of each true pattern", FIG / "rf_confusion.png")
+    viz.confusion_figure(
+        conf, "random forest  share of each true pattern", FIG / "rf_confusion.png"
+    )
 
     # predictions are saved so the cnn and vlm can be compared on the exact same maps
     out = pd.DataFrame(proba, index=pred.index, columns=[f"p_{c}" for c in model.classes_])

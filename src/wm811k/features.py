@@ -2,6 +2,8 @@
 each feature is something a yield engineer would look at by eye on a bin map
 so the model stays explainable and size independent"""
 
+import itertools
+
 import numpy as np
 import pandas as pd
 from scipy import ndimage
@@ -43,7 +45,7 @@ def extract(wafer_map: np.ndarray) -> dict[str, float]:
 
     # radial profile  center  donut and edge ring all show up as which ring
     # carries the fails
-    for i, (lo, hi) in enumerate(zip(RING_EDGES[:-1], RING_EDGES[1:])):
+    for i, (lo, hi) in enumerate(itertools.pairwise(RING_EDGES)):
         f[f"ring_{i}_density"] = _density(fails, (r >= lo) & (r < hi))
     rings = np.array([f[f"ring_{i}_density"] for i in range(len(RING_EDGES) - 1)])
     # how much more the worst ring fails than the wafer as a whole

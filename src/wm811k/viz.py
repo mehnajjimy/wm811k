@@ -1,6 +1,9 @@
 """shared figure settings so every chart in the project looks the same"""
 
+from pathlib import Path
+
 import matplotlib.pyplot as plt
+import pandas as pd
 
 # one fixed colour per defect class used in every figure
 # the eight defect classes take the eight validated categorical slots in order
@@ -16,6 +19,11 @@ CLASS_COLORS = {
     "Scratch": "#e34948",
     "none": "#8a8984",
 }
+
+# models are not defect classes so they get ink and blue instead of class colours
+# and every model line is labelled directly in the figure
+MODEL_COLORS = {"rf": "#52514e", "cnn": "#2a78d6"}
+MODEL_NAMES = {"rf": "random forest", "cnn": "small cnn"}
 
 SURFACE = "#fcfcfb"
 TEXT = "#0b0b0b"
@@ -46,3 +54,26 @@ def setup() -> None:
             "font.size": 10,
         }
     )
+
+
+def confusion_figure(conf: pd.DataFrame, title: str, path: Path) -> None:
+    """confusion matrix shown as the share of each true class so rare classes
+    are as readable as none"""
+    share = conf.div(conf.sum(axis=1), axis=0)
+    fig, ax = plt.subplots(figsize=(7.2, 6.2))
+    ax.imshow(share.to_numpy(), cmap="Blues", vmin=0, vmax=1)
+    ax.set_xticks(range(len(conf)), conf.columns, rotation=40, ha="right")
+    ax.set_yticks(range(len(conf)), conf.index)
+    for i in range(len(conf)):
+        for j in range(len(conf)):
+            v = share.iat[i, j]
+            if v >= 0.01:
+                color = SURFACE if v > 0.55 else TEXT
+                ax.text(j, i, f"{v:.0%}", ha="center", va="center", fontsize=8, color=color)
+    ax.set_xlabel("predicted pattern")
+    ax.set_ylabel("true pattern")
+    ax.set_title(title)
+    ax.grid(False)
+    fig.tight_layout()
+    fig.savefig(path, dpi=160)
+    plt.close(fig)

@@ -241,3 +241,47 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Accuracy (not a headline, per d04):** 97.3%, against 85.2% for a model that always says "none". This is the example of why accuracy misleads here.
 - **Process reading:** the main failure is defects passed as "none". 27% of Scratch, 20% of Loc and 11% of Edge-Loc test wafers are missed that way (figures/rf_confusion.png). In a fab a missed excursion costs more than a mislabelled one, so the abstain and threshold work (item G) should target this, and the CNN should be judged on it.
 - **Top features:** biggest-cluster radius, fill and share, neighbour clustering, and the middle-ring density (results/rf_feature_importance.csv).
+
+### d40 Where the CNN trains
+- **Options:** the desktop RTX 5070 Ti over SSH (d02), which isn't set up yet; the Mac's built-in GPU (Apple M5, PyTorch MPS backend); free Colab.
+- **Recommended:** the Mac's GPU for the small CNN. The desktop stays the plan for the local open-weight VLM.
+- **Why:** a 0.58M-weight network on 64×64 maps fits easily. A timing test gave about 85 seconds per epoch over the 120k training maps (about 72 seconds of that is the network's own compute), so a full run takes under an hour.
+- **Decided:** Mehnaj chose the Mac's GPU (2026-11-03).
+
+### d41 CNN input and model
+- **Resize:** maps come in 632 sizes. Each map is turned into two 64×64 channels by area averaging: the share of each cell covered by dies, and the share covered by failing dies. Nearest-neighbour resizing was rejected because on big maps it drops most of a one-die-wide scratch, while area averaging keeps it as a faint line (`tests/test_cnn.py`).
+- **Model:** four blocks of two 3×3 convolutions with batch norm and ReLU, then max pooling (32, 64, 128 and 128 channels). Global average pooling, dropout 0.3, then one linear layer. 583,753 weights in total. It's deliberately small: the point is a fair comparison with the forest, not chasing accuracy (RESEARCH.md lists that as overdone).
+- **Augmentation:** each training image gets one of the 8 rotations and mirror flips at random. A defect pattern means the same thing at any angle, and the features the forest uses are rotation-free too (sorted edge sectors). Augmentation is applied on the fly to training batches only, after the split, so nothing augmented can reach validation or test.
+- **Training:** AdamW (learning rate 1e-3, weight decay 1e-4), batches of 256, and a cosine learning-rate decay over at most 40 epochs.
+
+### d42 CNN tuning and stopping
+- **Options for class imbalance:** fully balanced loss weights, the same idea as the forest's `balanced_subsample`; or the square root of those weights. Full balancing gives Near-full about 1,000 times the weight of "none", which can make training noisy.
+- **Recommended / decided:** try both and keep whichever scores best on validation macro-F1. Each run keeps the epoch with the best validation macro-F1 and stops after 6 epochs with no gain. The test set is used once, after that choice.
+- **Difference from the forest:** the CNN trains on the training lots only, because validation is needed for stopping. The forest was refit on train + validation. That puts the CNN at a small data disadvantage, and it's stated next to the results.
+
+### d43 Seed spread
+- The chosen CNN setup is trained again with two more seeds (812, 813), and all three test macro-F1 scores are reported. This shows how much of the score comes from the luck of the starting weights. MPS isn't bit-for-bit deterministic, so a rerun with the same seed can differ slightly.
+
+### d44 Review gate for wafers called clean (item G)
+- **Problem:** the forest's main error is passing defect wafers as "none" (d39).
+- **Options:** abstain on low overall confidence; or a gate that only calls a wafer "none" when p(none) is at least a threshold, otherwise giving it the most likely defect class so an engineer looks at it.
+- **Recommended / decided:** both are measured. The gate is the operating rule because it targets the costly error directly. The threshold is picked on validation as the lowest one that keeps missed defects at or under 5% (`config.yaml`). The lowest is taken because it flags the fewest clean wafers. Only then is it applied to test.
+- **Why 5%:** this is a policy choice, not something the data decides. The full trade-off curve is in `figures/abstain_tradeoff.png`, so any other target can be read off it.
+- **Validation probabilities:** for the forest these come from the train-only model at the chosen leaf size (`results/rf_val_predictions.csv`). The final forest was refit on train + validation, so its own validation scores would be in-sample. The rerun of `run_rf.py` that saves them gives exactly the same test results as before.
+
+### d45 Grad-CAM check (item J)
+- **Options:** show a few heat maps; or also measure, on up to 300 correctly classified test wafers per class, (a) how much of the heat map falls outside the wafer and (b) "fail lift": heat on failing cells divided by the share of the wafer those cells cover.
+- **Recommended / decided:** both. Pictures can be cherry-picked, so the numbers carry the claim, and the example wafers are drawn at random. A fail lift above 1 means the model looks at the fails more than a uniform heat map would. For Near-full, fails cover most of the wafer, so its lift is close to 1 by construction.
+
+### d46 VLM prompts (item E)
+- **Options:** label names only ("raw"); or a short rule for each label, checked in a fixed order ("rules"). The rules idea follows Cao and Tao (2026), but the wording is our own and covers all 9 classes including "none".
+- **Recommended / decided:** run both on the same maps. Raw measures what the model already knows; rules measures how much a domain write-up helps.
+
+### d47 VLM sample
+- **Options:** the whole test set (25,939 maps); a random sample; or a class-balanced sample.
+- **Recommended / decided:** 20 test maps per class (180 maps), drawn with the project seed. A random sample would be about 85% "none" and leave only a few maps for the rare classes. The forest and the CNN are scored on the same 180 maps, so all models are compared on equal terms. On a balanced sample, precision for "none" isn't comparable to the full-test numbers, so only the same-sample comparison is used.
+- **Leakage guard:** image files have random names, the model runs in a read-only sandbox in a folder that holds only images, and any call where the model tried to run a command or read a file is flagged in the results.
+
+### d48 VLM cost
+- **Price:** standard-tier gpt-6-luna prices from OpenAI's pricing page (developers.openai.com/api/docs/pricing, checked 2026-11-03): $0.10 per million input tokens, $0.01 cached input, $0.50 output. Reasoning tokens are billed as output.
+- **Caveat:** calls go through `codex exec`, whose own system prompt is most of the roughly 15k input tokens per call. The reported cost per 1,000 maps is therefore the cost as run, an upper bound on what a direct API call with only the prompt and image would cost. Through ChatGPT credits the project pays nothing extra (d01).
