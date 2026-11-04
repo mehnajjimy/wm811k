@@ -48,7 +48,13 @@ I measured Grad-CAM heat maps on up to 300 correct test wafers per class. For ev
 
 ### Suspect labels
 
-227 test wafers get the same wrong class from both models, and 24 of those get it with high confidence from both. On a first look, 18 of the 24 labels don't seem supported by the map. Most are wafers labelled Loc or Center that only show background fails. I still need to check these by hand, so I haven't recomputed any scores (`results/label_audit_candidates.csv`, `figures/label_audit/`).
+227 test wafers get the same wrong class from both models, and 24 of those get it with at least 0.8 probability from both. I went through all 24 by hand:
+
+- 17 labels were wrong, and both models were right on 16 of them. Most were wafers labelled Loc or Center that only show background fails.
+- 4 labels held up, and both models missed a real pattern there (#4 Center, #5 Loc, #8 and #9 Scratch).
+- 3 wafers carry two patterns at once, which a single WM-811K label can't describe.
+
+With my corrected labels (mixed wafers dropped), macro-F1 goes from 0.867 to 0.872 for the forest and from 0.877 to 0.881 for the CNN. The original scores stay the headline since only 24 of 25,939 labels changed (`results/label_audit_candidates.csv`, `results/label_rescore_summary.csv`, d64).
 
 ### Vision-language model, zero-shot
 
@@ -111,6 +117,7 @@ python scripts/run_cnn.py
 python scripts/run_abstain.py
 python scripts/run_gradcam.py
 python scripts/run_label_audit.py
+python scripts/run_label_rescore.py
 python scripts/run_synthetic.py
 python scripts/run_vlm.py
 python scripts/run_assistant.py

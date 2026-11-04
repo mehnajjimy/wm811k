@@ -1,25 +1,25 @@
 ,number,lot,label,both_say,p_rf,p_cnn,verdict,note,claude_first_pass
-688378,1,lot42552,Loc,none,0.9903052157468621,0.9939813,,,only scattered background fails visible  label looks unsupported
-809260,2,lot47450,Center,none,0.9961521523820708,0.98824817,,,only scattered background fails visible  label looks unsupported
-684634,3,lot42398,Loc,none,1.0,0.9837188,,,only scattered background fails visible  label looks unsupported
-686535,4,lot42476,Center,none,0.9789677810491384,0.98108095,,,only scattered background fails visible  label looks unsupported
-693707,5,lot42769,Loc,none,0.9752304043604493,0.9910685,,,only scattered background fails visible  label looks unsupported
-763183,6,lot45577,Loc,none,0.9960878706426957,0.96080214,,,only scattered background fails visible  label looks unsupported
-776055,7,lot46106,Loc,none,0.9430543915085107,0.9616824,,,only scattered background fails visible  label looks unsupported
-712463,8,lot43526,Scratch,none,0.9397155383854519,0.93752193,,,vertical line on the right side  label looks right and both models missed it
-764919,9,lot45648,Scratch,none,0.9805124871683838,0.9127496,,,faint short line at the bottom  unclear
-764397,10,lot45627,Random,Center,0.8931924614970709,0.8928004,,,dense cluster at the center plus fails on the right edge  mixed pattern  unclear
-716276,11,lot43679,Edge-Loc,none,0.9462576210884386,0.8804264,,,only scattered background fails visible  label looks unsupported
-806607,12,lot47344,Center,none,0.8720922966279808,0.89293003,,,only scattered background fails visible  label looks unsupported
-7382,13,lot1288,Random,Near-full,0.995478703164993,0.862006,,,upper half almost fully failed  models look closer than the label  possibly mixed
-766530,14,lot45714,Loc,none,0.8588250494664325,0.9619448,,,only scattered background fails visible  label looks unsupported
-763666,15,lot45596,Loc,none,0.8479529517335094,0.95358616,,,only scattered background fails visible  label looks unsupported
-718925,16,lot43786,none,Edge-Loc,0.8410941668895692,0.9287947,,,fail cluster on the upper left edge  models look right
-809192,17,lot47447,Edge-Loc,none,0.9547873898625002,0.8410715,,,only scattered background fails visible  label looks unsupported
-6673,18,lot269,Edge-Ring,Edge-Loc,0.8747953870287151,0.8285566,,,fails along the lower right edge only not the whole ring  models look right
-687597,19,lot42520,Center,none,0.856165065017896,0.82245374,,,only scattered background fails visible  label looks unsupported
-755276,20,lot45257,none,Loc,0.8183867625229262,0.9705201,,,fail cluster in the upper right  models look right
-684194,21,lot42380,Loc,none,0.9534858693020839,0.81145537,,,one small cluster near the top  label may be right but the pattern is very weak  unclear
-244700,22,lot15336,none,Edge-Loc,0.8102151771209365,0.97861594,,,fail band on the left edge  models look right
-689874,23,lot42614,Scratch,none,0.8092285406006503,0.9302879,,,short line near the top  label looks right and both models missed it
-5954,24,lot240,Center,Loc,0.8048795784914602,0.9674634,,,cluster just off center  between center and loc  unclear
+688378,1,lot42552,Loc,none,0.9903052157468621,0.9939813,wrong label: none,Mehnaj: agreed with first pass  background fails only,only scattered background fails visible  label looks unsupported
+809260,2,lot47450,Center,none,0.9961521523820708,0.98824817,wrong label: none,Mehnaj: agreed with first pass  background fails only,only scattered background fails visible  label looks unsupported
+684634,3,lot42398,Loc,none,1.0,0.9837188,wrong label: none,Mehnaj: agreed with first pass  background fails only,only scattered background fails visible  label looks unsupported
+686535,4,lot42476,Center,none,0.9789677810491384,0.98108095,label right: Center,Mehnaj: center  both models missed it,only scattered background fails visible  label looks unsupported
+693707,5,lot42769,Loc,none,0.9752304043604493,0.9910685,label right: Loc,Mehnaj: loc at the top right near the edge,only scattered background fails visible  label looks unsupported
+763183,6,lot45577,Loc,none,0.9960878706426957,0.96080214,wrong label: none,Mehnaj: agreed with first pass  background fails only,only scattered background fails visible  label looks unsupported
+776055,7,lot46106,Loc,none,0.9430543915085107,0.9616824,wrong label: Random,Mehnaj: looks random  fail share 14 percent which is below the usual random range,only scattered background fails visible  label looks unsupported
+712463,8,lot43526,Scratch,none,0.9397155383854519,0.93752193,label right: Scratch,Mehnaj: scratch  both models missed it,vertical line on the right side  label looks right and both models missed it
+764919,9,lot45648,Scratch,none,0.9805124871683838,0.9127496,label right: Scratch,Mehnaj: scratch at the bottom  both models missed it,faint short line at the bottom  unclear
+764397,10,lot45627,Random,Center,0.8931924614970709,0.8928004,mixed: Center + edge,Mehnaj: reads as edge plus center  random label looks wrong but no single class fits,dense cluster at the center plus fails on the right edge  mixed pattern  unclear
+716276,11,lot43679,Edge-Loc,none,0.9462576210884386,0.8804264,wrong label: none,Mehnaj: agreed with first pass  background fails only,only scattered background fails visible  label looks unsupported
+806607,12,lot47344,Center,none,0.8720922966279808,0.89293003,wrong label: none,Mehnaj: agreed with first pass  background fails only,only scattered background fails visible  label looks unsupported
+7382,13,lot1288,Random,Near-full,0.995478703164993,0.862006,wrong label: Near-full,Mehnaj: near full  the models are right,upper half almost fully failed  models look closer than the label  possibly mixed
+766530,14,lot45714,Loc,none,0.8588250494664325,0.9619448,wrong label: none,Mehnaj: agreed with first pass  background fails only,only scattered background fails visible  label looks unsupported
+763666,15,lot45596,Loc,none,0.8479529517335094,0.95358616,mixed: Loc + Random,Mehnaj: loc at the bottom but random over the rest,only scattered background fails visible  label looks unsupported
+718925,16,lot43786,none,Edge-Loc,0.8410941668895692,0.9287947,wrong label: Edge-Loc,Mehnaj: agreed with first pass  the models are right,fail cluster on the upper left edge  models look right
+809192,17,lot47447,Edge-Loc,none,0.9547873898625002,0.8410715,wrong label: none,Mehnaj: agreed with first pass  background fails only,only scattered background fails visible  label looks unsupported
+6673,18,lot269,Edge-Ring,Edge-Loc,0.8747953870287151,0.8285566,wrong label: Edge-Loc,Mehnaj: agreed with first pass  the models are right,fails along the lower right edge only not the whole ring  models look right
+687597,19,lot42520,Center,none,0.856165065017896,0.82245374,wrong label: none,Mehnaj: agreed with first pass  background fails only,only scattered background fails visible  label looks unsupported
+755276,20,lot45257,none,Loc,0.8183867625229262,0.9705201,wrong label: Loc,Mehnaj: agreed with first pass  the models are right,fail cluster in the upper right  models look right
+684194,21,lot42380,Loc,none,0.9534858693020839,0.81145537,wrong label: none,Mehnaj: agrees it is none,one small cluster near the top  label may be right but the pattern is very weak  unclear
+244700,22,lot15336,none,Edge-Loc,0.8102151771209365,0.97861594,wrong label: Edge-Loc,Mehnaj: agreed with first pass  the models are right,fail band on the left edge  models look right
+689874,23,lot42614,Scratch,none,0.8092285406006503,0.9302879,wrong label: none,Mehnaj: none,short line near the top  label looks right and both models missed it
+5954,24,lot240,Center,Loc,0.8048795784914602,0.9674634,mixed: Center + upper slice,Mehnaj: mostly center with an extra slice of fails at the top  center label defensible,cluster just off center  between center and loc  unclear

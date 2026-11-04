@@ -413,3 +413,18 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Same maps, trained models:** the CNN scores 0.916 (0.866–0.953) and the forest 0.866.
 - **Commands:** none of the 180 v2 test calls ran a command (the `actions` column is empty).
 - **Reading:** a correct domain definition of "none" is worth about 0.16 macro-F1 for a zero-shot model. Even corrected, it stays about 0.3 below a 0.58M-weight CNN trained on labelled maps, so it cannot replace labelling here. Its one strength is Scratch, at 20 of 20.
+
+### d64 Label audit verdicts and rescoring (item H)
+- **Verdicts by Mehnaj (2026-11-03), all 24 candidates (results/label_audit_candidates.csv):**
+  - **17 wrong labels:** 14 should be none, mostly maps labelled Loc or Center that show only background fails. The other 3 are Edge-Loc, Loc and Near-full (#13), and #7 is Random. Both models agreed with the verdict on 16 of the 17, the exception being #7, where both said none.
+  - **4 labels right**, all missed by both models: #4 Center, #5 Loc, and #8 and #9 Scratch.
+  - **3 mixed:** #10 Center + edge, #15 Loc + Random, #24 Center + an upper slice. WM-811K forces one label per wafer, so these have no single right answer.
+- **Rescoring:** wrong labels are swapped for the verdict class, and mixed wafers are dropped rather than forced into a class (results/label_rescore_summary.csv).
+  - forest 0.867 → 0.872
+  - CNN 0.877 → 0.881
+  - The original scores stay the headline, because only 24 of 25,939 test labels were reviewed.
+- **Reading:**
+  - When both models confidently disagree with a label, the label was wrong 17 times in 24 (71%). The most common error is a defect label on a wafer with no visible pattern.
+  - Mixed wafers (3 of 24) show a limit of the single-label scheme.
+  - The 4 real misses include 2 scratches, the models' weakest class.
+- **Note on #7:** its fail share is 14%, below the usual Random range (training-lot 10th percentile 33%). The Random verdict is a call on shape, not on density.
