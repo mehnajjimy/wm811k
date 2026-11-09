@@ -24,7 +24,7 @@ def pareto_figure(table: pd.DataFrame, baseline: float, path: Path) -> None:
     running = defects["share_of_excess_loss"].cumsum()
 
     fig, ax = plt.subplots(figsize=(8, 4.2))
-    colors = [viz.CLASS_COLORS[c] for c in defects.index]
+    colors = viz.ACCENT
     ax.bar(defects.index, values, color=colors, width=0.7, edgecolor=viz.SURFACE, linewidth=2)
     # the running share sits as text above each bar instead of a second axis
     # so there is only one scale to read

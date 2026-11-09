@@ -25,7 +25,7 @@ PER_CLASS = 300
 
 # same wafer colours as the simulator figure  d34
 PASS_COLOR = "#d3d1ca"
-FAIL_COLOR = "#2a78d6"
+FAIL_COLOR = viz.ACCENT
 
 
 def measures(cam: np.ndarray, img: np.ndarray) -> dict:

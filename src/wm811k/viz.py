@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
 import pandas as pd
 
 # one fixed colour per defect class used in every figure
@@ -22,7 +23,9 @@ CLASS_COLORS = {
 
 # models are not defect classes so they get ink and blue instead of class colours
 # and every model line is labelled directly in the figure
-MODEL_COLORS = {"rf": "#52514e", "cnn": "#2a78d6"}
+# the accent is a royal slate blue that sits with the portfolio site palette
+ACCENT = "#3e4f8a"
+MODEL_COLORS = {"rf": "#52514e", "cnn": ACCENT}
 MODEL_NAMES = {"rf": "random forest", "cnn": "small cnn"}
 
 SURFACE = "#fcfcfb"
@@ -61,7 +64,8 @@ def confusion_figure(conf: pd.DataFrame, title: str, path: Path) -> None:
     are as readable as none"""
     share = conf.div(conf.sum(axis=1), axis=0)
     fig, ax = plt.subplots(figsize=(7.2, 6.2))
-    ax.imshow(share.to_numpy(), cmap="Blues", vmin=0, vmax=1)
+    cmap = LinearSegmentedColormap.from_list("accent", [SURFACE, ACCENT])
+    ax.imshow(share.to_numpy(), cmap=cmap, vmin=0, vmax=1)
     ax.set_xticks(range(len(conf)), conf.columns, rotation=40, ha="right")
     ax.set_yticks(range(len(conf)), conf.index)
     for i in range(len(conf)):

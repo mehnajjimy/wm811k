@@ -37,7 +37,7 @@ ORDER = [
 # fail is the one strong color in the figure
 SURFACE = "#fcfcfb"
 PASS_COLOR = "#d3d1ca"
-FAIL_COLOR = "#2a78d6"
+FAIL_COLOR = "#3e4f8a"
 TEXT = "#0b0b0b"
 MUTED = "#52514e"
 

@@ -30,7 +30,7 @@ def ratio_panel(ax, table: pd.DataFrame, title: str, xlabel: str, log: bool) -> 
         y,
         s=60,
         zorder=3,
-        color=[viz.CLASS_COLORS[c] for c in order],
+        color=viz.ACCENT,
         edgecolor=viz.SURFACE,
         linewidth=1.5,
     )
