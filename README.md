@@ -31,7 +31,7 @@ I measured excess die loss against the median yield of clean wafers from the sam
 
 ### Lot-level clustering
 
-Every defect pattern piles up inside lots far more than chance would allow. A Donut wafer is 127 times more likely than expected to have a lot-mate with the same pattern, Random 111 times and Edge-Ring 17 times (permutation p < 0.005 for every class). Slot order inside a lot only adds a little on top of that. Loc is the clearest case, at 1.28 times more likely than chance to repeat in the next slot. 502 of 7,025 lots (7.1%) are excursion lots, where one defect pattern covers half or more of the labelled wafers, and 361 of those are Edge-Ring. That points at tools and chambers more than random events (`results/lots_*.csv`, `figures/lots_clustering.png`).
+Every defect pattern piles up inside lots much more than chance would allow. A Donut wafer is 127 times more likely than expected to have a lot-mate with the same pattern, Random 111 times and Edge-Ring 17 times (permutation p < 0.005 for every class). Slot order inside a lot only adds a little on top of that. Loc is the clearest case, at 1.28 times more likely than chance to repeat in the next slot. 502 of 7,025 lots (7.1%) are excursion lots, where one defect pattern covers half or more of the labelled wafers, and 361 of those are Edge-Ring. That points at tools and chambers more than random events (`results/lots_*.csv`, `figures/lots_clustering.png`).
 
 ### Classifiers
 
@@ -40,7 +40,7 @@ Every defect pattern piles up inside lots far more than chance would allow. A Do
 | Random forest on 24 engineered features | 0.867 (0.846 to 0.880) | 8.4% |
 | Small CNN (0.58M weights), 3 seeds | 0.877 (0.855 to 0.893), seeds 0.877 to 0.884 | 3.7% |
 
-The CNN beats the forest by 0.010 macro-F1, with a paired interval of −0.008 to +0.029. That interval includes zero, so overall neither one is clearly better. Where they really differ is the expensive mistake, a defect wafer called clean. The CNN drops Scratch missed as clean from 27% to 11% and Loc from 20% to 8%, and its recall gains on Loc (+0.18) and Scratch (+0.12) are clear of zero (`results/cnn_minus_rf.csv`, `results/missed_as_none_rf_vs_cnn.csv`, `figures/rf_confusion.png`, `figures/cnn_confusion.png`).
+The CNN beats the forest by 0.010 macro-F1, with a paired interval of −0.008 to +0.029. That interval includes zero, so overall neither one is clearly better. The real difference is in the expensive mistake, a defect wafer called clean. The CNN drops Scratch missed as clean from 27% to 11% and Loc from 20% to 8%, and its recall gains on Loc (+0.18) and Scratch (+0.12) are clear of zero (`results/cnn_minus_rf.csv`, `results/missed_as_none_rf_vs_cnn.csv`, `figures/rf_confusion.png`, `figures/cnn_confusion.png`).
 
 ### Review gate
 
@@ -63,7 +63,7 @@ The first time, I looked at each map after seeing both models' calls. Then I re-
 | Two patterns on one wafer | 3 | 1 |
 | Both models right | 16 | 4 |
 
-Most of the change is wafers I'd first called clean that do show the labelled pattern when I look without the models' answer next to it. My two passes agree on the kind of verdict for only 12 of the 24. So these maps are genuinely ambiguous, and my first pass was anchored on the models. I'm treating the re-review as the record. In it, 5 of the 10 wrong labels should be Edge-Loc (2 were labelled Loc and 3 none), which is the same blurry line Opus struggles with below.
+Most of the change is wafers I'd first called clean that do show the labelled pattern when I look without the models' answer next to it. My two passes agree on the kind of verdict for only 12 of the 24. So these maps really are ambiguous, and my first pass was anchored on the models. I'm treating the re-review as the record. In it, 5 of the 10 wrong labels should be Edge-Loc (2 were labelled Loc and 3 none), which is the same blurry line Opus struggles with below.
 
 With the re-reviewed labels (the one mixed wafer dropped), macro-F1 goes from 0.867 to 0.870 for the forest and from 0.877 to 0.879 for the CNN. The original scores stay the headline since only 24 of 25,939 labels were reviewed (`results/label_audit_candidates.csv`, `results/label_rescore_summary.csv`, d64, d67).
 
@@ -99,7 +99,7 @@ Cao and Tao (arXiv 2610.35080, 2026) is the paper that got me started on this. T
 | Random forest | 81.2% | 85.4% |
 | Small CNN | 87.9% | 92.4% |
 
-On a plain map, Opus with my v2 rules lands well above GPT-4o's plain-map result and below their best. Their jump from 43.7% to 81.3% comes with a change to the picture: they colour in the largest connected clusters of failing dies before the model sees it. That's the obvious next thing to try here. The comparison is loose, though. Their sample is random with no lot split. Our models could also answer none or Near-full, which count as wrong here, while theirs only had the six classes to pick from. And on our side it's only 20 wafers per class (40 for Edge). On these numbers both trained models still beat every zero-shot result, theirs included (`results/vlm_paper_style.csv`, d66).
+Opus with my v2 rules does a lot better than GPT-4o on a plain map, but not as well as their best run. Their jump from 43.7% to 81.3% comes with a change to the picture: they colour in the largest connected clusters of failing dies before the model sees it. That's the obvious next thing to try here. The comparison is loose, though. Their sample is random with no lot split. Our models could also answer none or Near-full, which count as wrong here, while theirs only had the six classes to pick from. And on our side it's only 20 wafers per class (40 for Edge). On these numbers both trained models still beat every zero-shot result, theirs included (`results/vlm_paper_style.csv`, d66).
 
 Costs use each company's published prices and count every token the calls actually used. Luna ran through the codex CLI, which adds about 15k input tokens to every call. Opus ran through the Claude Code CLI with its system prompt swapped for one line, so it used about 1.4k input tokens per wafer, but the CLI writes them to a one-hour cache that's billed at twice the input price. Sent with no caching at all, Opus v2 would be $8.23 per 1,000 wafers. Both actually ran on subscriptions (ChatGPT credits and Claude Pro), so none of it was billed (`results/vlm_summary.csv`, `results/vlm_pairs.csv`, d46 to d48, d65).
 
@@ -114,7 +114,7 @@ Luna drafts an 8D D2 to D4 first response for a flagged wafer, using the CNN's p
 
 The trick questions ask for a tool ID, a dollar cost, a journal reference for a row that has none, and how many other wafers are affected. With the table, five of the six listed the requested item as unknown. The sixth asked whether implant caused an Edge-Ring. It never named implant and listed the causal step as unknown. Without the table, replies often add lithography, implant or thermal causes for a Center wafer, and some cite lecture or thesis URLs I haven't checked.
 
-So grounding keeps the model inside what the project can back up. That doesn't mean the table is right, since most rows are still hypotheses. The checks also only catch invented specifics, not a weak argument built out of allowed words (`results/assistant_summary.csv`, d49, d50, d60, d62).
+So grounding keeps the model inside what the project can back up. That doesn't mean the table is right, since most rows are still hypotheses. And the checks only catch invented specifics. A weak argument made only of allowed words gets through (`results/assistant_summary.csv`, d49, d50, d60, d62).
 
 ### Training on simulated wafers only
 
@@ -166,7 +166,7 @@ python scripts/run_assistant.py
 
 - `src/wm811k/` holds all the logic: loading, audit, split, yield, lots, features, simulator, CNN, review gate, VLM and assistant.
 - `scripts/run_*.py` each run one analysis.
-- `tests/` has 172 pytest checks, including the yield formula, a lot-disjoint split, each feature's physics on simulated wafers and the hallucination checks.
+- `tests/` has 177 pytest checks, including the yield formula, a lot-disjoint split, each feature's physics on simulated wafers and the hallucination checks.
 - `config.yaml` holds every seed and threshold.
 
 ## License
