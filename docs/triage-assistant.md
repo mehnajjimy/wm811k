@@ -2,7 +2,7 @@
 
 When an AI model drafting a fab incident report is limited to one row of my root-cause table, it stops making things up. With the row, 60 of 60 drafts passed every check, and without it only 2 of 60 did.
 
-This is the full write-up behind the triage section of the [README](../README.md#an-ai-that-drafts-incident-reports-without-making-things-up).
+This is the full write-up behind the triage section of the [README](../README.md#triage-assistant).
 
 ## What it does
 

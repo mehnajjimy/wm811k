@@ -1,6 +1,6 @@
 # Suspect labels
 
-Of the 24 test wafers both models confidently disagreed with, 10 had wrong labels when I checked them blind. My first check had found 17, because I'd looked at the models' answers first. This is the full write-up behind the label section of the [README](../README.md#some-labels-are-wrong).
+Of the 24 test wafers both models confidently disagreed with, 10 had wrong labels when I checked them blind. My first check had found 17, because I'd looked at the models' answers first. This is the full write-up behind the label section of the [README](../README.md#label-audit).
 
 ## What I checked
 

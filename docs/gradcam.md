@@ -1,6 +1,6 @@
 # Grad-CAM check
 
-For most defect patterns, the CNN looks at the failing dies when it makes its call, not at some unrelated part of the image. This is the full write-up behind the Grad-CAM section of the [README](../README.md#where-the-cnn-looks).
+For most defect patterns, the CNN looks at the failing dies when it makes its call, not at some unrelated part of the image. This is the full write-up behind the Grad-CAM section of the [README](../README.md#grad-cam).
 
 ## What I measured
 

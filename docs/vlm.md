@@ -1,6 +1,6 @@
 # Vision-language models, zero-shot
 
-General AI models can't replace a small trained model here yet. On the same 180 wafers, Claude Opus 5.5 reached 0.718 macro-F1 and GPT-6 Luna 0.612, while my CNN got 0.916. This is the full write-up behind the vision-language model section of the [README](../README.md#general-ai-models-fall-short).
+General AI models can't replace a small trained model here yet. On the same 180 wafers, Claude Opus 5.5 reached 0.718 macro-F1 and GPT-6 Luna 0.612, while my CNN got 0.916. This is the full write-up behind the vision-language model section of the [README](../README.md#vision-language-models).
 
 ## What I tested
 

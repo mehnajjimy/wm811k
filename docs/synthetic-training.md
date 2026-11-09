@@ -1,6 +1,6 @@
 # Training on simulated wafers only
 
-A model trained only on simulated wafer maps catches most real defects, but it flags half of the real clean wafers as defective. This is the full write-up behind the simulator section of the [README](../README.md#simulated-wafers-catch-defects-but-not-clean-ones).
+A model trained only on simulated wafer maps catches most real defects, but it flags half of the real clean wafers as defective. This is the full write-up behind the simulator section of the [README](../README.md#training-on-simulated-wafers).
 
 ## What I built
 
