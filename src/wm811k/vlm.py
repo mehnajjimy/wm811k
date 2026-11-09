@@ -1,9 +1,13 @@
 """zero shot wafer map reading with a vision language model through codex exec
+or through the claude code cli for claude opus
 item e  the model sees a picture of the map and a prompt and never any labels"""
 
+import base64
 import json
 import re
+import shutil
 import subprocess
+import tempfile
 import time
 from pathlib import Path
 
@@ -120,11 +124,17 @@ def parse(text: str) -> str:
 
 def cost_usd(usage: dict, price: dict) -> float:
     """dollars for one call at the published per million token prices
-    cached input is billed at its own lower price and reasoning is billed as output"""
+    cached input is billed at its own lower price and reasoning is billed as output
+    anthropic also bills writing to the cache so those tokens get their own price
+    input_tokens always counts every input token  fresh  cached and written"""
     cached = usage.get("cached_input_tokens", 0)
-    fresh = usage.get("input_tokens", 0) - cached
+    w5 = usage.get("cache_write_5m_tokens", 0)
+    w1h = usage.get("cache_write_1h_tokens", 0)
+    fresh = usage.get("input_tokens", 0) - cached - w5 - w1h
     out = usage.get("output_tokens", 0)
-    return (fresh * price["input"] + cached * price["cached_input"] + out * price["output"]) / 1e6
+    usd = fresh * price["input"] + cached * price["cached_input"] + out * price["output"]
+    usd += w5 * price.get("cache_write_5m", 0) + w1h * price.get("cache_write_1h", 0)
+    return usd / 1e6
 
 
 def _codex(args: list[str], prompt: str, model: str, cwd: Path, timeout: int) -> dict:
@@ -175,3 +185,103 @@ def ask(image: Path, prompt: str, model: str, timeout: int = 300) -> dict:
 def ask_text(prompt: str, model: str, cwd: Path, timeout: int = 300) -> dict:
     """one text only call  used by the triage assistant in item f"""
     return _codex([], prompt, model, cwd, timeout)
+
+
+# d65 the same test through claude opus  run with the claude code cli that comes
+# with the claude desktop app so it uses the subscription and no paid api key
+_CLAUDE_GLOB = "Library/Application Support/Claude/claude-code/*/*/claude.app/Contents/MacOS/claude"
+
+# replaces the long claude code system prompt so the call is the picture and the
+# prompt and nothing about coding  and so the input tokens stay small
+CLAUDE_SYSTEM = "You read semiconductor wafer bin map images and answer in the format asked."
+
+
+def claude_cli() -> str:
+    """path to the claude code cli  the one on the path first  else the newest copy
+    the desktop app keeps in application support"""
+    found = shutil.which("claude")
+    if found:
+        return found
+    copies = sorted(Path.home().glob(_CLAUDE_GLOB), key=lambda p: p.stat().st_mtime)
+    if not copies:
+        raise FileNotFoundError("no claude code cli found")
+    return str(copies[-1])
+
+
+def _claude_message(image: Path, prompt: str) -> str:
+    """one user turn with the picture first and the prompt after it  as stream json
+    the picture goes inside the message so the model never needs a tool to see it"""
+    data = base64.standard_b64encode(image.read_bytes()).decode()
+    content = [
+        {"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": data}},
+        {"type": "text", "text": prompt},
+    ]
+    return json.dumps({"type": "user", "message": {"role": "user", "content": content}}) + "\n"
+
+
+def read_claude_stream(stdout: str) -> dict:
+    """the reply  token use and any tool calls out of the cli stream json output
+    the input count is rebuilt to hold every input token like the codex numbers do"""
+    # a stream with no result event at all is a failed call  for example a crash
+    text, usage, actions, failed = "", {}, [], True
+    for line in stdout.splitlines():
+        try:
+            ev = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if ev.get("type") == "assistant":
+            for block in ev.get("message", {}).get("content", []):
+                # tools are switched off so any tool use here means something leaked
+                if block.get("type") == "tool_use":
+                    actions.append(f"{block.get('name')} {json.dumps(block.get('input'))}"[:300])
+        if ev.get("type") == "result":
+            # a usage limit or a sign in problem comes back as an error result
+            # its text is not an answer so it is never parsed as one
+            failed = bool(ev.get("is_error"))
+            text = "" if failed else ev.get("result") or ""
+            usage = ev.get("usage") or {}
+    writes = usage.get("cache_creation") or {}
+    w5 = writes.get("ephemeral_5m_input_tokens", 0)
+    w1h = writes.get("ephemeral_1h_input_tokens", 0)
+    # older usage blocks only give the total written so count it all as the 5 minute kind
+    if not writes:
+        w5 = usage.get("cache_creation_input_tokens", 0)
+    cached = usage.get("cache_read_input_tokens", 0)
+    return {
+        "reply": text,
+        "failed": failed,
+        "ran_something": bool(actions),
+        "actions": " || ".join(actions),
+        "input_tokens": usage.get("input_tokens", 0) + cached + w5 + w1h,
+        "cached_input_tokens": cached,
+        "cache_write_5m_tokens": w5,
+        "cache_write_1h_tokens": w1h,
+        "output_tokens": usage.get("output_tokens", 0),
+        "reasoning_output_tokens": (usage.get("output_tokens_details") or {}).get(
+            "thinking_tokens", 0
+        ),
+    }
+
+
+def ask_claude(image: Path, prompt: str, model: str, effort: str, timeout: int = 300) -> dict:
+    """one call to claude with one image  same fields as ask so both score the same way
+    it runs in an empty temporary folder with every tool and setting switched off so it
+    cannot read the repo  the labels or anything else on disk"""
+    t0 = time.time()
+    with tempfile.TemporaryDirectory() as tmp:
+        try:
+            proc = subprocess.run(
+                [claude_cli(), "-p", "--model", model, "--effort", effort, "--tools", "",
+                 "--restricted", "--strict-mcp-config", "--no-session-persistence",
+                 "--disable-slash-commands", "--system-prompt", CLAUDE_SYSTEM,
+                 "--input-format", "stream-json", "--output-format", "stream-json", "--verbose"],
+                input=_claude_message(image, prompt), capture_output=True, text=True,
+                timeout=timeout, check=False, cwd=tmp,
+            )  # fmt: skip
+        except subprocess.TimeoutExpired:
+            # a hung call is a failed call and is asked again on the next run
+            return {"reply": "", "failed": True, "pred": "invalid", "seconds": time.time() - t0}
+    r = read_claude_stream(proc.stdout)
+    r["failed"] = r["failed"] or proc.returncode != 0
+    pred = parse(r["reply"]) if r["reply"] else "invalid"
+    return {**r, "seconds": time.time() - t0, "returncode": proc.returncode, "pred": pred}

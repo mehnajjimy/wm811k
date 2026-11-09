@@ -61,6 +61,19 @@ vlm:
     input: 0.10
     cached_input: 0.01
     output: 0.50
+  # d65 claude opus run through the claude code cli on the subscription
+  opus:
+    model: claude-opus-5-5
+    # the api default effort for opus 5.5 set out loud so a cli default change cannot move it
+    effort: medium
+    workers: 3
+    # platform.claude.com/docs/en/about-claude/pricing checked 2026-11-08
+    price_per_million_usd:
+      input: 4.00
+      cache_write_5m: 5.00
+      cache_write_1h: 8.00
+      cached_input: 0.20
+      output: 20.00
 
 assistant:
   model: gpt-6-luna

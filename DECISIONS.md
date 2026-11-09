@@ -428,3 +428,26 @@ Every choice in the project, with the options considered, the recommendation, wh
   - Mixed wafers (3 of 24) show a limit of the single-label scheme.
   - The 4 real misses include 2 scratches, the models' weakest class.
 - **Note on #7:** its fail share is 14%, below the usual Random range (training-lot 10th percentile 33%). The Random verdict is a call on shape, not on density.
+
+### d65 Claude Opus 5.5 on the same 180 test maps (item E, added after Luna)
+- **Asked by Mehnaj (2026-11-08):** can Claude Opus 5.5 do what Luna did?
+- **Options:** the Anthropic API (paid per token, which breaks d01's no-paid-API rule); asking Opus inside the build session (that session had already seen the labels, the results and the audit verdicts, so its answers would be contaminated); or a fresh Claude Code CLI call per map, signed in with Mehnaj's Claude Pro subscription.
+- **Decided:** the CLI, one fresh call per map. It mirrors how Luna ran through `codex exec` on ChatGPT credits.
+- **Setup (src/wm811k/vlm.py `ask_claude`):**
+  - The picture goes inside the message as an image block, so the model needs no tool to see it, and all tools are switched off (`--tools ""`, `--restricted`, no MCP servers, no slash commands, no saved session).
+  - Each call runs in an empty temporary folder, so there is nothing on disk to read even if a tool leaked through. Any tool call would be recorded in the `actions` column.
+  - Claude Code's own system prompt is replaced with one neutral line. Luna kept the codex system prompt, so Opus's input is much smaller (about 1,400 tokens against about 15,000), and its cost is closer to a direct API call.
+  - Effort is set to `medium`, the API default for Opus 5.5, written out so a change to the CLI default can't move it.
+  - Same three prompts as Luna, unchanged. They were all fixed before Opus saw any map, so nothing was tuned on these test maps for Opus.
+  - A call that fails (a usage limit, a crash, a timeout) is not saved, and a rerun asks it again. Without that, an error message would be scored as a wrong answer.
+- **Cost:** tokens × Anthropic's published Opus 5.5 prices (platform.claude.com/docs/en/about-claude/pricing, checked 2026-11-08): $4 input, $5 or $8 per million for 5-minute or 1-hour cache writes, $0.20 cache reads, $20 output. The CLI writes the prompt to the 1-hour cache, so the as-run cost is above a plain API call. Nothing was actually billed, since the calls ran on the subscription.
+- **Not like for like:** Luna is OpenAI's low-cost tier and Opus is a frontier model, so this asks whether the strongest general model can match a small CNN trained on the data, not which vendor is better.
+- **Result (same 180 test maps, results/vlm_summary.csv, results/vlm_pairs.csv):**
+  - label names only 0.527 (0.456–0.583), v1 rules 0.537 (0.467–0.586), v2 rules 0.718 (0.645–0.772)
+  - Opus minus Luna, paired lot bootstrap: +0.075 (0.007 to 0.140) raw, +0.087 (0.020 to 0.152) v1, +0.106 (0.026 to 0.176) v2, all clear of zero
+  - CNN minus Opus v2: +0.198 (0.131 to 0.272); forest minus Opus v2: +0.148 (0.076 to 0.231)
+  - v2 calls 5 of 20 clean wafers defects (3 as Edge-Ring) and 3.8% of defect wafers clean
+  - all 540 calls returned a valid label, none failed, and none used a tool (the `actions` column is empty)
+- **Where it goes wrong:** Loc is 2 of 20 on v2, with 10 called Edge-Loc. That is the Loc versus Edge-Loc boundary RESEARCH.md lists as noisy in the labels themselves. Its best classes are Center, Near-full, Scratch and Edge-Ring (18 to 20 of 20).
+- **Cost:** $10.65 to $13.95 per 1,000 maps as run, or $6.08 to $8.23 with every input token billed at the plain input price and no caching (`usd_per_1000_maps_no_cache`). The as-run figure is higher because the CLI writes each prompt to the one-hour cache at $8 per million. Luna's no-cache figure is not comparable the same way, because it still includes the roughly 15k codex harness tokens.
+- **Reading:** a frontier model reads wafer maps clearly better than a low-cost one, and the same domain fix to the prompt helps both by about the same amount (+0.16 Luna, +0.18 Opus). It still sits about 0.2 macro-F1 below a 0.58M-weight CNN trained on labelled maps, at roughly 1.4 cents a wafer as run. So the d63 conclusion holds: zero-shot models can't replace labelling here.

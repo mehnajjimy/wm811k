@@ -1,0 +1,673 @@
+,prompt,model,reply,ran_something,actions,input_tokens,cached_input_tokens,cache_write_5m_tokens,cache_write_1h_tokens,output_tokens,reasoning_output_tokens,seconds,returncode,pred
+211922,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1150,0,0,1148,13,0,3.39560866355896,0,Center
+587260,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1145,0,0,1143,42,29,3.433573007583618,0,Center
+591434,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1149,0,0,1147,13,0,3.745781898498535,0,Center
+372813,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1147,0,0,1145,13,0,3.101260185241699,0,Center
+187527,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1142,0,0,1140,61,48,3.3773670196533203,0,Center
+764868,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1148,0,0,1146,297,282,5.9518818855285645,0,Scratch
+589034,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1147,0,0,1145,44,31,3.24965500831604,0,Center
+586753,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,150,137,4.289630174636841,0,Random
+893,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1149,0,0,1147,13,0,3.2127737998962402,0,Random
+759677,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,55,42,2.958583116531372,0,Random
+221916,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1149,0,0,1147,41,28,3.2161941528320312,0,Center
+764416,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1147,0,0,1145,57,44,3.66813325881958,0,Random
+628897,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1142,0,0,1140,53,40,3.0162529945373535,0,Center
+86381,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1138,0,0,1136,123,110,4.32355809211731,0,Random
+586707,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1146,0,0,1144,41,28,2.977545976638794,0,Center
+627881,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1144,0,0,1142,13,0,2.8708200454711914,0,Center
+337216,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1145,0,0,1143,50,37,3.1431899070739746,0,Center
+628240,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1143,0,0,1141,13,0,2.9945309162139893,0,Center
+589471,raw,claude-opus-5-5,"There's a central cluster plus scattered random fails. The center blob is prominent, so this is Center.
+
+{""pattern"": ""Center""}",False,,1149,0,0,1147,45,0,4.078063011169434,0,Center
+590618,raw,claude-opus-5-5,"There's a dense cluster of failing dies in the center, with sparse random fails elsewhere.
+
+{""pattern"": ""Center""}",False,,1149,0,0,1147,44,0,3.8740642070770264,0,Center
+694433,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1147,0,0,1145,81,68,3.1332647800445557,0,Random
+681246,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1151,0,0,1149,13,0,2.9392151832580566,0,Center
+68415,raw,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1148,0,0,1146,60,46,3.194646120071411,0,Donut
+639390,raw,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1146,0,0,1144,14,0,2.9464380741119385,0,Donut
+279127,raw,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1142,0,0,1140,117,103,3.883721113204956,0,Donut
+479626,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1149,0,0,1147,142,124,3.8766322135925293,0,Edge-Loc
+278971,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1152,0,0,1150,195,182,5.33429217338562,0,Random
+548134,raw,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1152,0,0,1150,61,47,3.43611478805542,0,Donut
+771849,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1148,0,0,1146,13,0,3.182482957839966,0,Random
+9608,raw,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1145,0,0,1143,258,244,5.964617967605591,0,Donut
+278981,raw,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1145,0,0,1143,74,60,3.998382091522217,0,Donut
+679380,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1149,0,0,1147,49,36,3.2613680362701416,0,Center
+279757,raw,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1141,0,0,1139,14,0,3.004007339477539,0,Donut
+279039,raw,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1148,0,0,1146,156,142,4.603265047073364,0,Donut
+747563,raw,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1146,0,0,1144,232,218,5.981451034545898,0,Donut
+279125,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1144,0,0,1142,137,124,4.381518840789795,0,Center
+278966,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1147,0,0,1145,141,128,4.280534982681274,0,Center
+809775,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1145,0,0,1143,223,205,4.969112873077393,0,Edge-Loc
+316511,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1141,0,0,1139,13,0,2.7474961280822754,0,Center
+279062,raw,claude-opus-5-5,"{""pattern"": ""Loc""}",False,,1145,0,0,1143,166,152,4.277818202972412,0,Loc
+704144,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1144,0,0,1142,118,100,4.119568824768066,0,Edge-Loc
+58400,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1144,0,0,1142,92,74,3.6630947589874268,0,Edge-Ring
+642294,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1146,0,0,1144,119,101,3.395129919052124,0,Edge-Loc
+738005,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1150,0,0,1148,48,30,2.856597900390625,0,Edge-Loc
+639639,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1150,0,0,1148,209,191,4.975175857543945,0,Edge-Ring
+770401,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1148,0,0,1146,217,199,4.9124438762664795,0,Edge-Ring
+810383,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1146,0,0,1144,13,0,3.0077853202819824,0,Random
+58214,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1141,0,0,1139,13,0,3.4385690689086914,0,Random
+291013,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1144,0,0,1142,18,0,3.3422842025756836,0,Edge-Loc
+219898,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1142,0,0,1140,18,0,3.6393179893493652,0,Edge-Loc
+766409,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1141,0,0,1139,13,0,3.057612180709839,0,Random
+7931,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1148,0,0,1146,67,49,3.177595853805542,0,Edge-Ring
+42,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1150,0,0,1148,18,0,3.4475157260894775,0,Edge-Loc
+750768,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1148,0,0,1146,147,129,4.032835006713867,0,Edge-Loc
+677904,raw,claude-opus-5-5,"Failures surround the whole perimeter, heavier at the bottom, with a mostly clean center.
+
+{""pattern"": ""Edge-Ring""}",False,,1146,0,0,1144,50,0,4.138242721557617,0,Edge-Ring
+725345,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1145,0,0,1143,18,0,2.9180233478546143,0,Edge-Loc
+681872,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1144,0,0,1142,85,67,3.72419810295105,0,Edge-Loc
+645862,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1148,0,0,1146,200,187,4.831470251083374,0,Random
+165654,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1145,0,0,1143,58,40,3.346127986907959,0,Edge-Loc
+723297,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1148,0,0,1146,50,37,3.0582921504974365,0,Random
+779449,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1152,0,0,1150,227,209,4.446125745773315,0,Edge-Loc
+141316,raw,claude-opus-5-5,"{""pattern"": ""none""}",False,,1147,0,0,1145,12,0,3.7019388675689697,0,none
+228339,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1144,0,0,1142,281,263,5.4983837604522705,0,Edge-Ring
+350408,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1148,0,0,1146,243,225,5.061985969543457,0,Edge-Ring
+144969,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1146,0,0,1144,252,239,5.61862587928772,0,Random
+253806,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1149,0,0,1147,47,29,3.129194974899292,0,Edge-Ring
+377042,raw,claude-opus-5-5,"Scattered failures across the wafer, plus some failures along the edge. The edge failures look like part of the general scatter rather than a distinct ring.
+
+{""pattern"": ""Random""}",False,,1143,0,0,1141,60,0,3.5040509700775146,0,Random
+253808,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1142,0,0,1140,54,36,3.483496904373169,0,Edge-Ring
+333934,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1146,0,0,1144,18,0,3.112076759338379,0,Edge-Ring
+439535,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1148,0,0,1146,76,58,3.2587318420410156,0,Edge-Ring
+200277,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,13,0,2.762830972671509,0,Random
+157709,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1143,0,0,1141,13,0,2.7443008422851562,0,Random
+141182,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1148,0,0,1146,42,29,3.140552043914795,0,Random
+14041,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1147,0,0,1145,13,0,3.288609027862549,0,Random
+268796,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1148,0,0,1146,13,0,3.17350697517395,0,Random
+360330,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1146,0,0,1144,245,227,5.770910978317261,0,Edge-Ring
+20802,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1143,0,0,1141,52,34,2.7893738746643066,0,Edge-Ring
+14062,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1147,0,0,1145,233,215,4.9801459312438965,0,Edge-Ring
+329814,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,13,0,3.3940558433532715,0,Random
+728441,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1146,0,0,1144,251,233,5.493561267852783,0,Edge-Ring
+717423,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1144,0,0,1142,149,131,4.154935121536255,0,Edge-Loc
+616514,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1148,0,0,1146,42,29,3.404568672180176,0,Center
+405053,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1147,0,0,1145,47,34,3.033973217010498,0,Center
+718796,raw,claude-opus-5-5,"{""pattern"": ""Loc""}",False,,1146,0,0,1144,229,215,5.302959203720093,0,Loc
+434644,raw,claude-opus-5-5,"{""pattern"": ""Loc""}",False,,1145,0,0,1143,65,51,3.2656967639923096,0,Loc
+87292,raw,claude-opus-5-5,"{""pattern"": ""Loc""}",False,,1145,0,0,1143,163,149,4.588914155960083,0,Loc
+658574,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1148,0,0,1146,120,102,4.133960962295532,0,Edge-Loc
+187723,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1148,0,0,1146,90,72,3.450894832611084,0,Edge-Loc
+683509,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1148,0,0,1146,113,100,3.637495994567871,0,Random
+84024,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1142,0,0,1140,89,71,3.691392183303833,0,Edge-Loc
+291830,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1149,0,0,1147,44,31,3.0732309818267822,0,Random
+788091,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1149,0,0,1147,44,31,3.286541223526001,0,Random
+768692,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1146,0,0,1144,13,0,3.184837818145752,0,Random
+717410,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1147,0,0,1145,195,180,4.615973949432373,0,Scratch
+381307,raw,claude-opus-5-5,"Scattered failures plus a small cluster on the left edge. Mostly random scattered dies across the wafer.
+
+{""pattern"": ""Random""}",False,,1141,0,0,1139,49,0,4.121734857559204,0,Random
+354198,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1149,0,0,1147,13,0,3.2271080017089844,0,Random
+110259,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1146,0,0,1144,48,30,3.1823551654815674,0,Edge-Loc
+7541,raw,claude-opus-5-5,"{""pattern"": ""Loc""}",False,,1145,0,0,1143,173,159,4.47369384765625,0,Loc
+598665,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1147,0,0,1145,122,104,3.9006268978118896,0,Edge-Loc
+279052,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1149,0,0,1147,80,62,3.1740548610687256,0,Edge-Loc
+439565,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1145,0,0,1143,15,0,3.055440664291382,0,Near-full
+774282,raw,claude-opus-5-5,"Nearly all dies are failing.
+
+{""pattern"": ""Near-full""}",False,,1144,0,0,1142,27,0,3.165992021560669,0,Near-full
+655156,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1151,0,0,1149,15,0,3.1277341842651367,0,Near-full
+728764,raw,claude-opus-5-5,"Nearly the whole wafer is blue (failing), with only scattered grey passing dies.
+
+{""pattern"": ""Near-full""}",False,,1149,0,0,1147,45,0,3.782818078994751,0,Near-full
+736049,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1148,0,0,1146,15,0,2.9940197467803955,0,Near-full
+764596,raw,claude-opus-5-5,"Almost all dies are blue (failed), with only scattered grey pass dies.
+
+{""pattern"": ""Near-full""}",False,,1147,0,0,1145,41,0,3.8162930011749268,0,Near-full
+728653,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1147,0,0,1145,15,0,2.8494279384613037,0,Near-full
+752924,raw,claude-opus-5-5,"Almost the entire wafer is failing dies, with only a few scattered white points that look like passing or missing dies.
+
+{""pattern"": ""Near-full""}",False,,1147,0,0,1145,51,0,3.833303928375244,0,Near-full
+728751,raw,claude-opus-5-5,"Mostly blue (fail) with scattered grey passes — Near-full.
+
+{""pattern"": ""Near-full""}",False,,1146,0,0,1144,40,0,3.7415249347686768,0,Near-full
+730420,raw,claude-opus-5-5,"Most dies are blue (failing), with passing dies scattered throughout.
+
+{""pattern"": ""Near-full""}",False,,1150,0,0,1148,39,0,3.8000481128692627,0,Near-full
+675063,raw,claude-opus-5-5,"Almost the entire wafer is blue (failing), with only scattered grey passing dies.
+
+{""pattern"": ""Near-full""}",False,,1145,0,0,1143,44,0,3.737320899963379,0,Near-full
+698787,raw,claude-opus-5-5,"Nearly all dies are blue (failing), with scattered grey passes.
+
+{""pattern"": ""Near-full""}",False,,1144,0,0,1142,39,0,3.998711109161377,0,Near-full
+735863,raw,claude-opus-5-5,"Almost all dies failed (blue), with few passing.
+
+{""pattern"": ""Near-full""}",False,,1151,0,0,1149,33,0,4.191110134124756,0,Near-full
+676749,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1145,0,0,1143,15,0,2.796447992324829,0,Near-full
+764587,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1141,0,0,1139,46,31,3.4316821098327637,0,Near-full
+247675,raw,claude-opus-5-5,"Mostly blue, with only small grey regions near the edges, so the failing dies cover nearly the whole wafer.
+
+{""pattern"": ""Near-full""}",False,,1154,0,0,1152,53,0,3.5239779949188232,0,Near-full
+728673,raw,claude-opus-5-5,"Mostly blue (failed) dies across the wafer.
+
+{""pattern"": ""Near-full""}",False,,1143,0,0,1141,34,0,3.876833915710449,0,Near-full
+728614,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1146,0,0,1144,15,0,2.6102840900421143,0,Near-full
+728882,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1143,0,0,1141,41,26,2.7787981033325195,0,Near-full
+731778,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1147,0,0,1145,15,0,2.962960958480835,0,Near-full
+757292,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1144,0,0,1142,13,0,3.0706660747528076,0,Random
+19122,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1144,0,0,1142,153,140,4.391406774520874,0,Random
+18120,raw,claude-opus-5-5,"Failures are spread widely across the wafer at high density, with roughly half the dies failing. The pattern looks random.
+
+{""pattern"": ""Random""}",False,,1144,0,0,1142,50,0,3.9462811946868896,0,Random
+226267,raw,claude-opus-5-5,"Blue is spread across the whole wafer and makes up more than half of the dies. There is no single cluster, ring, edge band or line, so the failures look scattered at random.
+
+{""pattern"": ""Random""}",False,,1148,0,0,1146,67,0,3.605591058731079,0,Random
+558661,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1144,0,0,1142,98,85,3.2408511638641357,0,Center
+248075,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1147,0,0,1145,15,0,3.2238218784332275,0,Near-full
+386874,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1147,0,0,1145,109,96,3.6762218475341797,0,Random
+764582,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1142,0,0,1140,208,193,5.137676000595093,0,Scratch
+721995,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1143,0,0,1141,13,0,3.029193878173828,0,Random
+631768,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1144,0,0,1142,90,77,3.5656399726867676,0,Random
+19373,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1142,0,0,1140,105,92,3.4751341342926025,0,Random
+806408,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1149,0,0,1147,13,0,2.7992758750915527,0,Random
+558650,raw,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1149,0,0,1147,154,141,4.11183500289917,0,Center
+18112,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1146,0,0,1144,119,106,3.8767290115356445,0,Random
+689861,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1140,0,0,1138,74,61,3.507638931274414,0,Random
+173387,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1141,0,0,1139,13,0,2.9099788665771484,0,Random
+722403,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1151,0,0,1149,109,96,3.389573097229004,0,Random
+713307,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1151,0,0,1149,160,142,3.987596035003662,0,Edge-Loc
+243450,raw,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1142,0,0,1140,66,51,3.4367032051086426,0,Near-full
+18136,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1143,0,0,1141,96,83,3.5241470336914062,0,Random
+285649,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1149,0,0,1147,15,0,3.143718957901001,0,Scratch
+770905,raw,claude-opus-5-5,"There's a diagonal line of failing dies from the upper right toward the center, which reads as a scratch.
+
+{""pattern"": ""Scratch""}",False,,1147,0,0,1145,48,0,2.985395908355713,0,Scratch
+351546,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1144,0,0,1142,15,0,2.9291749000549316,0,Scratch
+492257,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1148,0,0,1146,86,71,3.263535976409912,0,Scratch
+692891,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1145,0,0,1143,234,219,5.103163242340088,0,Scratch
+285652,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1144,0,0,1142,123,108,3.575778007507324,0,Scratch
+695260,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,13,0,3.4274039268493652,0,Random
+790228,raw,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1144,0,0,1142,94,76,3.292957067489624,0,Edge-Loc
+660367,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1142,0,0,1140,98,83,3.5171988010406494,0,Scratch
+570348,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1150,0,0,1148,15,0,2.762557029724121,0,Scratch
+266902,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1144,0,0,1142,15,0,2.8817028999328613,0,Scratch
+287818,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1146,0,0,1144,65,52,2.9853408336639404,0,Random
+808086,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1146,0,0,1144,117,102,3.5278501510620117,0,Scratch
+176803,raw,claude-opus-5-5,"There's a diagonal line of failures from the center down to the lower left, which reads as a scratch.
+
+{""pattern"": ""Scratch""}",False,,1150,0,0,1148,46,0,3.8416588306427,0,Scratch
+287817,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1143,0,0,1141,189,174,4.818471193313599,0,Scratch
+809185,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1145,0,0,1143,121,106,3.7714409828186035,0,Scratch
+747536,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1148,0,0,1146,40,25,3.0726850032806396,0,Scratch
+762108,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1151,0,0,1149,13,0,2.7855799198150635,0,Random
+792713,raw,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1145,0,0,1143,234,216,5.605129957199097,0,Edge-Ring
+178386,raw,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1147,0,0,1145,15,0,2.824436902999878,0,Scratch
+697296,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,13,0,3.595690965652466,0,Random
+807866,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,13,0,3.3018038272857666,0,Random
+701056,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1147,0,0,1145,13,0,3.5764148235321045,0,Random
+685863,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1151,0,0,1149,13,0,2.8818440437316895,0,Random
+692010,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1150,0,0,1148,13,0,2.8033368587493896,0,Random
+746727,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,13,0,2.9975428581237793,0,Random
+639747,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1148,0,0,1146,13,0,3.1085360050201416,0,Random
+726244,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1151,0,0,1149,13,0,3.1238481998443604,0,Random
+692487,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1146,0,0,1144,54,41,3.7800729274749756,0,Random
+692794,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1146,0,0,1144,13,0,3.0238630771636963,0,Random
+788374,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,13,0,3.1930928230285645,0,Random
+778931,raw,claude-opus-5-5,"Scattered failures across the wafer, with some at the top edge, but mostly random.
+
+{""pattern"": ""Random""}",False,,1146,0,0,1144,40,0,3.3133089542388916,0,Random
+760730,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1150,0,0,1148,13,0,3.0700080394744873,0,Random
+704994,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1148,0,0,1146,13,0,3.1180758476257324,0,Random
+769765,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1149,0,0,1147,13,0,2.9317150115966797,0,Random
+731338,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,13,0,3.0824949741363525,0,Random
+807489,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1145,0,0,1143,13,0,3.02186918258667,0,Random
+809256,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1142,0,0,1140,192,179,4.915112257003784,0,Random
+783782,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1142,0,0,1140,13,0,2.8678441047668457,0,Random
+696716,raw,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1148,0,0,1146,13,0,3.278203010559082,0,Random
+587260,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1371,0,0,1369,82,69,3.437366008758545,0,Center
+591434,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1370,0,0,1368,50,37,3.148808240890503,0,Center
+211922,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1367,0,0,1365,13,0,3.0763330459594727,0,Center
+764868,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1365,0,0,1363,83,70,3.5165560245513916,0,Random
+372813,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1376,0,0,1374,67,54,3.35721492767334,0,Center
+187527,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1373,0,0,1371,71,58,3.4912679195404053,0,Center
+586753,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1373,0,0,1371,96,83,3.2768447399139404,0,Random
+589034,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1369,0,0,1367,78,65,3.24129319190979,0,Center
+893,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1363,0,0,1361,13,0,3.149017810821533,0,Random
+759677,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1374,0,0,1372,69,56,3.63031005859375,0,Random
+221916,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1367,0,0,1365,74,61,3.625633955001831,0,Center
+764416,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,62,49,3.4760797023773193,0,Random
+628897,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1367,0,0,1365,93,80,3.420386791229248,0,Center
+86381,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,109,96,3.985241174697876,0,Random
+586707,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1365,0,0,1363,102,89,3.8566153049468994,0,Center
+627881,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1366,0,0,1364,13,0,2.892190933227539,0,Center
+337216,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1371,0,0,1369,71,58,3.264549970626831,0,Center
+628240,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1369,0,0,1367,83,70,3.6978328227996826,0,Center
+589471,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1374,0,0,1372,60,47,3.4358301162719727,0,Center
+590618,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1371,0,0,1369,109,96,3.7858707904815674,0,Center
+694433,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1372,0,0,1370,75,62,3.319139003753662,0,Random
+681246,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1370,0,0,1368,64,51,3.6103107929229736,0,Center
+68415,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1375,0,0,1373,135,121,3.906649112701416,0,Donut
+639390,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1373,0,0,1371,14,0,3.173985719680786,0,Donut
+279127,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1367,0,0,1365,81,67,3.4935710430145264,0,Donut
+479626,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1375,0,0,1373,209,191,4.513479948043823,0,Edge-Loc
+278971,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1371,0,0,1369,207,193,5.082353830337524,0,Donut
+548134,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1368,0,0,1366,81,67,3.318240165710449,0,Donut
+771849,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1369,0,0,1367,13,0,3.011399030685425,0,Random
+278981,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1370,0,0,1368,78,64,3.060558795928955,0,Donut
+9608,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1370,0,0,1368,274,260,5.602669954299927,0,Donut
+679380,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1370,0,0,1368,80,67,3.352479934692383,0,Center
+747563,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1365,0,0,1363,204,190,4.688008069992065,0,Donut
+279039,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1372,0,0,1370,141,127,3.8147358894348145,0,Donut
+279757,rules,claude-opus-5-5,"Ring around center with passing center: donut.
+
+{""pattern"": ""Donut""}",False,,1369,0,0,1367,28,0,3.1627509593963623,0,Donut
+279125,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1368,0,0,1366,146,132,4.415052890777588,0,Donut
+809775,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1365,0,0,1363,253,235,5.774245262145996,0,Edge-Loc
+278966,rules,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1367,0,0,1365,271,257,6.143702030181885,0,Donut
+316511,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1373,0,0,1371,13,0,3.409221887588501,0,Center
+704144,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1366,0,0,1364,175,157,4.141114234924316,0,Edge-Loc
+279062,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1372,0,0,1370,167,154,4.4035539627075195,0,Center
+58400,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1371,0,0,1369,133,115,4.489983081817627,0,Edge-Ring
+642294,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1370,0,0,1368,13,0,3.070758819580078,0,Random
+770401,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1369,0,0,1367,128,110,3.8723721504211426,0,Edge-Ring
+639639,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1367,0,0,1365,237,219,4.877532958984375,0,Edge-Ring
+738005,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1365,0,0,1363,124,106,4.065215826034546,0,Edge-Loc
+810383,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1366,0,0,1364,13,0,2.8374240398406982,0,Random
+58214,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1372,0,0,1370,13,0,2.972740888595581,0,Random
+291013,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1369,0,0,1367,49,31,3.433648109436035,0,Edge-Loc
+7931,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1371,0,0,1369,125,107,3.559844970703125,0,Edge-Ring
+219898,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1369,0,0,1367,176,158,4.321141004562378,0,Edge-Loc
+766409,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1368,0,0,1366,13,0,2.6523427963256836,0,Random
+42,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1368,0,0,1366,87,69,3.891144037246704,0,Edge-Loc
+677904,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1375,0,0,1373,18,0,3.058769941329956,0,Edge-Ring
+645862,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1372,0,0,1370,84,71,3.689185857772827,0,Random
+725345,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,91,78,3.200334072113037,0,Random
+165654,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1373,0,0,1371,77,59,3.53326416015625,0,Edge-Loc
+681872,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1373,0,0,1371,175,157,4.227280139923096,0,Edge-Loc
+750768,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1369,0,0,1367,941,926,12.468279123306274,0,Near-full
+141316,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1367,0,0,1365,13,0,2.976850986480713,0,Random
+723297,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1373,0,0,1371,136,118,3.621462821960449,0,Edge-Ring
+779449,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1375,0,0,1373,338,320,6.164530992507935,0,Edge-Loc
+350408,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1370,0,0,1368,158,140,4.347675800323486,0,Edge-Ring
+228339,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1371,0,0,1369,292,274,5.656179904937744,0,Edge-Ring
+144969,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1370,0,0,1368,182,164,4.040583848953247,0,Edge-Ring
+253806,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1371,0,0,1369,75,57,3.366610288619995,0,Edge-Ring
+377042,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1371,0,0,1369,148,130,3.9104318618774414,0,Edge-Ring
+253808,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1372,0,0,1370,123,105,3.843679904937744,0,Edge-Ring
+439535,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1372,0,0,1370,115,97,3.5652213096618652,0,Edge-Ring
+333934,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1370,0,0,1368,315,302,6.340708017349243,0,Random
+200277,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1374,0,0,1372,198,180,4.6382670402526855,0,Edge-Ring
+141182,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1374,0,0,1372,13,0,2.790447950363159,0,Random
+157709,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1367,0,0,1365,260,242,5.374276876449585,0,Edge-Ring
+360330,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1368,0,0,1366,175,157,4.424448013305664,0,Edge-Ring
+14041,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1375,0,0,1373,109,91,3.6071722507476807,0,Edge-Ring
+268796,rules,claude-opus-5-5,"Scattered fails all over the wafer.
+
+{""pattern"": ""Random""}",False,,1367,0,0,1365,27,0,4.312230110168457,0,Random
+14062,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1365,0,0,1363,207,189,4.390105247497559,0,Edge-Ring
+728441,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1365,0,0,1363,43,30,2.7853548526763916,0,Random
+20802,rules,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1370,0,0,1368,199,181,5.126705884933472,0,Edge-Ring
+329814,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1369,0,0,1367,13,0,2.8977110385894775,0,Random
+616514,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1370,0,0,1368,108,95,3.9789202213287354,0,Center
+718796,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1367,0,0,1365,112,99,3.824620008468628,0,Random
+717423,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1367,0,0,1365,310,295,5.876056671142578,0,Near-full
+405053,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1368,0,0,1366,77,64,3.086946964263916,0,Center
+87292,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1367,0,0,1365,218,205,5.4058918952941895,0,Center
+434644,rules,claude-opus-5-5,"{""pattern"": ""Loc""}",False,,1369,0,0,1367,146,132,4.296945095062256,0,Loc
+658574,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1373,0,0,1371,137,119,4.5740180015563965,0,Edge-Loc
+683509,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1376,0,0,1374,85,72,3.4318740367889404,0,Random
+187723,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1370,0,0,1368,93,75,3.537816047668457,0,Edge-Loc
+84024,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1367,0,0,1365,144,126,4.20339298248291,0,Edge-Loc
+291830,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,13,0,3.007537841796875,0,Random
+788091,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1370,0,0,1368,61,48,3.471220016479492,0,Random
+768692,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1370,0,0,1368,13,0,2.8230059146881104,0,Random
+381307,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1364,0,0,1362,13,0,3.3782870769500732,0,Random
+717410,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1369,0,0,1367,250,232,5.214349985122681,0,Edge-Loc
+354198,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1368,0,0,1366,45,32,3.117568016052246,0,Random
+110259,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1371,0,0,1369,129,111,3.3036298751831055,0,Edge-Loc
+7541,rules,claude-opus-5-5,"{""pattern"": ""Loc""}",False,,1366,0,0,1364,299,285,5.594826936721802,0,Loc
+598665,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1369,0,0,1367,84,71,3.669379949569702,0,Random
+279052,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1373,0,0,1371,105,87,3.507222890853882,0,Edge-Loc
+439565,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1374,0,0,1372,15,0,2.9811017513275146,0,Near-full
+774282,rules,claude-opus-5-5,"Almost all blue = failed. Near-full.
+
+{""pattern"": ""Near-full""}",False,,1369,0,0,1367,31,0,3.2134180068969727,0,Near-full
+655156,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1368,0,0,1366,15,0,2.7842118740081787,0,Near-full
+728764,rules,claude-opus-5-5,"Nearly the whole wafer is blue (failed), so near-full applies.
+
+{""pattern"": ""Near-full""}",False,,1374,0,0,1372,40,0,4.013189792633057,0,Near-full
+736049,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1378,0,0,1376,15,0,2.6591649055480957,0,Near-full
+764596,rules,claude-opus-5-5,"Most of the wafer is blue (failed), so this is Near-full.
+
+{""pattern"": ""Near-full""}",False,,1373,0,0,1371,38,0,3.5207302570343018,0,Near-full
+728653,rules,claude-opus-5-5,"Blue (failing) covers most of the wafer, so near-full.
+
+{""pattern"": ""Near-full""}",False,,1376,0,0,1374,37,0,3.7627220153808594,0,Near-full
+752924,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1377,0,0,1375,15,0,2.87013578414917,0,Near-full
+728751,rules,claude-opus-5-5,"Mostly blue = failed. Near-full.
+
+{""pattern"": ""Near-full""}",False,,1368,0,0,1366,31,0,3.6197261810302734,0,Near-full
+675063,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1372,0,0,1370,15,0,2.7038002014160156,0,Near-full
+730420,rules,claude-opus-5-5,"Mostly blue, so most dies failed.
+
+{""pattern"": ""Near-full""}",False,,1374,0,0,1372,30,0,4.306251049041748,0,Near-full
+698787,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1368,0,0,1366,15,0,2.929727077484131,0,Near-full
+735863,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1368,0,0,1366,15,0,2.8678178787231445,0,Near-full
+676749,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1370,0,0,1368,15,0,2.9946610927581787,0,Near-full
+764587,rules,claude-opus-5-5,"Blue is fail and most of the wafer is blue.
+
+{""pattern"": ""Near-full""}",False,,1368,0,0,1366,33,0,4.240839958190918,0,Near-full
+247675,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1369,0,0,1367,15,0,2.9137449264526367,0,Near-full
+728673,rules,claude-opus-5-5,"Mostly blue, so most dies failed.
+
+{""pattern"": ""Near-full""}",False,,1373,0,0,1371,30,0,3.941240072250366,0,Near-full
+728614,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1373,0,0,1371,15,0,3.00458025932312,0,Near-full
+728882,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1377,0,0,1375,50,35,3.010067939758301,0,Near-full
+731778,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1373,0,0,1371,15,0,2.6441500186920166,0,Near-full
+757292,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1370,0,0,1368,13,0,2.8891701698303223,0,Random
+19122,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1373,0,0,1371,243,230,5.658531904220581,0,Random
+226267,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1365,0,0,1363,15,0,3.4070327281951904,0,Near-full
+18120,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1372,0,0,1370,248,235,5.6332738399505615,0,Random
+558661,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1368,0,0,1366,97,84,3.5028319358825684,0,Center
+764582,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1370,0,0,1368,82,69,3.844774007797241,0,Random
+248075,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1367,0,0,1365,15,0,3.274225950241089,0,Near-full
+386874,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1367,0,0,1365,65,52,3.628765821456909,0,Random
+721995,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1363,0,0,1361,13,0,3.1480519771575928,0,Random
+631768,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1374,0,0,1372,176,163,4.545034885406494,0,Random
+806408,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1363,0,0,1361,13,0,3.0179460048675537,0,Random
+19373,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1376,0,0,1374,196,183,4.5899338722229,0,Random
+558650,rules,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1367,0,0,1365,117,104,3.5188229084014893,0,Center
+689861,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1368,0,0,1366,66,53,3.188291072845459,0,Random
+18112,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,182,169,4.932847023010254,0,Random
+722403,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1369,0,0,1367,84,71,3.809391975402832,0,Random
+173387,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1375,0,0,1373,69,56,3.0238442420959473,0,Random
+243450,rules,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1367,0,0,1365,47,32,3.4268248081207275,0,Near-full
+713307,rules,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1370,0,0,1368,263,245,5.4545979499816895,0,Edge-Loc
+18136,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,127,114,4.04454493522644,0,Random
+285649,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1373,0,0,1371,56,41,3.020796060562134,0,Scratch
+351546,rules,claude-opus-5-5,"There's a thin diagonal line of fails in the lower-left area, which fits scratch.
+
+{""pattern"": ""Scratch""}",False,,1369,0,0,1367,44,0,2.8760111331939697,0,Scratch
+770905,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1371,0,0,1369,95,80,3.498396873474121,0,Scratch
+692891,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1373,0,0,1371,13,0,2.854590892791748,0,Random
+285652,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1373,0,0,1371,88,73,3.400702953338623,0,Scratch
+492257,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1369,0,0,1367,112,97,3.828493118286133,0,Scratch
+695260,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1373,0,0,1371,13,0,2.758497953414917,0,Random
+660367,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1375,0,0,1373,130,115,4.374780893325806,0,Scratch
+570348,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1367,0,0,1365,123,108,3.692356824874878,0,Scratch
+790228,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1374,0,0,1372,271,256,5.7644429206848145,0,Scratch
+266902,rules,claude-opus-5-5,"There's a thin diagonal line of fails from the center toward the upper right, so this is a scratch.
+
+{""pattern"": ""Scratch""}",False,,1374,0,0,1372,47,0,4.521104097366333,0,Scratch
+287818,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1372,0,0,1370,248,235,5.609936237335205,0,Random
+287817,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1371,0,0,1369,328,313,6.54756498336792,0,Scratch
+176803,rules,claude-opus-5-5,"There's a diagonal line of fails from around (215,180) down to (130,265), a thin line, so this is a scratch.
+
+{""pattern"": ""Scratch""}",False,,1374,0,0,1372,54,0,3.4281041622161865,0,Scratch
+808086,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1366,0,0,1364,304,289,5.3793230056762695,0,Scratch
+809185,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1368,0,0,1366,251,236,5.005197763442993,0,Scratch
+747536,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1373,0,0,1371,93,78,3.95763897895813,0,Scratch
+762108,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,13,0,3.4475021362304688,0,Random
+178386,rules,claude-opus-5-5,"There is a diagonal line from the upper left to the center, plus random scattered fails. Scratch is checked first, so it takes priority.
+
+{""pattern"": ""Scratch""}",False,,1369,0,0,1367,58,0,3.4309589862823486,0,Scratch
+792713,rules,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1373,0,0,1371,372,357,6.8665149211883545,0,Scratch
+697296,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1373,0,0,1371,13,0,3.2154061794281006,0,Random
+701056,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1373,0,0,1371,13,0,2.841348171234131,0,Random
+807866,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1366,0,0,1364,13,0,3.179875135421753,0,Random
+746727,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1372,0,0,1370,13,0,3.051331043243408,0,Random
+685863,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1375,0,0,1373,13,0,3.2346580028533936,0,Random
+692010,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1377,0,0,1375,13,0,3.152869701385498,0,Random
+639747,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,13,0,3.2763688564300537,0,Random
+692487,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1372,0,0,1370,77,64,3.6154088973999023,0,Random
+726244,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1369,0,0,1367,13,0,3.0199038982391357,0,Random
+692794,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1370,0,0,1368,13,0,2.8556909561157227,0,Random
+778931,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,13,0,2.7264859676361084,0,Random
+788374,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1371,0,0,1369,13,0,2.963649034500122,0,Random
+760730,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1366,0,0,1364,13,0,2.9716811180114746,0,Random
+704994,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1373,0,0,1371,13,0,2.7626230716705322,0,Random
+769765,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1366,0,0,1364,13,0,3.327568292617798,0,Random
+731338,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1366,0,0,1364,13,0,2.5726170539855957,0,Random
+809256,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1373,0,0,1371,31,18,2.9338953495025635,0,Random
+807489,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1373,0,0,1371,55,42,3.00024676322937,0,Random
+783782,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1369,0,0,1367,13,0,3.170825958251953,0,Random
+696716,rules,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1377,0,0,1375,13,0,2.6700847148895264,0,Random
+587260,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1437,821,0,614,97,84,3.762342929840088,0,Center
+211922,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1438,0,0,1436,13,0,3.3227269649505615,0,Center
+591434,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1440,0,0,1438,208,195,5.147763967514038,0,Center
+372813,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1442,0,0,1440,13,0,2.6133339405059814,0,Center
+764868,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1437,0,0,1435,243,228,5.412018299102783,0,Scratch
+187527,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1439,0,0,1437,107,94,3.6034371852874756,0,Center
+586753,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1442,0,0,1440,192,179,4.524809837341309,0,Center
+589034,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1443,0,0,1441,49,36,3.168243885040283,0,Center
+893,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1441,0,0,1439,137,124,3.875241994857788,0,Center
+221916,rules_v2,claude-opus-5-5,"Center cluster with scattered background fails. Check scratch: no clear line. Center.
+
+{""pattern"": ""Center""}",False,,1444,0,0,1442,41,0,2.789801836013794,0,Center
+759677,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1443,0,0,1441,96,83,3.4055540561676025,0,Center
+764416,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1441,0,0,1439,96,83,3.6785171031951904,0,Center
+628897,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1442,0,0,1440,104,91,3.599414110183716,0,Center
+86381,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1434,0,0,1432,150,137,4.369833946228027,0,Center
+586707,rules_v2,claude-opus-5-5,"Center patch present with scattered background fails.
+
+{""pattern"": ""Center""}",False,,1438,0,0,1436,27,0,3.6642019748687744,0,Center
+627881,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1444,0,0,1442,13,0,2.9616639614105225,0,Center
+337216,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1435,0,0,1433,13,0,3.123843193054199,0,Center
+628240,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1437,0,0,1435,72,59,3.205935001373291,0,Center
+589471,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1438,0,0,1436,13,0,2.8042099475860596,0,Center
+590618,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1440,0,0,1438,13,0,2.8143539428710938,0,Center
+694433,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1444,0,0,1442,116,103,3.7550981044769287,0,Random
+681246,rules_v2,claude-opus-5-5,"Dense cluster of fails in the middle of the wafer.
+
+{""pattern"": ""Center""}",False,,1439,0,0,1437,33,0,4.086660861968994,0,Center
+68415,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1440,0,0,1438,382,368,6.9103758335113525,0,Donut
+639390,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1442,0,0,1440,135,121,3.650920867919922,0,Donut
+279127,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1437,0,0,1435,150,136,3.8379828929901123,0,Donut
+548134,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1443,0,0,1441,68,54,3.3734850883483887,0,Donut
+479626,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1435,0,0,1433,155,137,4.236831188201904,0,Edge-Loc
+278971,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1441,0,0,1439,198,184,4.834590196609497,0,Donut
+771849,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1435,0,0,1433,59,46,3.0119080543518066,0,Random
+278981,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1446,0,0,1444,97,83,3.625944137573242,0,Donut
+679380,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1445,0,0,1443,72,59,3.154265880584717,0,Center
+9608,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1443,0,0,1441,378,364,7.269129276275635,0,Donut
+747563,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1443,0,0,1441,80,66,3.46913480758667,0,Donut
+279039,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1438,0,0,1436,115,101,3.9791629314422607,0,Donut
+279757,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1440,0,0,1438,51,37,3.277052879333496,0,Donut
+279125,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1440,0,0,1438,273,259,5.86958909034729,0,Donut
+809775,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1439,0,0,1437,126,108,3.636906862258911,0,Edge-Loc
+278966,rules_v2,claude-opus-5-5,"{""pattern"": ""Donut""}",False,,1443,0,0,1441,204,190,4.940238952636719,0,Donut
+316511,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1439,0,0,1437,13,0,3.046895742416382,0,Center
+704144,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1439,0,0,1437,96,78,3.5877509117126465,0,Edge-Loc
+279062,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1444,0,0,1442,166,153,4.780144929885864,0,Center
+58400,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1441,0,0,1439,81,63,3.2294259071350098,0,Edge-Ring
+642294,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1444,0,0,1442,168,150,4.225477933883667,0,Edge-Loc
+770401,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1444,0,0,1442,87,69,3.473423957824707,0,Edge-Ring
+639639,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1442,0,0,1440,218,200,4.6474387645721436,0,Edge-Ring
+738005,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1439,0,0,1437,161,143,3.9974417686462402,0,Edge-Loc
+58214,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1439,0,0,1437,121,103,3.595950126647949,0,Edge-Ring
+810383,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1441,0,0,1439,154,136,4.244675874710083,0,Edge-Loc
+291013,rules_v2,claude-opus-5-5,"Solid patch at left/lower-left edge → Edge-Loc.
+
+{""pattern"": ""Edge-Loc""}",False,,1443,0,0,1441,42,0,3.7443840503692627,0,Edge-Loc
+219898,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1436,0,0,1434,173,155,4.324555158615112,0,Edge-Loc
+7931,rules_v2,claude-opus-5-5,"Fails are concentrated around most of the outer edge (left, top, bottom), with a mostly passing interior and some scattered fails.
+
+{""pattern"": ""Edge-Ring""}",False,,1440,0,0,1438,61,0,3.9314351081848145,0,Edge-Ring
+42,rules_v2,claude-opus-5-5,"Dense fails on top edge patch → Edge-Loc.
+
+{""pattern"": ""Edge-Loc""}",False,,1441,0,0,1439,39,0,3.4114792346954346,0,Edge-Loc
+750768,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1441,0,0,1439,149,131,4.153332948684692,0,Edge-Loc
+766409,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1441,0,0,1439,145,133,5.010710000991821,0,none
+677904,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1440,0,0,1438,18,0,2.7517752647399902,0,Edge-Ring
+645862,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1439,0,0,1437,125,107,3.3382408618927,0,Edge-Loc
+725345,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1444,0,0,1442,287,269,5.806071996688843,0,Edge-Loc
+681872,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1444,0,0,1442,157,139,4.1115429401397705,0,Edge-Loc
+165654,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1433,0,0,1431,105,87,3.6811771392822266,0,Edge-Loc
+779449,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1441,0,0,1439,172,154,4.402122974395752,0,Edge-Loc
+723297,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1441,0,0,1439,178,160,4.406117916107178,0,Edge-Ring
+141316,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1440,0,0,1438,12,0,3.925309896469116,0,none
+350408,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1440,0,0,1438,80,62,3.4841489791870117,0,Edge-Ring
+144969,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1442,0,0,1440,269,251,5.265936851501465,0,Edge-Ring
+228339,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1440,0,0,1438,289,271,5.884368181228638,0,Edge-Ring
+253806,rules_v2,claude-opus-5-5,"Fails line the outer edge all the way around, with scattered fails inside.
+
+{""pattern"": ""Edge-Ring""}",False,,1444,0,0,1442,42,0,3.7871768474578857,0,Edge-Ring
+253808,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1437,0,0,1435,18,0,2.8443150520324707,0,Edge-Ring
+377042,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1440,0,0,1438,170,152,4.23881983757019,0,Edge-Ring
+439535,rules_v2,claude-opus-5-5,"Fails along the edge all around, mostly right side and bottom. Edge-Ring.
+
+{""pattern"": ""Edge-Ring""}",False,,1442,0,0,1440,47,0,3.0542049407958984,0,Edge-Ring
+333934,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1439,0,0,1437,301,283,6.048326015472412,0,Edge-Ring
+200277,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1447,0,0,1445,160,142,3.876919984817505,0,Edge-Ring
+157709,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1440,0,0,1438,225,207,4.713128089904785,0,Edge-Ring
+141182,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1441,0,0,1439,237,219,4.934162855148315,0,Edge-Ring
+360330,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1443,0,0,1441,318,300,5.773843050003052,0,Edge-Ring
+14041,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1441,0,0,1439,182,164,4.223628997802734,0,Edge-Ring
+268796,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1440,0,0,1438,155,137,3.7949159145355225,0,Edge-Ring
+14062,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1440,0,0,1438,160,142,3.9099950790405273,0,Edge-Ring
+20802,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1443,0,0,1441,170,152,4.177174806594849,0,Edge-Ring
+728441,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1445,0,0,1443,99,81,3.8975422382354736,0,Edge-Ring
+329814,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1437,0,0,1435,12,0,4.22123384475708,0,none
+616514,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1444,0,0,1442,91,78,3.489786148071289,0,Center
+717423,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1445,0,0,1443,265,247,5.456573963165283,0,Edge-Loc
+718796,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1438,0,0,1436,138,120,4.041874885559082,0,Edge-Loc
+405053,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1439,0,0,1437,184,171,4.163933992385864,0,Center
+87292,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1440,0,0,1438,162,149,4.546408176422119,0,Center
+434644,rules_v2,claude-opus-5-5,"{""pattern"": ""Loc""}",False,,1439,0,0,1437,94,80,3.531615972518921,0,Loc
+187723,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1440,0,0,1438,61,43,3.1532108783721924,0,Edge-Loc
+658574,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1441,0,0,1439,207,189,4.699380874633789,0,Edge-Loc
+683509,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1440,0,0,1438,165,152,3.917227029800415,0,Center
+84024,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1444,0,0,1442,140,122,3.920137882232666,0,Edge-Loc
+788091,rules_v2,claude-opus-5-5,"{""pattern"": ""Loc""}",False,,1438,0,0,1436,225,211,5.1340789794921875,0,Loc
+291830,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1443,0,0,1441,368,353,6.709464073181152,0,Scratch
+717410,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1439,0,0,1437,276,261,5.831450939178467,0,Scratch
+768692,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1443,0,0,1441,214,202,5.718307256698608,0,none
+381307,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1435,0,0,1433,174,162,4.793551921844482,0,none
+7541,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1442,0,0,1440,128,110,4.074851751327515,0,Edge-Loc
+110259,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1438,0,0,1436,18,0,3.1955549716949463,0,Edge-Loc
+354198,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1440,0,0,1438,147,129,4.154554843902588,0,Edge-Loc
+598665,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1440,0,0,1438,186,168,4.80329704284668,0,Edge-Loc
+439565,rules_v2,claude-opus-5-5,"Almost all the dies are blue (failed), with only scattered grey passing dies.
+
+{""pattern"": ""Near-full""}",False,,1433,0,0,1431,42,0,4.012737989425659,0,Near-full
+279052,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1442,0,0,1440,205,187,4.906555891036987,0,Edge-Loc
+774282,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1443,0,0,1441,15,0,2.983963966369629,0,Near-full
+655156,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1441,0,0,1439,63,48,3.174048900604248,0,Near-full
+728764,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1441,0,0,1439,39,24,3.357311964035034,0,Near-full
+736049,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1436,0,0,1434,15,0,2.8436269760131836,0,Near-full
+764596,rules_v2,claude-opus-5-5,"Mostly blue, so nearly the whole wafer has failed.
+
+{""pattern"": ""Near-full""}",False,,1442,0,0,1440,37,0,4.254097938537598,0,Near-full
+728653,rules_v2,claude-opus-5-5,"Most of the wafer is blue (failed), with only scattered grey passing dies.
+
+{""pattern"": ""Near-full""}",False,,1438,0,0,1436,42,0,3.367983102798462,0,Near-full
+752924,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1442,0,0,1440,15,0,3.0226588249206543,0,Near-full
+728751,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1445,0,0,1443,44,29,2.8839023113250732,0,Near-full
+730420,rules_v2,claude-opus-5-5,"Mostly blue wafer — fails dominate, likely over three quarters.
+
+{""pattern"": ""Near-full""}",False,,1440,0,0,1438,40,0,4.124251842498779,0,Near-full
+675063,rules_v2,claude-opus-5-5,"Mostly blue → near-full.
+
+{""pattern"": ""Near-full""}",False,,1444,0,0,1442,27,0,3.2290918827056885,0,Near-full
+698787,rules_v2,claude-opus-5-5,"Almost the entire wafer is blue (failed), with only scattered grey passing dies.
+
+{""pattern"": ""Near-full""}",False,,1445,0,0,1443,44,0,4.057201147079468,0,Near-full
+676749,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1436,0,0,1434,15,0,2.671821117401123,0,Near-full
+735863,rules_v2,claude-opus-5-5,"Mostly blue: failing dies dominate the wafer.
+
+{""pattern"": ""Near-full""}",False,,1439,0,0,1437,35,0,3.6833651065826416,0,Near-full
+764587,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1441,0,0,1439,45,30,3.1676621437072754,0,Near-full
+728673,rules_v2,claude-opus-5-5,"Mostly blue means mostly failed. That's near-full.
+
+{""pattern"": ""Near-full""}",False,,1441,0,0,1439,35,0,3.3183469772338867,0,Near-full
+247675,rules_v2,claude-opus-5-5,"Mostly blue → near-full.
+
+{""pattern"": ""Near-full""}",False,,1442,0,0,1440,27,0,4.300353050231934,0,Near-full
+728614,rules_v2,claude-opus-5-5,"Most of the wafer is blue (failing), with only scattered grey passing dies, so it falls under the first rule.
+
+{""pattern"": ""Near-full""}",False,,1444,0,0,1442,52,0,4.996258020401001,0,Near-full
+731778,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1449,0,0,1447,15,0,3.006505250930786,0,Near-full
+757292,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1434,0,0,1432,71,58,3.328941822052002,0,Random
+19122,rules_v2,claude-opus-5-5,"Heavy fails spread over the wafer, roughly half to 60% blue, with no clear shape. Not three quarters. Random.
+
+{""pattern"": ""Random""}",False,,1436,0,0,1434,56,0,3.816615104675293,0,Random
+728882,rules_v2,claude-opus-5-5,"{""pattern"": ""Near-full""}",False,,1441,0,0,1439,443,428,7.738875865936279,0,Near-full
+226267,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1443,0,0,1441,62,49,3.0216140747070312,0,Random
+18120,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1440,0,0,1438,97,84,3.6114108562469482,0,Random
+558661,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1441,0,0,1439,65,52,3.111422300338745,0,Center
+386874,rules_v2,claude-opus-5-5,"Fails spread densely across the whole wafer with no clear shape, roughly 40-50% of dies.
+
+{""pattern"": ""Random""}",False,,1445,0,0,1443,47,0,3.487910747528076,0,Random
+764582,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1437,0,0,1435,194,179,4.731758117675781,0,Scratch
+248075,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1445,0,0,1443,261,248,5.443424940109253,0,Random
+721995,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1443,0,0,1441,68,55,3.3698158264160156,0,Random
+631768,rules_v2,claude-opus-5-5,"Blue fails spread throughout, roughly half or more. Not three quarters likely. Random.
+
+{""pattern"": ""Random""}",False,,1443,0,0,1441,44,0,3.2660470008850098,0,Random
+19373,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1434,0,0,1432,80,67,3.55720591545105,0,Random
+806408,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1443,0,0,1441,13,0,2.875736951828003,0,Random
+18112,rules_v2,claude-opus-5-5,"Dense fails spread across the whole wafer, roughly half, no shape.
+
+{""pattern"": ""Random""}",False,,1442,0,0,1440,38,0,3.5848147869110107,0,Random
+558650,rules_v2,claude-opus-5-5,"{""pattern"": ""Center""}",False,,1441,0,0,1439,289,276,5.415065050125122,0,Center
+689861,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1441,0,0,1439,78,65,3.557981252670288,0,Random
+173387,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1438,0,0,1436,13,0,2.8211071491241455,0,Random
+722403,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1438,0,0,1436,58,45,3.587757110595703,0,Random
+243450,rules_v2,claude-opus-5-5,"{""pattern"": ""Random""}",False,,1440,0,0,1438,111,98,3.2668023109436035,0,Random
+18136,rules_v2,claude-opus-5-5,"The image shows dense fails spread everywhere, roughly half the dies, with no clear shape. Not near-full.
+
+{""pattern"": ""Random""}",False,,1439,0,0,1437,50,0,3.6073968410491943,0,Random
+713307,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1442,0,0,1440,395,377,7.32901406288147,0,Edge-Loc
+285649,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1436,0,0,1434,15,0,2.7800822257995605,0,Scratch
+770905,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1436,0,0,1434,15,0,2.676097869873047,0,Scratch
+351546,rules_v2,claude-opus-5-5,"There's a diagonal line of fails in the lower left, running from about (40,260) to (160,315). That is a thin arc, so it matches the scratch rule.
+
+{""pattern"": ""Scratch""}",False,,1440,0,0,1438,66,0,3.6567511558532715,0,Scratch
+692891,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1442,0,0,1440,139,124,3.998599052429199,0,Scratch
+492257,rules_v2,claude-opus-5-5,"There is a diagonal line of fails running from the upper right toward the center, and a horizontal line across the middle. These are scratch lines.
+
+{""pattern"": ""Scratch""}",False,,1440,0,0,1438,58,0,3.8191170692443848,0,Scratch
+285652,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1440,0,0,1438,70,55,3.573016881942749,0,Scratch
+790228,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1442,0,0,1440,152,137,3.910017967224121,0,Scratch
+695260,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1440,0,0,1438,137,125,4.535478115081787,0,none
+660367,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1436,0,0,1434,88,73,3.4873650074005127,0,Scratch
+570348,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1444,0,0,1442,15,0,2.920149087905884,0,Scratch
+266902,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1438,0,0,1436,15,0,2.97302508354187,0,Scratch
+287818,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1444,0,0,1442,144,129,3.978100061416626,0,Scratch
+287817,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1441,0,0,1439,104,89,3.776057243347168,0,Scratch
+808086,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1439,0,0,1437,86,71,3.596437931060791,0,Scratch
+176803,rules_v2,claude-opus-5-5,"There's a diagonal line of fails from about (215,175) down to (130,265), so this is a scratch.
+
+{""pattern"": ""Scratch""}",False,,1440,0,0,1438,49,0,4.391605854034424,0,Scratch
+747536,rules_v2,claude-opus-5-5,"There's a clear line of fails running from the upper middle down to the bottom. It's a thin arc, one or two dies wide, so the scratch rule matches.
+
+{""pattern"": ""Scratch""}",False,,1440,0,0,1438,65,0,3.156856060028076,0,Scratch
+809185,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1441,0,0,1439,112,97,3.3862111568450928,0,Scratch
+178386,rules_v2,claude-opus-5-5,"There is a diagonal line from the upper left toward the center.
+
+{""pattern"": ""Scratch""}",False,,1441,0,0,1439,34,0,3.4208431243896484,0,Scratch
+792713,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1443,0,0,1441,203,188,4.209702730178833,0,Scratch
+762108,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1441,0,0,1439,204,189,4.5436742305755615,0,Scratch
+697296,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1440,0,0,1438,110,98,4.093282699584961,0,none
+807866,rules_v2,claude-opus-5-5,"Scattered fails, low density, no shape.
+
+{""pattern"": ""none""}",False,,1440,0,0,1438,27,0,3.5596539974212646,0,none
+685863,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1437,0,0,1435,12,0,3.2989819049835205,0,none
+701056,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1438,0,0,1436,280,268,7.334378957748413,0,none
+692010,rules_v2,claude-opus-5-5,"Scattered fails, low density, no shape.
+
+{""pattern"": ""none""}",False,,1441,0,0,1439,27,0,3.5769190788269043,0,none
+746727,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1440,0,0,1438,332,314,6.644546747207642,0,Edge-Ring
+639747,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1445,0,0,1443,148,136,4.746863842010498,0,none
+726244,rules_v2,claude-opus-5-5,"Scattered fails, low density, no shape.
+
+{""pattern"": ""none""}",False,,1439,0,0,1437,27,0,3.4108989238739014,0,none
+692487,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1441,0,0,1439,236,218,5.007673978805542,0,Edge-Ring
+788374,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1437,0,0,1435,12,0,3.993748903274536,0,none
+692794,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1442,0,0,1440,342,330,7.477492332458496,0,none
+778931,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Loc""}",False,,1442,0,0,1440,234,216,5.4041688442230225,0,Edge-Loc
+760730,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1440,0,0,1438,232,220,5.112850904464722,0,none
+769765,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1441,0,0,1439,12,0,3.7666728496551514,0,none
+704994,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1444,0,0,1442,231,219,5.336164712905884,0,none
+731338,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1443,0,0,1441,12,0,3.7501089572906494,0,none
+809256,rules_v2,claude-opus-5-5,"{""pattern"": ""Scratch""}",False,,1439,0,0,1437,387,372,6.446962833404541,0,Scratch
+783782,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1440,0,0,1438,160,148,4.7393269538879395,0,none
+807489,rules_v2,claude-opus-5-5,"{""pattern"": ""Edge-Ring""}",False,,1438,0,0,1436,599,581,9.092060804367065,0,Edge-Ring
+696716,rules_v2,claude-opus-5-5,"{""pattern"": ""none""}",False,,1442,0,0,1440,107,95,4.4274327754974365,0,none

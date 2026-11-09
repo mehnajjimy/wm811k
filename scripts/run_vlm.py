@@ -36,8 +36,25 @@ def sample(test: pd.DataFrame, per_class: int, seed: int) -> pd.DataFrame:
     return out
 
 
+# d65 each model has its own raw file and its own name in the summary
+BACKENDS = {"luna": "", "opus": "_opus"}
+
+
+def ask_one(backend: str, image: Path, prompt: str, cfg: dict) -> dict:
+    """one call to whichever model is being run"""
+    if backend == "opus":
+        o = cfg["opus"]
+        return vlm.ask_claude(image, prompt, o["model"], o["effort"])
+    return vlm.ask(image, prompt, cfg["model"])
+
+
 def collect(
-    chosen: pd.DataFrame, maps: pd.Series, cfg: dict, prompts: list[str], raw_path: Path
+    chosen: pd.DataFrame,
+    maps: pd.Series,
+    cfg: dict,
+    prompts: list[str],
+    raw_path: Path,
+    backend: str = "luna",
 ) -> pd.DataFrame:
     IMG.mkdir(parents=True, exist_ok=True)
     for idx, row in chosen.iterrows():
@@ -50,31 +67,45 @@ def collect(
     todo = [(i, p) for p in prompts for i in chosen.index if (i, p) not in have]
     print(f"{len(have)} calls saved  {len(todo)} to go", flush=True)
 
+    model = cfg["opus"]["model"] if backend == "opus" else cfg["model"]
+    workers = cfg["opus"]["workers"] if backend == "opus" else cfg["workers"]
+
     def one(i, p):
-        r = vlm.ask(IMG / f"{chosen.at[i, 'image']}.png", vlm.PROMPTS[p], cfg["model"])
+        r = ask_one(backend, IMG / f"{chosen.at[i, 'image']}.png", vlm.PROMPTS[p], cfg)
         return i, p, r
 
-    with ThreadPoolExecutor(cfg["workers"]) as pool:
+    with ThreadPoolExecutor(workers) as pool:
         futures = [pool.submit(one, i, p) for i, p in todo]
+        failed = 0
         for n, f in enumerate(as_completed(futures), 1):
             i, p, r = f.result()
-            row = pd.DataFrame([{"prompt": p, "model": cfg["model"], **r}], index=[i])
+            # d65 a call that failed such as one past a usage limit is left unsaved
+            # so the next run asks it again instead of scoring it as a wrong answer
+            if r.pop("failed", False):
+                failed += 1
+                continue
+            row = pd.DataFrame([{"prompt": p, "model": model, **r}], index=[i])
             # the whole file is rewritten so a column added later such as actions
             # lines up with the older rows instead of shifting them
             done = pd.concat([done, row])
             done.to_csv(raw_path)
             if n % 20 == 0:
-                print(f"{n}/{len(todo)}", flush=True)
-    return pd.read_csv(raw_path, index_col=0)
+                print(f"{n}/{len(todo)}  {failed} failed", flush=True)
+    if failed:
+        print(f"{failed} calls failed and were not saved  run again to retry them", flush=True)
+    return done
 
 
-def score(chosen: pd.DataFrame, raw: pd.DataFrame, cfg: dict, seed: int, split: str) -> None:
+def score(chosen: pd.DataFrame, raws: dict, cfg: dict, seed: int, split: str) -> None:
+    """raws maps a backend name to its raw calls  every model is scored on the same maps"""
     y, lots = chosen["label"], chosen["lot"]
     tag = "" if split == "test" else f"_{split}"
-    preds = {}
-    for p in raw["prompt"].unique():
-        r = raw[raw["prompt"] == p]
-        preds[f"luna_{p}"] = r["pred"].reindex(chosen.index)
+    preds, calls = {}, {}
+    for backend, raw in raws.items():
+        for p in raw["prompt"].unique():
+            r = raw[raw["prompt"] == p]
+            preds[f"{backend}_{p}"] = r["pred"].reindex(chosen.index)
+            calls[f"{backend}_{p}"] = (backend, r)
     # the other models are scored on the same sampled maps
     for m in ("rf", "cnn"):
         path = OUT / f"{m}_{split}_predictions.csv"
@@ -86,7 +117,7 @@ def score(chosen: pd.DataFrame, raw: pd.DataFrame, cfg: dict, seed: int, split: 
                 t["pred"] = np.asarray(CLASSES)[t[cols].to_numpy().argmax(1)]
             preds[m] = t["pred"].reindex(chosen.index)
 
-    price = cfg["price_per_million_usd"]
+    prices = {"luna": cfg["price_per_million_usd"], "opus": cfg["opus"]["price_per_million_usd"]}
     rows, recall = [], {}
     for name, pred in preds.items():
         ci = evaluate.lot_bootstrap(y, pred, lots, CLASSES, seed=seed)
@@ -100,9 +131,10 @@ def score(chosen: pd.DataFrame, raw: pd.DataFrame, cfg: dict, seed: int, split: 
             "defects_called_none": float((pred[y != "none"] == "none").mean()),
             "clean_called_defect": float((pred[y == "none"] != "none").mean()),
         }
-        if name.startswith("luna_"):
-            r = raw[raw["prompt"] == name.removeprefix("luna_")]
-            usd = r.apply(lambda s: vlm.cost_usd(s.to_dict(), price), axis=1)
+        if name in calls:
+            backend, r = calls[name]
+            price = prices[backend]
+            usd = pd.Series([vlm.cost_usd(s.fillna(0).to_dict(), price) for _, s in r.iterrows()])
             row |= {
                 "invalid_replies": int((r["pred"] == "invalid").sum()),
                 "calls_that_ran_something": int(r["ran_something"].sum()),
@@ -111,7 +143,17 @@ def score(chosen: pd.DataFrame, raw: pd.DataFrame, cfg: dict, seed: int, split: 
                 "mean_output_tokens": float(r["output_tokens"].mean()),
                 # d48 cost as run through codex  the codex system prompt is most of
                 # the input tokens so a direct api call would cost less
+                # d65 opus runs with a one line system prompt so its overhead is smaller
                 "usd_per_1000_maps": float(1000 * usd.mean()),
+                # d65 the same tokens billed as a plain api call with no caching at all
+                # so the two harnesses can be compared on what the model itself used
+                "usd_per_1000_maps_no_cache": float(
+                    1000
+                    * (
+                        r["input_tokens"] * price["input"] + r["output_tokens"] * price["output"]
+                    ).mean()
+                    / 1e6
+                ),
             }
         rows.append(row)
     summary = pd.DataFrame(rows).set_index("model")
@@ -121,6 +163,18 @@ def score(chosen: pd.DataFrame, raw: pd.DataFrame, cfg: dict, seed: int, split: 
         evaluate.confusion(y, pred.fillna("invalid"), CLASSES).to_csv(
             OUT / f"vlm_confusion{tag}_{name}.csv"
         )
+    # d65 paired gaps on the same maps  each prompt opus minus luna and the
+    # trained models minus the best zero shot run  only rows whose models exist
+    pairs = [(f"opus_{p}", f"luna_{p}") for p in vlm.PROMPTS]
+    pairs += [("cnn", "opus_rules_v2"), ("rf", "opus_rules_v2")]
+    gaps = []
+    for a, b in pairs:
+        if a in preds and b in preds:
+            g = evaluate.paired_lot_bootstrap(y, preds[a], preds[b], lots, CLASSES, seed=seed)
+            gaps.append({"a": a, "b": b, **g.loc["macro_f1"].to_dict()})
+    if gaps:
+        pd.DataFrame(gaps).to_csv(OUT / f"vlm_pairs{tag}.csv", index=False)
+        print(pd.DataFrame(gaps).round(3).to_string(index=False))
     print(summary.round(3).T.to_string())
     print(pd.DataFrame(recall).round(2).to_string())
 
@@ -129,6 +183,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--split", default="test", choices=["val", "test"])
     ap.add_argument("--prompts", nargs="+", default=None)
+    ap.add_argument("--backend", default="luna", choices=list(BACKENDS))
     args = ap.parse_args()
     full = yaml.safe_load((ROOT / "config.yaml").read_text())
     cfg, seed = full["vlm"], full["seed"]
@@ -146,8 +201,15 @@ def main() -> None:
     # reuse a test picture that happened to draw the same random name
     chosen["image"] = args.split + "_" + chosen["image"]
     chosen.to_csv(OUT / f"vlm_sample{tag}.csv")
-    raw = collect(chosen, df["wafer_map"], cfg, prompts, OUT / f"vlm_raw{tag}.csv")
-    score(chosen, raw, cfg, seed, args.split)
+    raw_path = OUT / f"vlm_raw{tag}{BACKENDS[args.backend]}.csv"
+    collect(chosen, df["wafer_map"], cfg, prompts, raw_path, args.backend)
+    # every model that has calls saved is scored again so the summary holds them all
+    raws = {}
+    for b, suffix in BACKENDS.items():
+        path = OUT / f"vlm_raw{tag}{suffix}.csv"
+        if path.exists():
+            raws[b] = pd.read_csv(path, index_col=0)
+    score(chosen, raws, cfg, seed, args.split)
 
 
 if __name__ == "__main__":

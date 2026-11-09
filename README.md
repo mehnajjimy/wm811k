@@ -11,7 +11,7 @@ What I did:
 - ranked defect patterns by how much yield they actually destroy
 - trained classifiers and tested them the way a fab would use them, split by lot and scored on the rare patterns, with a review gate for the costly mistakes
 - linked each pattern to a sourced root-cause table
-- tested whether a vision-language model or a physics simulator can replace labelled data
+- tested whether vision-language models or a physics simulator can replace labelled data
 - built an LLM triage assistant and checked every claim it makes with code
 
 Every number below comes from a file in `results/`. Every choice behind it, including the options I turned down, is in [DECISIONS.md](DECISIONS.md).
@@ -60,23 +60,28 @@ I measured Grad-CAM heat maps on up to 300 correct test wafers per class. For ev
 
 With my corrected labels (mixed wafers dropped), macro-F1 goes from 0.867 to 0.872 for the forest and from 0.877 to 0.881 for the CNN. The original scores stay the headline since only 24 of 25,939 labels changed (`results/label_audit_candidates.csv`, `results/label_rescore_summary.csv`, d64).
 
-### Vision-language model, zero-shot
+### Vision-language models, zero-shot
 
-I ran GPT-6 Luna zero-shot on 180 test wafers (20 per class), the same ones the forest and CNN were scored on:
+I ran two vision-language models zero-shot on 180 test wafers (20 per class), the same ones the forest and CNN were scored on. GPT-6 Luna is OpenAI's low-cost model and Claude Opus 5.5 is Anthropic's frontier model. Both got the exact same three prompts:
 
 | Same 180 wafers | Macro-F1 (95% CI) | Clean wafers called defects | Defect wafers called clean | Cost per 1,000 wafers |
 |---|---|---|---|---|
 | Luna, label names only | 0.452 (0.385 to 0.508) | 20 of 20 | 0% | $0.60 |
 | Luna, one rule per label (v1) | 0.451 (0.389 to 0.501) | 20 of 20 | 0.6% | $0.42 |
 | Luna, corrected rules (v2) | 0.612 (0.538 to 0.682) | 3 of 20 | 17% | $0.47 |
+| Opus 5.5, label names only | 0.527 (0.456 to 0.583) | 20 of 20 | 0.6% | $10.65 |
+| Opus 5.5, one rule per label (v1) | 0.537 (0.467 to 0.586) | 20 of 20 | 0% | $12.94 |
+| Opus 5.5, corrected rules (v2) | 0.718 (0.645 to 0.772) | 5 of 20 | 3.8% | $13.95 |
 | Random forest | 0.866 (0.810 to 0.917) | 0 of 20 | 7% | n/a |
 | Small CNN | 0.916 (0.866 to 0.953) | 0 of 20 | 2.5% | n/a |
 
-My first rule prompt defined "none" as "only a few fails", and that was wrong for this data. On training lots a clean wafer has a median of 9.9% failing dies, and Luna read that normal background as a Random pattern. The v2 prompt says scattered fails are normal and defines Random as dense, using the training-lot fail shares. On a separate validation sample, v2 raised macro-F1 from 0.410 to 0.563, and only after that did I score it once on test. I only found the problem by looking at test results, so v2 is reported next to v1 and doesn't replace it (d53, d55, d61).
+My first rule prompt defined "none" as "only a few fails", and that was wrong for this data. On training lots a clean wafer has a median of 9.9% failing dies, and Luna read that normal background as a Random pattern. The v2 prompt says scattered fails are normal and defines Random as dense, using the training-lot fail shares. On a separate validation sample, v2 raised Luna's macro-F1 from 0.410 to 0.563, and only after that did I score it once on test. I only found the problem by looking at test results, so v2 is reported next to v1 and doesn't replace it (d53, d55, d61). All three prompts were fixed before Opus saw a single wafer.
 
-Even with the fix, Luna is far behind a small trained model, so it can't replace labelling here. It's actually best at Scratch, with 20 of 20 on v2 against 11 of 20 for the forest and 15 of 20 for the CNN.
+Opus beats Luna on every prompt, by 0.075 to 0.106 macro-F1, and all three gaps are clear of zero in a paired lot bootstrap. The prompt fix helped both by about the same amount. Opus's weak spot is Loc: it got 2 of 20 and called 10 of them Edge-Loc, a line that's blurry in the dataset's own labels too. Three of the five clean wafers it flagged it called Edge-Ring, which fits what the simulator section found about real clean wafers carrying weak edge structure.
 
-Costs use OpenAI's published gpt-6-luna prices. They're an upper bound, because the codex harness I called it through adds about 15k input tokens to every call (`results/vlm_summary.csv`, d46 to d48).
+Even the frontier model is 0.20 macro-F1 behind the CNN (paired interval 0.13 to 0.27), so neither model can replace labelling here. Both are good at Scratch, though: 20 of 20 for Luna and 19 of 20 for Opus on v2, against 11 of 20 for the forest and 15 of 20 for the CNN.
+
+Costs use each company's published prices and count every token the calls actually used. Luna ran through the codex CLI, which adds about 15k input tokens to every call. Opus ran through the Claude Code CLI with its system prompt swapped for one line, so it used about 1.4k input tokens per wafer, but the CLI writes them to a one-hour cache that's billed at twice the input price. Sent with no caching at all, Opus v2 would be $8.23 per 1,000 wafers. Both actually ran on subscriptions (ChatGPT credits and Claude Pro), so none of it was billed (`results/vlm_summary.csv`, `results/vlm_pairs.csv`, d46 to d48, d65).
 
 ### Grounded triage assistant
 
@@ -131,10 +136,11 @@ python scripts/run_label_audit.py
 python scripts/run_label_rescore.py
 python scripts/run_synthetic.py
 python scripts/run_vlm.py
+python scripts/run_vlm.py --backend opus --prompts raw rules rules_v2
 python scripts/run_assistant.py
 ```
 
-`run_cnn.py` trains on an Apple GPU if there is one and falls back to the CPU. On an Apple M5 each of its four training runs took 30 to 50 minutes. `run_vlm.py` and `run_assistant.py` call GPT-6 Luna through the codex CLI bundled with the ChatGPT desktop app, so they need that installed and signed in. I've only run the whole pipeline on my Mac.
+`run_cnn.py` trains on an Apple GPU if there is one and falls back to the CPU. On an Apple M5 each of its four training runs took 30 to 50 minutes. `run_vlm.py` and `run_assistant.py` call GPT-6 Luna through the codex CLI bundled with the ChatGPT desktop app, so they need that installed and signed in. The Opus run calls the Claude Code CLI that comes with the Claude desktop app, which needs to be signed in with `claude auth login`. I've only run the whole pipeline on my Mac.
 
 ## Layout
 
