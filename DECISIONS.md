@@ -428,6 +428,7 @@ Every choice in the project, with the options considered, the recommendation, wh
   - Mixed wafers (3 of 24) show a limit of the single-label scheme.
   - The 4 real misses include 2 scratches, the models' weakest class.
 - **Note on #7:** its fail share is 14%, below the usual Random range (training-lot 10th percentile 33%). The Random verdict is a call on shape, not on density.
+- **Update:** a re-review on 2026-11-08 changed 15 of these 24 verdicts. See d67, which is now the record.
 
 ### d65 Claude Opus 5.5 on the same 180 test maps (item E, added after Luna)
 - **Asked by Mehnaj (2026-11-08):** can Claude Opus 5.5 do what Luna did?
@@ -451,3 +452,30 @@ Every choice in the project, with the options considered, the recommendation, wh
 - **Where it goes wrong:** Loc is 2 of 20 on v2, with 10 called Edge-Loc. That is the Loc versus Edge-Loc boundary RESEARCH.md lists as noisy in the labels themselves. Its best classes are Center, Near-full, Scratch and Edge-Ring (18 to 20 of 20).
 - **Cost:** $10.65 to $13.95 per 1,000 maps as run, or $6.08 to $8.23 with every input token billed at the plain input price and no caching (`usd_per_1000_maps_no_cache`). The as-run figure is higher because the CLI writes each prompt to the one-hour cache at $8 per million. Luna's no-cache figure is not comparable the same way, because it still includes the roughly 15k codex harness tokens.
 - **Reading:** a frontier model reads wafer maps clearly better than a low-cost one, and the same domain fix to the prompt helps both by about the same amount (+0.16 Luna, +0.18 Opus). It still sits about 0.2 macro-F1 below a 0.58M-weight CNN trained on labelled maps, at roughly 1.4 cents a wafer as run. So the d63 conclusion holds: zero-shot models can't replace labelling here.
+
+### d66 Comparison with Cao & Tao 2026 (the zero-shot paper this item came from)
+- **Asked by Mehnaj (2026-11-08):** how do our zero-shot results compare with Cao & Tao (arXiv 2610.35080)?
+- **What they did (checked against the paper 2026-11-08):** gpt-4o-2024-08-06 at temperature 0.1, one query per map, on 9,000 maps drawn at random from the 172,950 labelled WM-811K maps. Six classes: Center, Donut, Edge (Edge-Loc and Edge-Ring merged), Local, Random, Scratch. None and Near-full are not used. Metrics are per-class accuracy, macro accuracy (unweighted mean of the six) and overall accuracy. No split is named.
+- **Their WM-811K results (table 4):** plain map ("Raw") 58.7% macro, 43.7% overall. With the largest connected fail clusters coloured in, 76.7% / 80.1% (one cluster) and 79.1% / 81.3% (five clusters).
+- **Correction:** RESEARCH.md had said their jump came from rule prompts. It comes with the change to the image. The paper does not say whether the Raw run used the same rule text, so the prompt's share of the jump is unknown.
+- **Options:** quote both results side by side with no adjustment (different classes and metrics, so misleading); or re-score our runs their way.
+- **Decided:** re-score ours their way (`paper_style` in scripts/run_vlm.py, results/vlm_paper_style.csv). Keep only test wafers whose label is one of their classes (140 of our 180), merge the two edge classes, and report per-class accuracy, macro accuracy, overall accuracy on our balanced sample, and overall accuracy reweighted to their per-class counts (1,747 / 502 / 3,430 / 1,830 / 555 / 936).
+- **Result:** macro / overall at their mix: Luna v2 59.6% / 54.7%, Opus v2 72.1% / 73.9%, forest 81.2% / 85.4%, CNN 87.9% / 92.4%.
+- **Limits:** our models answered from nine classes, so a none or Near-full answer counts as wrong here, which makes ours harder. Their sample has no lot split. We have only 20 maps per class (40 for Edge), so no interval is reported on this table. The rendering differs too (their colours and resolution against ours).
+- **Reading:** on plain maps, Opus 5.5 with the v2 rules is well above GPT-4o on plain maps and below GPT-4o with highlighted clusters. Model, prompt and rendering all differ, so this doesn't separate them. The cluster highlighting is a cheap preprocessing step worth testing here.
+
+### d67 Label audit re-review (supersedes the d64 verdicts)
+- **Why:** Mehnaj graded the 24 candidates in d64 after seeing both models' calls and a Claude first-pass suggestion, so the verdicts could be anchored on the models.
+- **How (2026-11-08):** a separate session showed each map with only its dataset label and fail share. Mehnaj gave a call first, and only then saw the earlier verdict and could confirm or change it. The models' calls and the Claude suggestion were hidden throughout.
+- **Result (results/label_audit_candidates.csv, results/label_audit_verdict_counts.csv):**
+  - 15 of 24 verdicts changed. The two passes agree on the kind of verdict (wrong, right, mixed) for 12 of 24.
+  - Now 10 wrong labels (was 17), 13 labels right that both models missed (was 4), 1 mixed (was 3).
+  - Both models match the verdict on 4 wafers (#1, #13, #16, #22), against 16 before.
+  - Of the 10 wrong labels, 5 should be Edge-Loc (2 labelled Loc, 3 labelled none), 2 Random, 1 Near-full, 1 Scratch and 1 none.
+  - 8 of the 15 changes are wafers first called "should be none" that Mehnaj now says show the labelled pattern.
+- **Rescore with the re-reviewed labels (mixed wafer dropped):** forest 0.867 → 0.870, CNN 0.877 → 0.879 (results/label_rescore_summary.csv). The original scores stay the headline.
+- **Reading:**
+  - The first pass was anchored. When the models' answer was visible, Mehnaj sided with it far more often. That is a reason to grade blind by default.
+  - Low agreement between passes shows these 24 maps are genuinely ambiguous, so "the label is wrong" is a weaker claim than d64 made.
+  - The models confidently say none on wafers that a person, looking without them, calls a defect. That fits a pull toward the majority none class.
+- **Possible next step (not done):** a fully blind pass with these 24 mixed among control wafers, to measure agreement with the dataset labels on both sets.

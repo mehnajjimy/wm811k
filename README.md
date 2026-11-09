@@ -52,13 +52,20 @@ I measured Grad-CAM heat maps on up to 300 correct test wafers per class. For ev
 
 ### Suspect labels
 
-227 test wafers get the same wrong class from both models, and 24 of those get it with at least 0.8 probability from both. I went through all 24 by hand:
+227 test wafers get the same wrong class from both models, and 24 of those get it with at least 0.8 probability from both. I went through all 24 by hand, twice.
 
-- 17 labels were wrong, and both models were right on 16 of them. Most were wafers labelled Loc or Center that only show background fails.
-- 4 labels held up, and both models missed a real pattern there (#4 Center, #5 Loc, #8 and #9 Scratch).
-- 3 wafers carry two patterns at once, which a single WM-811K label can't describe.
+The first time, I looked at each map after seeing both models' calls. Then I re-reviewed them, making my own call before seeing the models' answers or my first verdict. 15 of the 24 verdicts changed:
 
-With my corrected labels (mixed wafers dropped), macro-F1 goes from 0.867 to 0.872 for the forest and from 0.877 to 0.881 for the CNN. The original scores stay the headline since only 24 of 25,939 labels changed (`results/label_audit_candidates.csv`, `results/label_rescore_summary.csv`, d64).
+| 24 suspect wafers | First pass (saw the models' calls) | Re-review (my call first) |
+|---|---|---|
+| Label wrong | 17 | 10 |
+| Label right, both models missed it | 4 | 13 |
+| Two patterns on one wafer | 3 | 1 |
+| Both models right | 16 | 4 |
+
+Most of the change is wafers I'd first called clean that do show the labelled pattern when I look without the models' answer next to it. My two passes agree on the kind of verdict for only 12 of the 24. So these maps are genuinely ambiguous, and my first pass was anchored on the models. I'm treating the re-review as the record. In it, 5 of the 10 wrong labels should be Edge-Loc (2 were labelled Loc and 3 none), which is the same blurry line Opus struggles with below.
+
+With the re-reviewed labels (the one mixed wafer dropped), macro-F1 goes from 0.867 to 0.870 for the forest and from 0.877 to 0.879 for the CNN. The original scores stay the headline since only 24 of 25,939 labels were reviewed (`results/label_audit_candidates.csv`, `results/label_rescore_summary.csv`, d64, d67).
 
 ### Vision-language models, zero-shot
 
@@ -80,6 +87,19 @@ My first rule prompt defined "none" as "only a few fails", and that was wrong fo
 Opus beats Luna on every prompt, by 0.075 to 0.106 macro-F1, and all three gaps are clear of zero in a paired lot bootstrap. The prompt fix helped both by about the same amount. Opus's weak spot is Loc: it got 2 of 20 and called 10 of them Edge-Loc, a line that's blurry in the dataset's own labels too. Three of the five clean wafers it flagged it called Edge-Ring, which fits what the simulator section found about real clean wafers carrying weak edge structure.
 
 Even the frontier model is 0.20 macro-F1 behind the CNN (paired interval 0.13 to 0.27), so neither model can replace labelling here. Both are good at Scratch, though: 20 of 20 for Luna and 19 of 20 for Opus on v2, against 11 of 20 for the forest and 15 of 20 for the CNN.
+
+Cao and Tao (arXiv 2610.35080, 2026) is the paper that got me started on this. They ran GPT-4o zero-shot on 9,000 random WM-811K maps with six classes: none and Near-full dropped, and Edge-Loc and Edge-Ring merged into one Edge class. To compare, I re-scored our runs their way on the 140 wafers in those classes:
+
+| Six classes, no "none" | Macro accuracy | Overall accuracy at their class mix |
+|---|---|---|
+| GPT-4o, plain map (their table 4) | 58.7% | 43.7% |
+| GPT-4o, largest fail clusters coloured in (their best) | 79.1% | 81.3% |
+| Luna, corrected rules (v2) | 59.6% | 54.7% |
+| Opus 5.5, corrected rules (v2) | 72.1% | 73.9% |
+| Random forest | 81.2% | 85.4% |
+| Small CNN | 87.9% | 92.4% |
+
+On a plain map, Opus with my v2 rules lands well above GPT-4o's plain-map result and below their best. Their jump from 43.7% to 81.3% comes with a change to the picture: they colour in the largest connected clusters of failing dies before the model sees it. That's the obvious next thing to try here. The comparison is loose, though. Their sample is random with no lot split. Our models could also answer none or Near-full, which count as wrong here, while theirs only had the six classes to pick from. And on our side it's only 20 wafers per class (40 for Edge). On these numbers both trained models still beat every zero-shot result, theirs included (`results/vlm_paper_style.csv`, d66).
 
 Costs use each company's published prices and count every token the calls actually used. Luna ran through the codex CLI, which adds about 15k input tokens to every call. Opus ran through the Claude Code CLI with its system prompt swapped for one line, so it used about 1.4k input tokens per wafer, but the CLI writes them to a one-hour cache that's billed at twice the input price. Sent with no caching at all, Opus v2 would be $8.23 per 1,000 wafers. Both actually ran on subscriptions (ChatGPT credits and Claude Pro), so none of it was billed (`results/vlm_summary.csv`, `results/vlm_pairs.csv`, d46 to d48, d65).
 

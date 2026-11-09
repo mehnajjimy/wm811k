@@ -96,6 +96,36 @@ def collect(
     return done
 
 
+# d66 cao and tao 2026 arxiv 2610.35080 score six classes on wm811k  they drop
+# none and near full and merge the two edge classes  these are their per class
+# counts in the 9000 map random sample  used to reweight overall accuracy
+PAPER_MERGE = {"Edge-Loc": "Edge", "Edge-Ring": "Edge", "Loc": "Local"}
+PAPER_CLASSES = ["Center", "Donut", "Edge", "Local", "Random", "Scratch"]
+PAPER_MIX = {"Center": 1747, "Donut": 502, "Edge": 3430, "Local": 1830, "Random": 555,
+             "Scratch": 936}  # fmt: skip
+
+
+def paper_style(y: pd.Series, preds: dict) -> pd.DataFrame:
+    """every model scored the way the paper scores  on the six class subset only
+    our models could also answer none or near full so those count as wrong here
+    overall is reported two ways  on our balanced sample and reweighted to the
+    paper class mix since a plain overall depends on how common each class is"""
+    keep = y.isin(PAPER_MERGE.keys() | set(PAPER_CLASSES))
+    yt = y[keep].replace(PAPER_MERGE)
+    rows = []
+    for name, pred in preds.items():
+        pt = pred[keep].replace(PAPER_MERGE)
+        acc = {c: float((pt[yt == c] == c).mean()) for c in PAPER_CLASSES}
+        w = sum(PAPER_MIX.values())
+        rows.append({
+            "model": name, "maps": int(keep.sum()), **acc,
+            "macro_accuracy": sum(acc.values()) / len(acc),
+            "overall_our_sample": float((pt == yt).mean()),
+            "overall_paper_mix": sum(acc[c] * PAPER_MIX[c] for c in PAPER_CLASSES) / w,
+        })  # fmt: skip
+    return pd.DataFrame(rows).set_index("model")
+
+
 def score(chosen: pd.DataFrame, raws: dict, cfg: dict, seed: int, split: str) -> None:
     """raws maps a backend name to its raw calls  every model is scored on the same maps"""
     y, lots = chosen["label"], chosen["lot"]
@@ -175,6 +205,9 @@ def score(chosen: pd.DataFrame, raws: dict, cfg: dict, seed: int, split: str) ->
     if gaps:
         pd.DataFrame(gaps).to_csv(OUT / f"vlm_pairs{tag}.csv", index=False)
         print(pd.DataFrame(gaps).round(3).to_string(index=False))
+    paper = paper_style(y, preds)
+    paper.to_csv(OUT / f"vlm_paper_style{tag}.csv")
+    print(paper.round(3).to_string())
     print(summary.round(3).T.to_string())
     print(pd.DataFrame(recall).round(2).to_string())
 
