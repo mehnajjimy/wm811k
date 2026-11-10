@@ -4,6 +4,7 @@ item e  the model sees a picture of the map and a prompt and never any labels"""
 
 import base64
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -224,11 +225,15 @@ def read_claude_stream(stdout: str) -> dict:
     the input count is rebuilt to hold every input token like the codex numbers do"""
     # a stream with no result event at all is a failed call  for example a crash
     text, usage, actions, failed = "", {}, [], True
+    # d68 none means no api key was used so the call ran on the claude subscription
+    key_source = None
     for line in stdout.splitlines():
         try:
             ev = json.loads(line)
         except json.JSONDecodeError:
             continue
+        if ev.get("type") == "system" and ev.get("subtype") == "init":
+            key_source = ev.get("apiKeySource")
         if ev.get("type") == "assistant":
             for block in ev.get("message", {}).get("content", []):
                 # tools are switched off so any tool use here means something leaked
@@ -249,7 +254,9 @@ def read_claude_stream(stdout: str) -> dict:
     cached = usage.get("cache_read_input_tokens", 0)
     return {
         "reply": text,
-        "failed": failed,
+        # a call billed to an api key is never kept  the project runs on plan usage only
+        "failed": failed or key_source != "none",
+        "api_key_source": key_source,
         "ran_something": bool(actions),
         "actions": " || ".join(actions),
         "input_tokens": usage.get("input_tokens", 0) + cached + w5 + w1h,
@@ -261,6 +268,13 @@ def read_claude_stream(stdout: str) -> dict:
             "thinking_tokens", 0
         ),
     }
+
+
+def _plan_only_env() -> dict:
+    """the shell environment without any api key so the cli can only use the
+    claude.ai sign in and the calls count against the subscription  d01 and d68"""
+    drop = ("ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN")
+    return {k: v for k, v in os.environ.items() if k not in drop}
 
 
 def ask_claude(image: Path, prompt: str, model: str, effort: str, timeout: int = 300) -> dict:
@@ -276,7 +290,7 @@ def ask_claude(image: Path, prompt: str, model: str, effort: str, timeout: int =
                  "--disable-slash-commands", "--system-prompt", CLAUDE_SYSTEM,
                  "--input-format", "stream-json", "--output-format", "stream-json", "--verbose"],
                 input=_claude_message(image, prompt), capture_output=True, text=True,
-                timeout=timeout, check=False, cwd=tmp,
+                timeout=timeout, check=False, cwd=tmp, env=_plan_only_env(),
             )  # fmt: skip
         except subprocess.TimeoutExpired:
             # a hung call is a failed call and is asked again on the next run

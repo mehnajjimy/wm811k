@@ -74,6 +74,19 @@ vlm:
       cache_write_1h: 8.00
       cached_input: 0.20
       output: 20.00
+  # d68 claude fable 5.2 through the same cli and the same pro subscription
+  fable:
+    model: claude-fable-5-2
+    # the api default effort for fable 5.2  set out loud like opus
+    effort: high
+    workers: 3
+    # platform.claude.com/docs/en/about-claude/pricing checked 2026-11-09
+    price_per_million_usd:
+      input: 8.00
+      cache_write_5m: 10.00
+      cache_write_1h: 16.00
+      cached_input: 0.20
+      output: 40.00
 
 assistant:
   model: gpt-6-luna

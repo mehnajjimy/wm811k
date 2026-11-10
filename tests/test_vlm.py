@@ -3,7 +3,15 @@ import json
 import numpy as np
 from PIL import Image
 
-from wm811k.vlm import PROMPTS, _claude_message, cost_usd, parse, read_claude_stream, render
+from wm811k.vlm import (
+    PROMPTS,
+    _claude_message,
+    _plan_only_env,
+    cost_usd,
+    parse,
+    read_claude_stream,
+    render,
+)
 
 
 def test_parse_reads_the_json_reply():
@@ -59,7 +67,7 @@ def test_cost_bills_anthropic_cache_writes_at_their_own_price():
 
 def test_claude_stream_gives_reply_and_counts_every_input_token():
     events = [
-        {"type": "system", "subtype": "init", "tools": []},
+        {"type": "system", "subtype": "init", "tools": [], "apiKeySource": "none"},
         {"type": "assistant", "message": {"content": [{"type": "text", "text": "x"}]}},
         {"type": "result", "result": '{"pattern": "Donut"}', "usage": {
             "input_tokens": 100, "cache_read_input_tokens": 50, "output_tokens": 30,
@@ -96,3 +104,19 @@ def test_claude_error_result_is_a_failed_call_not_an_answer():
           "usage": {}}  # fmt: skip
     r = read_claude_stream(json.dumps(ev))
     assert r["failed"] and r["reply"] == ""
+
+
+def test_claude_call_billed_to_an_api_key_is_a_failed_call():
+    events = [
+        {"type": "system", "subtype": "init", "apiKeySource": "ANTHROPIC_API_KEY"},
+        {"type": "result", "result": '{"pattern": "Donut"}', "usage": {}},
+    ]
+    r = read_claude_stream("\n".join(json.dumps(e) for e in events))
+    assert r["failed"] and r["api_key_source"] == "ANTHROPIC_API_KEY"
+
+
+def test_plan_only_env_drops_api_keys(monkeypatch):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "x")
+    monkeypatch.setenv("ANTHROPIC_AUTH_TOKEN", "y")
+    env = _plan_only_env()
+    assert "ANTHROPIC_API_KEY" not in env and "ANTHROPIC_AUTH_TOKEN" not in env

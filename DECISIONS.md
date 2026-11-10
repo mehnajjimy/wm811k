@@ -479,3 +479,23 @@ Every choice in the project, with the options considered, the recommendation, wh
   - Low agreement between passes shows these 24 maps are genuinely ambiguous, so "the label is wrong" is a weaker claim than d64 made.
   - The models confidently say none on wafers that a person, looking without them, calls a defect. That fits a pull toward the majority none class.
 - **Possible next step (not done):** a fully blind pass with these 24 mixed among control wafers, to measure agreement with the dataset labels on both sets.
+
+### d68 Claude Fable 5.2 on the same 180 test maps (item E)
+- **Asked by Mehnaj (2026-11-09):** try a zero-shot run with Claude Fable 5.2, released that week.
+- **Setup:** same as d65. The Claude Code CLI, one fresh call per map, image inside the message, every tool off, an empty temporary folder, the same three prompts unchanged. Model `claude-fable-5-2` at effort `high`, its API default, where Opus ran at `medium`, its own default.
+- **Plan usage only (Mehnaj asked for this):** each call runs with `ANTHROPIC_API_KEY` and `ANTHROPIC_AUTH_TOKEN` removed from its environment. The CLI's startup event reports `apiKeySource`, and any call where it isn't `none` counts as failed and isn't saved. All 540 calls reported `none` and ran on the Claude Pro sign-in. The account also has overage switched off, so nothing beyond the plan could be billed.
+- **Usage limit:** the run used most of a Pro five-hour window. Mehnaj asked to pause near 90%, so it was stopped after 450 calls and the last 90 ran after the window reset. The runner skips saved calls, so the pause changes nothing in the results.
+- **Cost:** tokens × Anthropic's published Fable 5.2 prices (platform.claude.com/docs/en/about-claude/pricing, checked 2026-11-09): $8 input, $10 or $16 per million for 5-minute or 1-hour cache writes, $0.20 cache reads, $40 output. As run, $23.15 to $29.30 per 1,000 maps, or $13.95 to $17.82 with no caching.
+- **Result (results/vlm_summary.csv, results/vlm_pairs.csv):**
+  - label names only 0.727 (0.657–0.784), v1 rules 0.628 (0.565–0.674), v2 rules 0.786 (0.723–0.835)
+  - Fable minus Opus, paired lot bootstrap: +0.200 (0.139 to 0.268) label names, +0.090 (0.042 to 0.140) v1, +0.068 (0.024 to 0.120) v2, all clear of zero
+  - CNN minus Fable v2: +0.130 (0.068 to 0.198). Forest minus Fable v2: +0.080 (0.007 to 0.162), clear of zero but only just.
+  - no defect wafer called clean on any prompt; clean wafers called defects 8, 20 and 6 of 20
+  - all 540 calls returned a valid label, none used a tool
+  - six-class re-scoring as in d66 (results/vlm_paper_style.csv): 79.2% macro accuracy and 81.2% overall at the paper's class mix, level with Cao & Tao's best GPT-4o run (79.1% / 81.3%), which used highlighted fail clusters
+- **Reading:**
+  - Fable is the first model here that knows something about normal background without being told. With label names only it left 12 of 20 clean wafers alone, where Luna and Opus flagged all 20.
+  - The flawed v1 rule ("none" means only a few fails) hurt Fable by about 0.10 macro-F1, because it followed the rule and called every clean wafer a defect. A wrong domain rule costs more on a model that would otherwise get it right.
+  - Loc is still the weak class (5 of 20 on v2, 11 called Edge-Loc), the same pattern as Opus.
+  - Fable and Opus ran at different effort levels, each the API default, so the gap mixes model and effort.
+  - The d63 conclusion still holds: the best zero-shot model is 0.13 macro-F1 below a 0.58M-weight CNN trained on labelled maps.

@@ -11,7 +11,7 @@ Which wafer defects cost a chip fab the most chips, and can a small model catch 
 - Two edge patterns, Edge-Ring and Edge-Loc, cause 47% of the extra dies lost to defects.
 - Defects come in lots (batches of wafers processed together). 502 of 7,025 lots are excursions, which points at tools and chambers.
 - A small convolutional neural network (CNN) passes 3.7% of defective wafers as clean, against 8.4% for a random forest.
-- On the same 180 wafers, the CNN scores 0.916 macro-F1 against 0.718 for Claude Opus 5.5 with no training. Macro-F1 is a score that weighs every defect type equally.
+- On the same 180 wafers, the CNN scores 0.916 macro-F1 against 0.786 for Claude Fable 5.2 with no training. Macro-F1 is a score that weighs every defect type equally.
 - An AI assistant drafting incident reports passed every made-up-detail check on 60 of 60 drafts when limited to my root-cause table, against 2 of 60 without it.
 
 ![Extra dies lost per 1,000 labelled wafers for each defect pattern](figures/yield_pareto.png)
@@ -172,14 +172,15 @@ Vision-language models can't replace the trained models here when run zero-shot.
 
 - Small CNN: 0.916 macro-F1
 - Random forest: 0.866
+- Claude Fable 5.2: 0.786
 - Claude Opus 5.5: 0.718
 - GPT-6 Luna: 0.612
 
-Opus beats Luna on every prompt, and both are good at Scratch. The full analysis also compares against GPT-4o results from the Cao and Tao paper.
+Fable beats Opus, and Opus beats Luna, on every prompt. All three are good at Scratch. The full analysis also compares against GPT-4o results from the Cao and Tao paper.
 
 [Full analysis](docs/vlm.md)
 
-Sources: `results/vlm_summary.csv`, `results/vlm_pairs.csv`, `results/vlm_paper_style.csv`, d46 to d48, d53, d55, d61, d65, d66
+Sources: `results/vlm_summary.csv`, `results/vlm_pairs.csv`, `results/vlm_paper_style.csv`, d46 to d48, d53, d55, d61, d65, d66, d68
 
 ### Triage assistant
 
@@ -253,18 +254,21 @@ python scripts/run_label_rescore.py
 python scripts/run_synthetic.py
 python scripts/run_vlm.py
 python scripts/run_vlm.py --backend opus --prompts raw rules rules_v2
+python scripts/run_vlm.py --backend fable --prompts raw rules rules_v2
 python scripts/run_assistant.py
 ```
 
 `run_cnn.py` trains on an Apple GPU if there is one and falls back to the CPU. On an Apple M5 each of its four training runs took 30 to 50 minutes.
 
-`run_vlm.py` and `run_assistant.py` call GPT-6 Luna through the codex CLI bundled with the ChatGPT desktop app, so they need that installed and signed in. The Opus run calls the Claude Code CLI that comes with the Claude desktop app, which needs to be signed in with `claude auth login`. I've only run the whole pipeline on my Mac.
+`run_vlm.py` and `run_assistant.py` call GPT-6 Luna through the codex CLI bundled with the ChatGPT desktop app, so they need that installed and signed in.
+
+The Opus and Fable runs call the Claude Code CLI that comes with the Claude desktop app, which needs to be signed in with `claude auth login`. They only use that sign-in, never an API key. I've only run the whole pipeline on my Mac.
 
 ### Code layout
 
 - `src/wm811k/` holds all the logic: loading, audit, split, yield, lots, features, simulator, CNN, review gate, VLM and assistant.
 - `scripts/run_*.py` each run one analysis.
-- `tests/` has 177 pytest checks, including the yield formula, a lot-disjoint split, each feature's physics on simulated wafers and the hallucination checks.
+- `tests/` has 179 pytest checks, including the yield formula, a lot-disjoint split, each feature's physics on simulated wafers and the hallucination checks.
 - `config.yaml` holds every seed and threshold.
 
 ## References

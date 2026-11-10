@@ -37,13 +37,14 @@ def sample(test: pd.DataFrame, per_class: int, seed: int) -> pd.DataFrame:
 
 
 # d65 each model has its own raw file and its own name in the summary
-BACKENDS = {"luna": "", "opus": "_opus"}
+# d68 fable 5.2 runs through the same claude code path as opus
+BACKENDS = {"luna": "", "opus": "_opus", "fable": "_fable"}
 
 
 def ask_one(backend: str, image: Path, prompt: str, cfg: dict) -> dict:
     """one call to whichever model is being run"""
-    if backend == "opus":
-        o = cfg["opus"]
+    if backend != "luna":
+        o = cfg[backend]
         return vlm.ask_claude(image, prompt, o["model"], o["effort"])
     return vlm.ask(image, prompt, cfg["model"])
 
@@ -67,8 +68,8 @@ def collect(
     todo = [(i, p) for p in prompts for i in chosen.index if (i, p) not in have]
     print(f"{len(have)} calls saved  {len(todo)} to go", flush=True)
 
-    model = cfg["opus"]["model"] if backend == "opus" else cfg["model"]
-    workers = cfg["opus"]["workers"] if backend == "opus" else cfg["workers"]
+    model = cfg[backend]["model"] if backend != "luna" else cfg["model"]
+    workers = cfg[backend]["workers"] if backend != "luna" else cfg["workers"]
 
     def one(i, p):
         r = ask_one(backend, IMG / f"{chosen.at[i, 'image']}.png", vlm.PROMPTS[p], cfg)
@@ -147,7 +148,8 @@ def score(chosen: pd.DataFrame, raws: dict, cfg: dict, seed: int, split: str) ->
                 t["pred"] = np.asarray(CLASSES)[t[cols].to_numpy().argmax(1)]
             preds[m] = t["pred"].reindex(chosen.index)
 
-    prices = {"luna": cfg["price_per_million_usd"], "opus": cfg["opus"]["price_per_million_usd"]}
+    prices = {"luna": cfg["price_per_million_usd"]}
+    prices |= {b: cfg[b]["price_per_million_usd"] for b in BACKENDS if b != "luna" and b in cfg}
     rows, recall = [], {}
     for name, pred in preds.items():
         ci = evaluate.lot_bootstrap(y, pred, lots, CLASSES, seed=seed)
@@ -197,6 +199,8 @@ def score(chosen: pd.DataFrame, raws: dict, cfg: dict, seed: int, split: str) ->
     # trained models minus the best zero shot run  only rows whose models exist
     pairs = [(f"opus_{p}", f"luna_{p}") for p in vlm.PROMPTS]
     pairs += [("cnn", "opus_rules_v2"), ("rf", "opus_rules_v2")]
+    pairs += [(f"fable_{p}", f"opus_{p}") for p in vlm.PROMPTS]
+    pairs += [("cnn", "fable_rules_v2"), ("rf", "fable_rules_v2")]
     gaps = []
     for a, b in pairs:
         if a in preds and b in preds:
