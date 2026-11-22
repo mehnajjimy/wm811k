@@ -1,18 +1,18 @@
-# wm811k
+# WM-811K Wafer Map Yield Analysis
 
 <p align="center">
   <a href="#overview">Overview</a> · <a href="#data">Data</a> · <a href="#method">Method</a> · <a href="#results">Results</a> · <a href="#limits">Limits</a> · <a href="#usage">Usage</a> · <a href="#references">References</a> · <a href="#terms">Terms</a>
 </p>
 
-Which wafer defects cost a chip fab the most chips, and can a small model catch them? I worked through that the way a process or yield engineer would, using 811,457 real production wafer maps from the WM-811K dataset.
+I built a Python workflow to audit 811,457 public production wafer maps, rank defect patterns by die loss, and flag lots for process review. For each pattern, I documented likely process steps, the first tool check I would run, and the signal that would confirm the cause.
 
 ## Key results
 
-- Two edge patterns, Edge-Ring and Edge-Loc, cause 47% of the extra dies lost to defects.
+- In the 172,950 labeled maps, Edge-Ring and Edge-Loc accounted for 47% of excess die loss against a clean-wafer baseline.
 - Defects come in lots (batches of wafers processed together). 502 of 7,025 lots are excursions. The clustering helps prioritize tool and chamber checks.
-- A small convolutional neural network (CNN) passes 3.7% of defective wafers as clean, against 8.4% for a random forest.
+- At default thresholds, a small convolutional neural network (CNN) passed 3.7% of defective wafers as clean versus 8.4% for a random forest. At the validation-selected operating points, both missed about 5% of defects and the CNN sent 10.3 clean wafers per 1,000 to review versus 19.0 for the forest.
 - On the same 180 wafers, the CNN scores 0.916 macro-F1 against 0.786 for Claude Fable 5.2 with no training. Macro-F1 is a score that weighs every defect type equally.
-- An AI assistant drafting incident reports passed every made-up-detail check on 60 of 60 drafts when limited to my root-cause table, against 2 of 60 without it.
+- In a 60-case triage benchmark, drafts limited to my root-cause table passed all coded evidence checks in 60 of 60 cases versus 2 of 60 for drafts without the table.
 
 ![Extra dies lost per 1,000 labelled wafers for each defect pattern](figures/yield_pareto.png)
 
@@ -31,7 +31,7 @@ I also linked each pattern to a sourced root-cause table, tested whether vision-
 WM-811K has 811,457 production wafer maps. Labelled maps carry one of nine classes: eight defect patterns (Center, Donut, Edge-Loc, Edge-Ring, Loc, Near-full, Random, Scratch) and "none" for clean wafers.
 
 - I split by lot, not by wafer. Wafers in one lot share tools and timing, so a random wafer split leaks.
-- 187 defect maps show up as exact copies across lots (93 copy groups). I merged those lots before splitting, so no copy crosses train and test.
+- 187 defect maps show up as exact copies across lots (93 copy groups). I grouped the linked lots before splitting and verified that each audited duplicate-defect group stayed in a single split.
 - That gives about 70/15/15 train, validation and test, with 25,939 labelled test wafers.
 
 The data file isn't in the repo because of its size. See [Usage](#usage) for where to get it.
