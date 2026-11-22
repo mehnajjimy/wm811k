@@ -9,14 +9,14 @@ Which wafer defects cost a chip fab the most chips, and can a small model catch 
 ## Key results
 
 - Two edge patterns, Edge-Ring and Edge-Loc, cause 47% of the extra dies lost to defects.
-- Defects come in lots (batches of wafers processed together). 502 of 7,025 lots are excursions, which points at tools and chambers.
+- Defects come in lots (batches of wafers processed together). 502 of 7,025 lots are excursions. The clustering helps prioritize tool and chamber checks.
 - A small convolutional neural network (CNN) passes 3.7% of defective wafers as clean, against 8.4% for a random forest.
 - On the same 180 wafers, the CNN scores 0.916 macro-F1 against 0.786 for Claude Fable 5.2 with no training. Macro-F1 is a score that weighs every defect type equally.
 - An AI assistant drafting incident reports passed every made-up-detail check on 60 of 60 drafts when limited to my root-cause table, against 2 of 60 without it.
 
 ![Extra dies lost per 1,000 labelled wafers for each defect pattern](figures/yield_pareto.png)
 
-Each bar compares a pattern with clean wafers of the same product.
+Each bar uses a clean-wafer baseline matched by map dimensions where possible. Map dimensions are a proxy for product. [Engineering case study](https://mehnajjimy.com/projects/wm811k-yield-analysis/).
 
 ## Overview
 
@@ -70,7 +70,7 @@ How the models are scored:
 ### Yield loss by pattern
 
 > [!NOTE]
-> <sub>dies: one chip on the wafer · excess die loss: dies lost beyond what clean wafers of the same product lose</sub>
+> <sub>dies: one chip on the wafer · excess die loss: dies lost beyond the clean-wafer baseline, matched by map dimensions where possible</sub>
 
 Edge-Ring and Edge-Loc cost the most dies, as the chart at the top shows. I measured excess die loss using map grid size as the product marker.
 
@@ -168,7 +168,7 @@ Sources: `results/label_audit_candidates.csv`, `results/label_rescore_summary.cs
 > [!NOTE]
 > <sub>Vision-language models: AI model that reads images and text · zero-shot: no training examples, only a prompt · macro-F1: score that weighs every defect type equally</sub>
 
-Vision-language models can't replace the trained models here when run zero-shot. On the same 180 test wafers, with my best prompt for the two AI models:
+Vision-language models can't replace the trained models here when run zero-shot. On the same 180 test wafers, with my best prompt for each of the three AI models:
 
 - Small CNN: 0.916 macro-F1
 - Random forest: 0.866
@@ -228,7 +228,7 @@ The Edge-Ring, Center and Donut rows draw on my own hands-on spin-coat edge-bead
 
 ### Setup
 
-Download `LSWMD.pkl` from the [WM-811K Kaggle page](https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map) and put it in the repository root. It isn't included because of its size.
+Use Python 3.12 or newer. Download `LSWMD.pkl` from the [WM-811K Kaggle page](https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map) and put it in the repository root. It isn't included because of its size.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
@@ -238,7 +238,7 @@ pytest
 
 ### Run order
 
-Run the scripts from the repo root in this order. Each one writes to `results/` and `figures/`.
+Run the core analysis from the repo root in this order. Outputs are written to `results/` and `figures/`.
 
 ```bash
 python scripts/run_audit.py
@@ -252,6 +252,13 @@ python scripts/run_gradcam.py
 python scripts/run_label_audit.py
 python scripts/run_label_rescore.py
 python scripts/run_synthetic.py
+```
+
+### Optional model benchmarks and triage
+
+The core analysis above runs without the model CLIs. To reproduce the vision-language benchmarks and triage comparison on the tested Mac setup, run these after the core analysis:
+
+```bash
 python scripts/run_vlm.py
 python scripts/run_vlm.py --backend opus --prompts raw rules rules_v2
 python scripts/run_vlm.py --backend fable --prompts raw rules rules_v2
@@ -260,7 +267,7 @@ python scripts/run_assistant.py
 
 `run_cnn.py` trains on an Apple GPU if there is one and falls back to the CPU. On an Apple M5 each of its four training runs took 30 to 50 minutes.
 
-`run_vlm.py` and `run_assistant.py` call GPT-6 Luna through the codex CLI bundled with the ChatGPT desktop app, so they need that installed and signed in.
+The default `run_vlm.py` backend and `run_assistant.py` call GPT-6 Luna through the Codex CLI bundled with the ChatGPT desktop app. Install the app and sign in for those runs.
 
 The Opus and Fable runs call the Claude Code CLI that comes with the Claude desktop app, which needs to be signed in with `claude auth login`. They only use that sign-in, never an API key. I've only run the whole pipeline on my Mac.
 
