@@ -1,234 +1,251 @@
-# WM-811K Wafer Map Yield Analysis
+<a name="wm811k"></a>
+<a name="wm-811k-wafer-map-yield-analysis"></a>
+
+# Wafer defects and yield loss in WM-811K
 
 <p align="center">
   <a href="#overview">Overview</a> · <a href="#data">Data</a> · <a href="#method">Method</a> · <a href="#results">Results</a> · <a href="#limits">Limits</a> · <a href="#usage">Usage</a> · <a href="#references">References</a> · <a href="#terms">Terms</a>
 </p>
 
-I built a Python workflow to audit 811,457 public production wafer maps, rank defect patterns by die loss, and flag lots for process review. For each pattern, I documented likely process steps, the first tool check I would run, and the signal that would confirm the cause.
+A neural network I trained in 47 minutes on my Mac outscored two Claude models and GPT at identifying defects on 180 wafer maps. Each map shows which chips on a disk of silicon failed electrical testing. My network learned from 121,072 labeled maps from other production batches. Claude and GPT got the test images and written descriptions of the patterns, with no labeled examples.
+
+On the full held-out test of 25,939 wafers, my network scored 0.877 on macro-F1, which gives each label equal weight. On the 180-wafer sample it scored 0.916, ahead of Claude Fable at 0.786. The sample included 20 wafers from each of eight defect patterns and 20 labeled clean in WM-811K. Fable and GPT Luna each recognized all 20 scratches, Claude Opus recognized 19, and my network recognized 15.
 
 ## Key results
 
-- In the 172,950 labeled maps, Edge-Ring and Edge-Loc accounted for 47% of excess die loss against a clean-wafer baseline.
-- Defects come in lots (batches of wafers processed together). 502 of 7,025 lots are excursions. The clustering helps prioritize tool and chamber checks.
-- At default thresholds, a small convolutional neural network (CNN) passed 3.7% of defective wafers as clean versus 8.4% for a random forest. At the validation-selected operating points, both missed about 5% of defects and the CNN sent 10.3 clean wafers per 1,000 to review versus 19.0 for the forest.
-- On the same 180 wafers, the CNN scores 0.916 macro-F1 against 0.786 for Claude Fable 5.2 with no training. Macro-F1 is a score that weighs every defect type equally.
-- In a 60-case triage benchmark, drafts limited to my root-cause table passed all coded evidence checks in 60 of 60 cases versus 2 of 60 for drafts without the table.
+- **Missed defects.** Of the 3,832 wafers with a recorded defect pattern in the full test set, my network classified 141 as clean. A random forest classified 323 as clean. Those wafers would skip review if an engineer relied on the model’s call.
+- **Simulated wafers.** I built a [simulator](docs/simulator.md) that can put a scratch on a virtual wafer at any angle. A model trained on 27,000 of my simulated maps mistook about one in five real wafers labeled clean for a scratched wafer.
+- **Chip loss at the edge.** I used clean-wafer yields to estimate how many more chips failed than expected. Among defect patterns with excess failures, the two edge patterns accounted for [47% of the total](#yield-loss-by-pattern), about 838,000 chips.
 
-![Extra dies lost per 1,000 labelled wafers for each defect pattern](figures/yield_pareto.png)
+<a name="example-maps"></a>
 
-Each bar uses a clean-wafer baseline matched by map dimensions where possible. Map dimensions are a proxy for product. [Engineering case study](https://mehnajjimy.com/projects/wm811k-yield-analysis/).
+![Eight correctly classified wafers. Blue squares mark failed chips in the upper row. Darker orange below marks a stronger contribution to the CNN's prediction.](figures/gradcam_examples.png)
+
+The top row shows electrical test results. Each blue square is a failed chip. The bottom row shows the network’s response to the same wafers. Darker orange marks regions that contributed more to its prediction.
 
 ## Overview
 
-When a fab engineer looks at a wafer bin map, the real question is how many dies it's costing and which tool to check first. What the pattern is called comes second. A wafer bin map shows which chips (dies) on a silicon wafer failed testing.
+Only 172,950 of the 811,457 production wafer maps in WM-811K have labels, about one in five. Even an unlabeled map records which chips passed electrical testing. What’s missing is the judgment about the wafer as a whole.
 
-So I ranked defect patterns by how much yield they actually destroy and checked whether they cluster by lot. I trained two classifiers and tested them the way a fab would use them, split by lot and scored on the rare patterns, with a review gate for the costly mistakes.
-
-I also linked each pattern to a sourced root-cause table, tested whether vision-language models or a physics simulator can replace labelled data, and built an AI triage assistant whose every claim is checked by code. Every number below comes from a file in `results/`, and every choice behind it, including the options I turned down, is in [DECISIONS.md](DECISIONS.md).
+[Engineering case study](https://mehnajjimy.com/projects/wm811k-yield-analysis/) · [Analysis decisions](DECISIONS.md) · [Result files](results/)
 
 ## Data
 
-WM-811K has 811,457 production wafer maps. Labelled maps carry one of nine classes: eight defect patterns (Center, Donut, Edge-Loc, Edge-Ring, Loc, Near-full, Random, Scratch) and "none" for clean wafers.
+Eight WM-811K labels describe defect patterns. The ninth, `none`, means the wafer was judged clean. Individual chips can still fail on a clean wafer without forming a recognizable pattern.
 
-- I split by lot, not by wafer. Wafers in one lot share tools and timing, so a random wafer split leaks.
-- 187 defect maps show up as exact copies across lots (93 copy groups). I grouped the linked lots before splitting and verified that each audited duplicate-defect group stayed in a single split.
-- That gives about 70/15/15 train, validation and test, with 25,939 labelled test wafers.
+- I assigned each production batch, or *lot*, to training, validation or testing as a unit. Every test wafer came from a batch the models had never trained on.
+- Across batches, 187 defect maps formed 93 groups with identical chip-by-chip results. I kept batches linked by a copy together so the same defect map couldn’t appear in both training and testing.
+- Of the labeled maps, about 70% went into training, 15% into validation to choose model settings, and 15% into testing to score those settings on new batches.
 
-The data file isn't in the repo because of its size. See [Usage](#usage) for where to get it.
-
-Sources: d13 to d15
+[Data download](#usage) · [Audit counts](results/audit_facts.csv) · [Labels in each split](results/split_class_counts.csv) · [Split decisions, d13 to d15](DECISIONS.md)
 
 ## Method
 
 > [!NOTE]
-> <sub>macro-F1: score that weighs every defect type equally · recall: share of a defect type the model finds · 95% confidence intervals: range the true value likely falls in · lot bootstrap: resampling whole lots to measure uncertainty</sub>
+> <sub>For each label, F1 combines how often the model finds it with how often that prediction is right. Macro-F1 averages those scores across labels. Recall is the fraction of wafers with a given label that the model identifies correctly.</sub>
 
-1. Audit the data: class counts, duplicate maps and map sizes ([run_audit.py](scripts/run_audit.py)).
-2. Split by lot into train, validation and test ([run_split.py](scripts/run_split.py)).
-3. Measure die loss for each pattern ([run_yield.py](scripts/run_yield.py)).
-4. Test whether patterns cluster by lot ([run_lots.py](scripts/run_lots.py)).
-5. Train a random forest on 24 engineered features ([run_rf.py](scripts/run_rf.py)).
-6. Train a small CNN on the map images ([run_cnn.py](scripts/run_cnn.py)).
-7. Add a review gate that sends unsure wafers to a person ([run_abstain.py](scripts/run_abstain.py)).
-8. Check where the CNN looks with Grad-CAM ([run_gradcam.py](scripts/run_gradcam.py)).
-9. Hand-check suspect labels and rescore ([run_label_audit.py](scripts/run_label_audit.py), [run_label_rescore.py](scripts/run_label_rescore.py)).
-10. Train on simulated wafers only ([run_synthetic.py](scripts/run_synthetic.py)).
-11. Test vision-language models with no training ([run_vlm.py](scripts/run_vlm.py)).
-12. Run the triage assistant and check its drafts ([run_assistant.py](scripts/run_assistant.py)).
-
-How the models are scored:
+1. [Audit the maps](scripts/run_audit.py) for class counts, map sizes and copies.
+2. [Assign whole lots](scripts/run_split.py) to training, validation and test sets.
+3. [Estimate excess die loss](scripts/run_yield.py) for each defect pattern.
+4. [Count repeated patterns](scripts/run_lots.py) within each lot and in consecutive slots.
+5. [Train a random forest](scripts/run_rf.py) on 24 features measured from each map.
+6. [Train a convolutional neural network (CNN)](scripts/run_cnn.py) on the map images.
+7. [Set review thresholds](scripts/run_abstain.py) and count the wafers sent to an engineer.
+8. [Make heat maps](scripts/run_gradcam.py) for the CNN's correct predictions.
+9. [Identify disputed labels](scripts/run_label_audit.py), review the maps by hand and [rescore the models](scripts/run_label_rescore.py).
+10. [Train a forest on simulated wafers](scripts/run_synthetic.py) and test it on real ones.
+11. [Give the same wafer images to Claude and GPT](scripts/run_vlm.py) with three written prompts.
+12. [Draft incident reports](scripts/run_assistant.py) and check the details against the information supplied.
 
 > [!IMPORTANT]
-> I never report headline accuracy. 85.2% of test wafers are "none", so a model that never finds a single defect is already 85.2% accurate.
+> A model that calls every test wafer clean would be 85.2% accurate. It would miss every defect.
 
-- I report macro-F1 and per-class recall instead.
-- 95% confidence intervals come from a lot bootstrap with 500 rounds.
-- Each model touched the test set once. Every setting was picked on validation.
+For the 95% confidence intervals I resampled whole batches 500 times, keeping wafers from the same batch together. I chose the forest and CNN settings on validation lots. An early GPT test led me to [revise the written description of a clean wafer](#vision-language-models).
 
 ## Results
 
 ### Yield loss by pattern
 
 > [!NOTE]
-> <sub>dies: one chip on the wafer · excess die loss: dies lost beyond the clean-wafer baseline, matched by map dimensions where possible</sub>
+> <sub>A die is one chip. Yield is the fraction of tested chips that pass. Excess die loss counts how many more chips failed than the clean-wafer baseline predicts.</sub>
 
-Edge-Ring and Edge-Loc cost the most dies, as the chart at the top shows. I measured excess die loss using map grid size as the product marker.
+For each map size, I used the median yield of wafers labeled clean to estimate how many chips would pass. For sizes with fewer than 30 clean examples, I used the overall clean median of 90.2%. Among the defect patterns that lost more chips than expected, three accounted for 69% of the extra failures.
 
-- Edge-Ring: 25.0% of excess loss
-- Edge-Loc: 22.2%
-- Random: 21.4%
+- 25.0% from failures concentrated around the full edge (`Edge-Ring`)
+- 22.2% from failures concentrated on part of the edge (`Edge-Loc`)
+- 21.4% from failures scattered densely across the wafer (`Random`)
 
-Together these three make up 69% of the dies lost to patterns. Near-full is the worst per wafer, with a median yield of 12%, but it's rare. Scratch wafers lose no dies on net against their product baseline.
+![Extra chips lost per 1,000 labeled wafers by defect pattern. The two edge categories rank highest.](figures/yield_pareto.png)
 
-Sources: `results/yield_by_class.csv`, `figures/yield_pareto.png`, d16, d17
+The 9,680 wafers with an outer ring had about 444,000 more failed chips than expected. Spread over all 172,950 labeled wafers, that gives the first bar its height of 2,566 chips per 1,000 wafers. The “47% cum.” above the next bar includes both edge patterns.
 
-### Lot clustering
+Where the chart says “same product,” the records only let me match wafers by map size. Different products can have the same dimensions. Unlabeled wafers also had higher yields, so a factory-wide ranking could look different.
 
-> [!NOTE]
-> <sub>lots: batch of wafers processed together · permutation test: shuffling labels to see what chance alone gives · excursion lots: lot where one pattern covers half or more of its wafers</sub>
+Only 149 maps showed near-total failure (`Near-full`). Their median yield was 12%, yet they accounted for just 5.3% of excess loss. Scratches were more common. Across all scratch-labeled wafers, slightly fewer chips failed than their baselines predicted, which puts their bar below zero.
 
-Every defect pattern piles up inside lots much more than chance would allow. That points at tools and chambers more than random events.
+[Loss by pattern](results/yield_by_class.csv) · [Baseline decisions, d16 to d19](DECISIONS.md)
 
-![Two dot plots: how much more often each pattern shares a lot than shuffled labels allow, and whether it repeats in the next slot](figures/lots_clustering.png)
+<a name="lot-clustering"></a>
 
-How much more likely than expected a wafer is to have a lot-mate with the same pattern:
-
-- Donut: 127 times
-- Random: 111 times
-- Edge-Ring: 17 times
-
-Every class passes a permutation test at p < 0.005.
-
-502 of 7,025 lots (7.1%) are excursion lots, and 361 of those are Edge-Ring.
-
-Slot order inside a lot only adds a little on top of that. Loc is the clearest case, at 1.28 times more likely than chance to repeat in the next slot.
-
-Sources: `results/lots_*.csv`, `figures/lots_clustering.png`
-
-### Classifiers
+### Wafers with the same defect pattern
 
 > [!NOTE]
-> <sub>CNN: convolutional neural network, reads the map image directly · random forest: many decision trees voting on features I engineered · macro-F1: score that weighs every defect type equally · 95% CI: range the true value likely falls in · recall: share of a defect type the model finds</sub>
+> <sub>A lot is a production batch. A permutation test shuffles the recorded labels and repeats the count. The dataset also gives each wafer a numbered position, or slot, within its lot.</sub>
 
-Overall the two models are close, but the CNN misses far fewer defects than the random forest. The forest works from 24 features I engineered from each map, and the CNN reads the map image directly.
+For each wafer labeled with densely scattered failures, I counted the other wafers in its batch with that same label. The average was 8.69. When I shuffled the labels across batches and counted again, it fell to 0.08. Each batch kept its original number of labeled wafers, and scattered failures were just as common overall.
 
-![Confusion matrix of the CNN on the test set, showing how each true pattern was classified](figures/cnn_confusion.png)
+![Left, the average number of other wafers with the same pattern in a batch. Right, the rate of matches in the next numbered slot. Both are shown relative to their shuffled averages.](figures/lots_clustering.png)
 
-- Random forest: 0.867 macro-F1 (95% CI 0.846 to 0.880), 8.4% of defect wafers passed as clean
-- Small CNN with 0.58M weights, trained 3 times from different random seeds: 0.877 (0.855 to 0.893), seeds 0.877 to 0.884, 3.7% passed as clean
+In the left panel, each of the eight defect patterns had more same-label matches per wafer in the real batches than in any of 200 shuffles (permutation p ≈ 0.005 for each pattern). Rings partway between the center and edge (`Donut`) had 127 times the shuffled average, scattered failures 111 times, and outer rings 17 times. Gray bands span the middle 95% of shuffled counts. The test covered 165,591 labeled wafers in 7,025 batches with at least ten labels each.
+
+For the right panel I counted only pairs in consecutive numbered slots, then shuffled the labels within each batch. Slots 7 and 8 are neighbors in the record. The dataset doesn’t say which wafer a machine processed first or how much time elapsed between them.
+
+When a wafer had an outer ring and the next slot also held a labeled wafer, that wafer had an outer ring 93.6% of the time. Even after shuffling slots within batches, 93.2% matched.
+
+Localized patches (`Loc`) repeated in the next slot 10.6% of the time, against 8.3% after shuffling. Some of the resemblance within batches could come from a reviewer labeling a whole batch in one sitting.
+
+I flagged [502 of the 7,025 batches](results/lots_excursions.csv) for equipment follow-up. In each, a single defect pattern appeared on at least half the labeled wafers.
+
+[Batch counts](results/lots_clustering.csv) · [Consecutive slots](results/lots_slot_order.csv) · [Excursions by pattern](results/lots_excursions_by_class.csv)
+
+<a name="root-causes"></a>
+<a name="equipment-id-check-first"></a>
+
+### Equipment checks
+
+I’d start the equipment check with the 361 edge-ring batches on the list of 502. Spin coating can leave a bead of material around the rim. If the equipment histories showed that the affected wafers shared a coater, I’d compare the width of that bead with the width of the band of failed chips.
+
+> [!WARNING]
+> The maps carry no tool, chamber or recipe history. The [table of possible causes](docs/root_causes.md) gives the proposed checks and the evidence for each. Most entries are engineering hypotheses.
+
+<a name="classifiers"></a>
+
+### Comparing models on wafer maps
+
+> [!NOTE]
+> <sub>A wafer labeled clean in WM-811K can still have failed chips. The label means no defect pattern was recorded. A model can predict “clean” for any wafer, including one with a recorded defect. The random forest combines decisions from many trees. The convolutional neural network (CNN) learns from the image.</sub>
+
+The forest gets [24 measurements](src/wm811k/features.py), including the fraction of chips that failed and the number of clusters of touching failed chips. The CNN gets the image itself. I tested both on all 25,939 labeled test wafers. Each row in the chart is a recorded pattern. The last column shows how often the CNN called wafers with that pattern clean.
+
+![CNN predictions by recorded defect pattern. The last column shows the share of each pattern classified as clean.](figures/cnn_confusion.png)
+
+- The random forest scored 0.867 macro-F1 (95% interval 0.846 to 0.880). It classified 8.4% of wafers with a recorded defect as clean.
+- The CNN, with 0.58 million weights, scored 0.877 (0.855 to 0.893). It classified 3.7% of wafers with a recorded defect as clean. Across three training seeds its scores ranged from 0.877 to 0.884.
 
 > [!IMPORTANT]
-> Overall neither model is clearly better. The CNN beats the forest by 0.010 macro-F1, but the paired interval of −0.008 to +0.029 includes zero.
+> The CNN led by 0.010 macro-F1. The paired 95% interval for that difference ran from −0.008 to +0.029, leaving the overall ranking uncertain.
 
-The real difference is in the expensive mistake, a defect wafer called clean. The CNN drops Scratch missed as clean from 27% to 11% and Loc from 20% to 8%. Its recall gains on Loc (+0.18) and Scratch (+0.12) are clear of zero.
+Of 179 scratched wafers, the forest called 49 clean (27%) and the CNN called 20 clean (11%). The CNN still mistook 23 scratches for patches. It correctly named 130 of the 179 scratches, against 109 for the forest, a gain of 12 percentage points (paired 95% interval, 3 to 20 points).
 
-Sources: `results/cnn_minus_rf.csv`, `results/missed_as_none_rf_vs_cnn.csv`, `figures/rf_confusion.png`, `figures/cnn_confusion.png`
+Among the 540 wafers labeled as localized patches, the share called clean fell from 20% with the forest to 8% with the CNN. The CNN correctly named 18 more patches per 100 than the forest did (paired 95% interval, 14 to 22 more).
 
-### Review gate
+[Training times](results/cnn_val_tuning.csv) · [Paired model comparison](results/cnn_minus_rf.csv) · [Defects passed as clean](results/missed_as_none_rf_vs_cnn.csv) · [Forest predictions by class](figures/rf_confusion.png)
 
-> [!NOTE]
-> <sub>review gate: model calls a wafer clean only when confident, the rest go to a person · macro-F1: score that weighs every defect type equally</sub>
+<a name="review-gate"></a>
 
-At the same miss rate, the CNN needs about half the human review the forest does. A review gate sets its confidence threshold on validation.
-
-![Left: defect wafers passed as clean against clean wafers sent to review, for the forest and the CNN. Right: macro-F1 on the wafers each model decides as more go to review](figures/abstain_tradeoff.png)
-
-With missed defects held near 5%, the forest sends 19.0 clean wafers per 1,000 to review and the CNN sends 10.3. If the CNN only decides the 90% of wafers it's surest about, its macro-F1 on those wafers is 0.986.
-
-Sources: `results/abstain_operating_points.csv`, `figures/abstain_tradeoff.png`
-
-### Grad-CAM
+### Wafers sent for review
 
 > [!NOTE]
-> <sub>Grad-CAM: heat map of where the model looked</sub>
+> <sub>The review threshold sets how high the model’s clean score must be for a wafer to skip inspection. A miss is a wafer that skips inspection even though its recorded label says it has a defect.</sub>
 
-For most patterns the CNN looks at the failing dies, not at unrelated parts of the image. I checked this with Grad-CAM on up to 300 correct test wafers per class.
+On validation batches I chose the setting that sent the fewest wafers labeled clean for inspection while letting at most 5% of wafers with a recorded defect through. On test batches, the CNN cleared 4.8% of wafers with a recorded defect and the forest cleared 5.1%. For every 1,000 wafers labeled clean in WM-811K, an engineer would inspect 10.3 with the CNN and 19.0 with the forest.
 
-![One correct test wafer per pattern, with the CNN's Grad-CAM heat map underneath](figures/gradcam_examples.png)
+![Left, missed defects versus clean wafers flagged. Right, model score as an engineer takes over more of the least certain cases.](figures/abstain_tradeoff.png)
 
-For every class except Near-full, much less heat lands outside the wafer than chance would give. [Full analysis](docs/gradcam.md)
+The right panel uses a different review rule. The CNN classified the 90% of test wafers it was most confident about and sent the other 10% to an engineer, regardless of the predicted label. Its macro-F1 on the wafers it classified was 0.986.
 
-Sources: `results/gradcam_summary.csv`, `figures/gradcam_examples.png`
+[Thresholds and workload](results/abstain_operating_points.csv) · [Scores by share of wafers decided](results/abstain_coverage_test_cnn.csv)
 
-### Label audit
+<a name="grad-cam"></a>
 
-> [!NOTE]
-> <sub>macro-F1: score that weighs every defect type equally</sub>
-
-Some of the dataset's labels are wrong. I hand-checked the 24 test wafers that both models confidently gave a different class from their label. On a blind re-review, made before seeing the models' answers, 10 labels were wrong.
-
-Fixing the labels barely moves the scores: macro-F1 goes from 0.867 to 0.870 for the forest and from 0.877 to 0.879 for the CNN.
-
-[Full analysis](docs/label-audit.md)
-
-Sources: `results/label_audit_candidates.csv`, `results/label_rescore_summary.csv`, d64, d67
-
-### Vision-language models
+### What the CNN picked up in the images
 
 > [!NOTE]
-> <sub>Vision-language models: AI model that reads images and text · zero-shot: no training examples, only a prompt · macro-F1: score that weighs every defect type equally</sub>
+> <sub>Grad-CAM makes a heat map of the image regions that contributed to a model's predicted class. Each heat map here starts as an 8-by-8 grid.</sub>
 
-Vision-language models can't replace the trained models here when run zero-shot. On the same 180 test wafers, with my best prompt for each of the three AI models:
+In the [fourth example map](#example-maps), the CNN correctly identified an edge ring. Its strongest response was slightly inward from the failed chips. At this resolution I can’t tell whether it picked out individual chips.
 
-- Small CNN: 0.916 macro-F1
-- Random forest: 0.866
-- Claude Fable 5.2: 0.786
-- Claude Opus 5.5: 0.718
-- GPT-6 Luna: 0.612
+I checked up to 300 correct test predictions per defect class. For center defects, the background outside the wafer occupied 22% of the image but accounted for only 3% of the heat map’s total signal (medians across wafers). The share of signal in the background was well below its share of image area for seven of the eight patterns. For near-total failures the two shares were close, 20% of the signal against 21% of the area.
 
-Fable beats Opus, and Opus beats Luna, on every prompt. All three are good at Scratch. The full analysis also compares against GPT-4o results from the Cao and Tao paper.
+[Heat-map analysis](docs/gradcam.md) · [Measurements by pattern](results/gradcam_summary.csv)
 
-[Full analysis](docs/vlm.md)
+<a name="label-audit"></a>
 
-Sources: `results/vlm_summary.csv`, `results/vlm_pairs.csv`, `results/vlm_paper_style.csv`, d46 to d48, d53, d55, d61, d65, d66, d68
-
-### Triage assistant
+### Checking disputed labels
 
 > [!NOTE]
-> <sub>8D report: standard manufacturing problem-solving report</sub>
+> <sub>A dataset label is the recorded judgment about a map. In the second review, I made my own call before looking at either the models' predictions or my previous verdict.</sub>
 
-Limited to one row of my root-cause table, an AI model drafts fab incident reports without making things up. When the CNN flags a wafer, GPT-6 Luna drafts the first steps of an 8D report, and code, not another AI, checks every draft for invented tools, numbers, causes and references.
+I reviewed 24 test wafers where both models picked the same label with at least 80% confidence and that label differed from the one on record. Knowing their answers, I judged 17 labels wrong. Reviewing the same wafers blind, I judged 10 wrong. In just four cases my second reading agreed with the models’ proposed correction.
 
-With the table row, 60 of 60 drafts passed every check, and without it 2 of 60 did. That shows the limit works. It doesn't show the table is right, since most rows are still hypotheses.
+After I applied the second review and set aside one mixed-pattern wafer, the forest rose from 0.867 to 0.870 macro-F1 and the CNN from 0.877 to 0.879. The main scores keep the original labels.
 
-[Full analysis](docs/triage-assistant.md)
-
-Sources: `results/assistant_summary.csv`, d49, d50, d60, d62
+[Both reviews](docs/label-audit.md) · [Selected wafers](results/label_audit_candidates.csv) · [Revised scores](results/label_rescore_summary.csv)
 
 ### Training on simulated wafers
 
 > [!NOTE]
-> <sub>random forest: many decision trees voting on features I engineered</sub>
+> <sub>The simulator generates wafer maps from settings for faults such as edge thinning, particle deposits and scratches. Only simulated maps went into training for this test.</sub>
 
-A model trained only on simulated wafers catches most real defects but flags half the real clean wafers. I built a process-fault simulator ([docs/simulator.md](docs/simulator.md)) that makes wafer maps from physical fault settings, and trained a random forest on 27,000 simulated maps.
+In my simulator I can set the path of a scratch and the chance that a chip along it fails. I trained a separate random forest on 27,000 [simulated maps](figures/simulator_examples.png) covering all nine classes. On real test wafers it called 0.4% of wafers with a recorded defect clean and flagged 51% of wafers labeled clean as defective.
 
-![Confusion matrix for the random forest trained only on simulated wafers and scored on real test wafers](figures/synthetic_rf_confusion.png)
+![Predictions on real wafers by a forest trained on simulated maps. In the clean row, 18% were called edge rings and 21% scratches.](figures/synthetic_rf_confusion.png)
 
-It passes only 0.4% of real defects as clean. But it calls 51% of real clean wafers defects, because real clean wafers carry weak edge and line structure the simulator doesn't make yet. [Full analysis](docs/synthetic-training.md)
+Of the real wafers labeled clean, the forest called 18% edge rings and 21% scratches. My simulator scattered background failures independently. It left out the faint lines and rings that real wafers can have even when labeled clean.
 
-Sources: `results/synthetic_*.csv`, d51 to d54
+[Simulator](docs/simulator.md) · [Test on real wafers](docs/synthetic-training.md) · [Recall by pattern](results/synthetic_rf_test_per_class.csv)
 
-### Root causes
+<a name="vision-language-models"></a>
 
-[docs/root_causes.md](docs/root_causes.md) maps each pattern to its likely process modules and physical mechanism, the first fab step to check, and the signal that would confirm the cause. Each row cites a verified source or is marked as an engineering hypothesis.
+### Claude and GPT on 180 wafer maps
 
-> [!WARNING]
-> Most rows are still hypotheses. The data has no tool, chamber or recipe fields, so none of them is confirmed against real process history.
+> [!NOTE]
+> <sub>A vision-language model takes images and text as input. In this zero-shot test, each model got a wafer image and a written prompt with no labeled examples.</sub>
 
-The Edge-Ring, Center and Donut rows draw on my own hands-on spin-coat edge-bead and ALD uniformity work.
+I drew 20 maps per label from the 25,939-wafer test set for this comparison. The same CNN scored 0.877 on the full test set and 0.916 on the balanced sample. All five scores below are for those 180 maps. Claude and GPT got the corrected pattern descriptions.
+
+- Small CNN · 0.916 macro-F1
+- Random forest · 0.866
+- Claude Fable 5.2 · 0.786
+- Claude Opus 5.5 · 0.718
+- GPT-6 Luna · 0.612
+
+On these 180 maps the CNN led Fable by 0.130 macro-F1 (paired 95% interval 0.068 to 0.198).
+
+An early test with Luna exposed a mistake in my instructions. I had described a clean wafer as having “only a few fails.” On a typical clean wafer in the training lots, one chip in ten failed. I revised the description, checked it on validation maps and kept both sets of test results. All three prompts were fixed before either Claude model ran.
+
+Given the label names alone, Fable recognized 12 of the 20 clean wafers. With the “few fails” rule, all three models flagged all 20. The corrected prompt brought Fable’s false alarms down to six. It flagged every defective wafer on that prompt, though it mistook 11 of the 20 localized patches for defects at the edge.
+
+[Prompts, scores and study comparison](docs/vlm.md) · [Model scores](results/vlm_summary.csv) · [Paired differences](results/vlm_pairs.csv) · [Paper comparison](results/vlm_paper_style.csv)
+
+<a name="triage-assistant"></a>
+
+### Drafting incident reports
+
+> [!NOTE]
+> <sub>8D is a manufacturing problem-solving format. The draft covers the steps for describing the problem, containing it and investigating possible causes.</sub>
+
+I tested two prompts for GPT-6 Luna. Each got the same 54 wafer cases and six additional questions, for 60 responses per prompt. The case facts included the CNN’s prediction, wafer yield and batch information. One question asked for a machine ID the records never supplied.
+
+One prompt let Luna use its own engineering knowledge. The other supplied the [table entry for that defect](docs/root_causes.md) and limited Luna to that entry and the case facts. The automated checker accepted all 60 responses written with the table and two of the 60 written using Luna’s own engineering knowledge.
+
+For wafer 776670, Luna wrote “None implicated by the available data” in the field for suspected process steps. The checker rejected the report because that wording didn’t appear in the table entry.
+
+[Questions and scoring rules](docs/triage-assistant.md) · [Results by prompt](results/assistant_summary.csv) · [Individual check results](results/assistant_checks.csv)
 
 ## Limits
 
-- The data has no product ID, so I use map grid size as a stand-in for product.
-- The labelled wafers lean toward worse ones (median yield 89.4% against 94.8% for unlabelled), so "per 1,000 labelled wafers" isn't a rate for the whole fab.
-- Labels may have been assigned lot by lot, which could inflate the lot clustering. The data can't rule that out.
-- There are no tool, chamber or recipe fields, so the root-cause table stays a set of hypotheses until someone checks it against real process history.
+- Map dimensions are the only way to approximate product when estimating a clean-wafer baseline. Different products can have the same dimensions.
+- Labeled wafers had a median yield of 89.4%, compared with 94.8% for unlabeled wafers. Loss per 1,000 labeled wafers therefore cannot be read as a factory-wide rate.
+- If the maps were labeled one batch at a time, that could increase the apparent agreement within a batch. The dataset does not record how the labels were assigned.
+- The models were tested on held-out lots from this dataset. Performance on another product or at another factory is unknown.
+- The report checker tests pattern names, process steps, sources, numbers and equipment identifiers against the allowed details. A report can pass every check and still give poor advice about what to investigate.
 
 ## Usage
 
 ### Setup
 
-Use Python 3.12 or newer. Download `LSWMD.pkl` from the [WM-811K Kaggle page](https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map) and put it in the repository root. It isn't included because of its size.
+Use Python 3.12 or later. Download `LSWMD.pkl` from the [WM-811K Kaggle page](https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map) and put the extracted file (about 2.1 GB) in the folder containing `config.yaml`. From that folder, install the project and run its tests.
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
@@ -238,7 +255,11 @@ pytest
 
 ### Run order
 
-Run the core analysis from the repo root in this order. Outputs are written to `results/` and `figures/`.
+Run the scripts in order from the same folder. Later scripts read the tables in `results/` produced by earlier ones. Plots go in `figures/`. For the local analysis, run through `run_synthetic.py`. On my Apple M5, each of the four CNN training runs took 30 to 50 minutes. The script falls back to the CPU when an Apple GPU is unavailable.
+
+<a name="optional-model-benchmarks-and-triage"></a>
+
+The remaining commands run the external model comparisons and incident reports. For Luna and the incident reports, sign in to the Codex CLI. For Opus and Fable, sign in to the Claude Code CLI with `claude auth login`. I used the CLIs with the ChatGPT and Claude desktop apps and their subscription sign-ins.
 
 ```bash
 python scripts/run_audit.py
@@ -252,61 +273,46 @@ python scripts/run_gradcam.py
 python scripts/run_label_audit.py
 python scripts/run_label_rescore.py
 python scripts/run_synthetic.py
-```
-
-### Optional model benchmarks and triage
-
-The core analysis above runs without the model CLIs. To reproduce the vision-language benchmarks and triage comparison on the tested Mac setup, run these after the core analysis:
-
-```bash
 python scripts/run_vlm.py
 python scripts/run_vlm.py --backend opus --prompts raw rules rules_v2
 python scripts/run_vlm.py --backend fable --prompts raw rules rules_v2
 python scripts/run_assistant.py
 ```
 
-`run_cnn.py` trains on an Apple GPU if there is one and falls back to the CPU. On an Apple M5 each of its four training runs took 30 to 50 minutes.
-
-The default `run_vlm.py` backend and `run_assistant.py` call GPT-6 Luna through the Codex CLI bundled with the ChatGPT desktop app. Install the app and sign in for those runs.
-
-The Opus and Fable runs call the Claude Code CLI that comes with the Claude desktop app, which needs to be signed in with `claude auth login`. They only use that sign-in, never an API key. I've only run the whole pipeline on my Mac.
-
 ### Code layout
 
-- `src/wm811k/` holds all the logic: loading, audit, split, yield, lots, features, simulator, CNN, review gate, VLM and assistant.
-- `scripts/run_*.py` each run one analysis.
-- `tests/` has 179 pytest checks, including the yield formula, a lot-disjoint split, each feature's physics on simulated wafers and the hallucination checks.
-- `config.yaml` holds every seed and threshold.
+- [src/wm811k/](src/wm811k/) contains the data loader, analysis, models, simulator and report checks.
+- [scripts/](scripts/) contains one entry point per analysis.
+- [tests/](tests/) contains 179 checks, including the yield calculation, separation of lots, feature behavior on simulated maps and unsupported details in reports.
+- [config.yaml](config.yaml) holds seeds and thresholds.
 
 ## References
 
-- M.-J. Wu, J.-S. R. Jang and J.-L. Chen, "Wafer map failure pattern recognition and similarity ranking for large-scale data sets," IEEE Transactions on Semiconductor Manufacturing, 2015. The WM-811K dataset.
-- [WM-811K on Kaggle](https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map), the copy of the data used here.
-- Cao and Tao, arXiv 2610.35080, 2026. GPT-4o zero-shot on WM-811K, compared in [docs/vlm.md](docs/vlm.md).
-- [DECISIONS.md](DECISIONS.md), every analysis choice and the options I turned down.
-- [docs/root_causes.md](docs/root_causes.md), the sources behind each root-cause row.
+- M.-J. Wu, J.-S. R. Jang and J.-L. Chen, “Wafer map failure pattern recognition and similarity ranking for large-scale data sets,” *IEEE Transactions on Semiconductor Manufacturing*, 2015.
+- [WM-811K on Kaggle](https://www.kaggle.com/datasets/qingyi/wm811k-wafer-map), the copy used here.
+- Cao and Tao, arXiv 2610.35080, 2026. The [vision-model analysis](docs/vlm.md) compares their GPT-4o results with these tests.
+- [Decision log](DECISIONS.md) for analysis choices and alternatives.
+- [Root-cause table](docs/root_causes.md) for mechanisms, proposed checks and sources.
 
 ## Terms
 
-Each section also lists the terms it uses, right under its heading.
-
-- Die: One chip on the wafer.
-- Lot: A batch of wafers that go through the same tools together.
-- Excursion lot: A lot where one defect pattern covers half or more of its labelled wafers.
-- Excess die loss: Dies lost beyond what clean wafers of the same product lose.
-- CNN: Convolutional neural network, a model that reads the map image directly.
-- Random forest: A model that votes across many decision trees built on features I engineered.
-- Macro-F1: A score that weighs every defect type equally, so rare ones count as much as common ones.
-- Recall: The share of a defect type the model finds.
-- 95% CI: 95% confidence interval, the range the true value likely falls in.
-- Lot bootstrap: Resampling whole lots to measure uncertainty, since wafers in one lot aren't independent.
-- Permutation test: Shuffling the labels many times to see what chance alone would give.
-- Confusion matrix: A grid of true pattern against predicted pattern.
-- Review gate: The model only calls a wafer clean when it's confident and sends the rest to a person.
-- Grad-CAM: A heat map of where the model looked.
-- Vision-language model: An AI model that reads images and text together.
-- Zero-shot: No training examples, only a prompt describing the task.
-- 8D report: A standard manufacturing problem-solving format, D2 to D4 describe, contain and find the root cause.
+- **Die.** One chip on a wafer. Yield is the fraction of tested dies that pass.
+- **Lot.** A production batch of wafers.
+- **Excursion lot.** Here, a lot in which at least half the labeled wafers have one defect pattern.
+- **Excess die loss.** The number of failed chips above the estimate from clean-wafer yield, matched by map size where possible.
+- **CNN.** A convolutional neural network that learns spatial features from the wafer image.
+- **Random forest.** A collection of decision trees whose predictions are combined. Each tree here uses features measured from a map.
+- **Macro-F1.** For each class, F1 combines how often the model finds it with how often that prediction is right. Macro-F1 averages the scores across classes with equal weight.
+- **Recall.** Of all wafers with a given label, the share the model identifies correctly.
+- **95% CI.** A 95% confidence interval. Here its endpoints come from resampling the test lots.
+- **Lot bootstrap.** Drawing whole lots with replacement and recalculating the statistic on each sample.
+- **Permutation test.** Reassigning the labels by chance to see how often the shuffled results reach the observed value.
+- **Confusion matrix.** A grid showing the recorded class in each row and the model's prediction in each column.
+- **Review gate.** A threshold for passing a wafer as clean. Wafers that fall below it get flagged for review.
+- **Grad-CAM.** A heat map estimating which parts of an image contributed to a particular CNN prediction.
+- **Vision-language model.** A model that can take both images and text as input.
+- **Zero-shot.** The model gets task instructions with no worked examples.
+- **8D report.** A manufacturing problem-solving report. Steps D2 to D4 describe the problem, contain it and investigate its cause.
 
 ## License
 
